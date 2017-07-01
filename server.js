@@ -22,6 +22,8 @@ router.get('/', function (req, res) {
     res.sendFile(path.join(__dirname+'/public/index.html'));
 });
 
+app.use('/', router);
+
 var server = app.listen(process.env.PORT || 3000, function () {
 	var port = server.address().port;
 	console.log("App now running on port", port);
