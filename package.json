@@ -4,10 +4,10 @@
   "description": "Travel Book Keeping",
   "main": "server/server.js",
   "scripts": {
+	"test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server/server.js"
   },
   "author": "Loïc BAILLY",
-  "license": "ISC",
   "dependencies": {
     "angular-chart.js": "^1.1.1",
     "body-parser": "^1.16.0",
