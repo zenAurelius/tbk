@@ -27,6 +27,9 @@ router.get('/', function (req, res) {
 app.use('/', router);
 
 console.log(process.env.MONGODB_URI);
+var dotenv = require('dotenv');
+dotenv.load();
+console.log(process.env.MONGODB_URI);
 
 mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
   if (err) {

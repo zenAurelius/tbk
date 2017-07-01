@@ -4,15 +4,16 @@
   "description": "Travel Book Keeping",
   "main": "server.js",
   "scripts": {
-	"test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
   },
   "author": "Loïc BAILLY",
   "dependencies": {
     "angular-chart.js": "^1.1.1",
     "body-parser": "^1.16.0",
+    "dotenv": "^4.0.0",
     "express": "^4.14.0",
-    "mongodb" : "^2.2.29"
+    "mongodb": "^2.2.29"
   },
   "devDependencies": {
     "@types/angular": "^1.6.4",
