@@ -1,12 +1,14 @@
 var express = require('express');
 var path = require("path");
 var bodyParser = require('body-parser');
-//var mongodb = require("mongodb");
+var mongodb = require("mongodb");
 
 var app = express();
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+var ObjectID = mongodb.ObjectID;
 
 var router = express.Router();              // get an instance of the express Router
 
@@ -24,7 +26,21 @@ router.get('/', function (req, res) {
 
 app.use('/', router);
 
-var server = app.listen(process.env.PORT || 3000, function () {
-	var port = server.address().port;
-	console.log("App now running on port", port);
+console.log(process.env.MONGODB_URI);
+
+mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
+  if (err) {
+    console.log(err);
+    process.exit(1);
+  }
+
+  // Save database object from the callback for reuse.
+  db = database;
+  console.log("Database connection ready");
+
+  // Initialize the app.
+  var server = app.listen(process.env.PORT || 3000, function () {
+    var port = server.address().port;
+    console.log("App now running on port", port);
+  });
 });
