@@ -1,0 +1,92 @@
+/* app css stylesheet */
+
+/* COLOR */
+@import 'color';
+
+
+html,body {
+	height: 100%;
+}
+
+html * {
+	margin: 0;
+}
+
+html>body {
+	font-family: "Roboto", sans-serif;
+	background: white;
+	color: @lightColor;
+	font-size: 13px;
+}
+ 
+.basculeMode {
+    cursor: pointer; cursor: hand;
+}
+
+.content {
+    width: 90%;
+    margin: auto;
+    background-color: #E6EAEF;
+    padding: 10px 10px 20px 10px;
+	top:	50px;
+	position:	relative;
+}
+
+.actions {
+    text-align: center;
+    margin: 10px;
+}
+ 
+.actions .bouton {
+    display: inline-block;
+    color: @lightColor;
+    background: @policeColor;
+    padding: 2px 16px 2px 16px !important;
+    line-height: 1.4;
+    -webkit-transition: 0.1s;
+    transition: 0.1s;
+    margin: 2px;
+    text-decoration: none;
+    cursor:pointer;
+    border: none;
+    font-weight: bold;
+    font-family: "Roboto", sans-serif;
+}
+ 
+ md-slider-container .bouton {
+    display: inline-block;
+    color: @lightColor;
+    background: @policeColor;
+    padding: 2px 2px 2px 2px;
+    line-height: 1.4;
+    margin: 2px;
+    text-decoration: none;
+    cursor:pointer;
+    border: none;
+    font-weight: bold;
+    font-family: "Roboto", sans-serif;
+}
+
+.actions .bouton:disabled {
+    color: #8896A2;
+}
+ 
+.actions  .bouton:hover {
+    background: #D0E4F7;
+}
+
+/* NAVBAR */
+@import 'navbar';
+
+/* SHEET */
+@import 'sheet';
+
+/* TABLE */
+@import 'table';
+
+/* MODAL */
+@import 'modal';
+
+/* CHOSEN */
+@import 'chosen';
+

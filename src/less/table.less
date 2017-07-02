@@ -1,0 +1,90 @@
+@import 'color';
+
+@headerBackground: @policeColor;
+@rowBackground:#D0E4F7;
+@rowHoverBackground:#88C0F5;
+@changeBackground:#F7E3D0;
+@changeHoverBackground:#BDA186;
+@selectedBackground:#73B3F1;
+@selectedHoverBackground:#AB9077;
+
+.tbk-table {
+    border-collapse: separate; 
+    border-spacing: 5px;
+    border: none;
+    width: 100%;
+	th {
+		background-color: @headerBackground;
+	}
+	tr.selectionnable {
+		&:hover {
+			background-color: @rowHoverBackground;
+		}
+		background-color: @rowBackground;
+		&.retrait {
+			background-color: @changeBackground;
+			&:hover{
+				background-color: @changeHoverBackground;
+			}
+		}
+	}
+		
+	tr.selected {
+		background-color: @selectedBackground;
+		&.retrait {
+			background-color: @selectedHoverBackground;
+		}
+	}
+	
+	td.datecol {
+		width:100px;
+	}
+	
+	td.stage {
+		background-color: @selectedBackground;
+		min-height: 15px;
+		border: 1px solid black;
+		text-align: center;
+	}
+	
+	td.interval{
+		min-height: 15px;
+		border: 1px solid black;
+		text-align: center;
+		.material-icons{
+			vertical-align: bottom;
+		}
+		
+	}
+	
+	td.day {
+		background-color: @rowBackground;
+		border-top: 1px solid black;
+		border-left: 1px solid black;
+		border-right: 1px solid black;
+		text-align: right;
+	}
+	
+	td.endday {
+		background-color: @rowBackground;
+		border-bottom: 1px solid black;
+		border-left: 1px solid black;
+		border-right: 1px solid black;
+		text-align: right;
+		height: 15px;
+	}
+	
+	td.spacer {
+		width:3.6%;
+		height: 0px;
+		padding: 0;
+	}
+}
+
+.tbk-calendar {
+	border-spacing: 5px 0px;
+	
+	tr.tr-space{
+		height: 5px;
+	}
+}

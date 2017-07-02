@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "noImplicitAny": false,
+    "outDir": "target/build/app",
+    "rootDir": "src",
+    "sourceMap": true,
+    "removeComments": false,
+    "declaration": false,
+    "noResolve": false
+  },
+  "exclude": [
+    "node_modules",
+    "target",
+    "bower_components",
+    "test",
+    "config"
+  ]
+}

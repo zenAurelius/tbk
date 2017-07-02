@@ -1,4 +1,6 @@
+var passport = require('passport');
 var userService = require('../services/user.service');
+var jwt = require('jsonwebtoken');
 
 module.exports.login = function(req, res, next) {
 
@@ -9,21 +11,36 @@ module.exports.login = function(req, res, next) {
 		return;
 	}
 	
-	res.status(200).send('ok');
+	passport.authenticate('local', function(err, user, info){
+		var token;
+
+		// If Passport throws/catches an error
+		if (err) {
+		  res.status(404).json(err);
+		  return;
+		}
+
+		// If a user is found
+		if(user){
+			res.status(200).json({ 'token' : jwt.sign({ _id: user._id }, process.env.JWT_SECRET) });
+		} else {
+			// If user is not found
+			res.status(401).json(info);
+		}
+	})(req, res);
 }
 
 module.exports.register = function(req, res) {
 	
 	if(!req.body.username || !req.body.password) {
 		console.log (req.body.username + ':' + req.body.password + ' = il manque des params'  )
-		res.status(400);
-		res.json('Il manque des paramètres');
+		res.status(400).json('Il manque des paramètres');
 		return;
 	}
 	
 	userService.create(req.body)
-		.then(function () {
-            res.sendStatus(200).send('ok');
+		.then(function (userID) {
+            res.status(200).json({ 'token' : jwt.sign({ _id: userID }, process.env.JWT_SECRET) });
         })
         .catch(function (err) {
             res.status(400).send(err);

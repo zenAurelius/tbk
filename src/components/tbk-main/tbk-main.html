@@ -1,0 +1,44 @@
+<nav class="tbk-header">
+	<!-- Bouton titre, lien vers l'acceuil -->
+	<a ng-click="mainCtrl.goAccueil()" class="tbk-header-title" >
+		<i class="material-icons">flight_takeoff</i>TBK<i class="material-icons">flight_land</i>
+	</a>
+	<div ng-show="mainCtrl.connectedUser">
+		<!-- Bouton Voyages -->
+		<a ng-click="mainCtrl.goTravels()" class="tbk-header-nav-link" >
+			<i class="material-icons">map</i>
+			<span class="tbk-header-nav-link-text">Voyages</span>
+		</a> 
+		
+		<a class="tbk-nav-travel-name" ng-show="mainCtrl.selectedTravel">
+			<span class="tbk-header-nav-link-text">
+				{{mainCtrl.selectedTravel.countriesNames}}<br/>({{mainCtrl.selectedTravel.departDate | date:"yyyy" }})
+			</span>
+		</a>
+	
+		<a class="tbk-header-nav-link" ng-click="mainCtrl.goBudget()" ng-show="mainCtrl.selectedTravel">
+			<i class="material-icons">account_balance_wallet</i>
+			<span class="tbk-header-nav-link-text">Budget</span>
+		</a>
+		<a class="tbk-header-nav-link" ng-click="mainCtrl.goItineraire()" ng-show="mainCtrl.selectedTravel">
+			<i class="material-icons">directions</i>
+			<span class="tbk-header-nav-link-text">Itinéraire</span>
+		</a>
+	</div>
+	<div class="tbk-header-user dropdow_container" id="connectinLink" ng-click="mainCtrl.showUserMenu = !mainCtrl.showUserMenu">
+		<span ng-show="!mainCtrl.connectedUser" class="tbk-header-nav-link-text">_login_</span>
+		<span ng-show="mainCtrl.connectedUser" class="tbk-header-nav-link-text">{{mainCtrl.connectedUser.firstname}}</span>	
+	</div>
+</nav>
+
+<div class="dropdow user-menu" ng-show="mainCtrl.showUserMenu" off-click="mainCtrl.showUserMenu = false" off-click-if="mainCtrl.showUserMenu">
+	<ul>
+		<li ng-repeat="user in mainCtrl.users" ng-click="mainCtrl.selUser($index)">{{user.firstname}}</li>
+	</ul>
+</div>
+
+<div class="main">
+    <div class="page-content content">
+        <ng-transclude></ng-transclude>
+    </div>
+</div>
