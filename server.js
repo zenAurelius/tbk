@@ -15,7 +15,7 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname+'/public/index.html'));
 });
 
-require('./server/utils/passport');
+require('./server/utils/configPassport');
 app.use(passport.initialize());
 var router = require('./server/utils/apiRoutes');
 app.use('/api', router);
