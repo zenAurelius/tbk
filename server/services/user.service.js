@@ -1,6 +1,6 @@
 
 var Q = require('q');
-var dbProvider = require('../db/dbProvider');
+var dbProvider = require('../utils/dbProvider');
 var crypto = require('crypto');
 
 var service = {};

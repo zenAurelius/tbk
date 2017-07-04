@@ -7,12 +7,12 @@ var auth = jwt({
 });
 
 // AUTHENTICATION
-var ctrlAuth = require('../controllers/authent');
+var ctrlAuth = require('../controllers/authent.ctrl');
 router.post('/login', ctrlAuth.login);
 router.post('/register', ctrlAuth.register);
 
 //USER
-var ctrlUser = require('../controllers/user');
+var ctrlUser = require('../controllers/user.ctrl');
 router.get('/users/:id', auth, ctrlUser.get);
 
 module.exports = router;

@@ -1,7 +1,7 @@
 var express = require('express');
 var path = require("path");
 var bodyParser = require('body-parser');
-var dbProvider = require('./server/db/dbProvider');
+var dbProvider = require('./server/utils/dbProvider');
 var passport = require('passport');
 
 
@@ -15,9 +15,9 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname+'/public/index.html'));
 });
 
-require('./server/config/passport');
+require('./server/utils/passport');
 app.use(passport.initialize());
-var router = require('./server/routes/apiRoutes');
+var router = require('./server/utils/apiRoutes');
 app.use('/api', router);
 
 //Catch des erreurs de token venant de passport
