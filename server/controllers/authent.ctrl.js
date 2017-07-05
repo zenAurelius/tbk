@@ -13,6 +13,8 @@ module.exports.login = function(req, res, next) {
 	
 	passport.authenticate('local', function(err, user, info){
 		var token;
+		var expiry = new Date();
+		expiry.setDate(expiry.getDate() + 7);
 
 		// If Passport throws/catches an error
 		if (err) {
@@ -22,7 +24,9 @@ module.exports.login = function(req, res, next) {
 
 		// If a user is found
 		if(user){
-			res.status(200).json({ 'token' : jwt.sign({ _id: user._id }, process.env.JWT_SECRET) });
+			res.status(200).json({ 'token' : jwt.sign({
+				_id: user._id,
+				exp: parseInt(expiry.getTime() / 1000)}, process.env.JWT_SECRET) });
 		} else {
 			// If user is not found
 			res.status(401).json(info);

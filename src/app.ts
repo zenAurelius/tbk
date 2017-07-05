@@ -11,6 +11,7 @@ import 'angular-aria';
 import 'angular-material';
 
 import { UsersService }			from './services/users.service';
+import { AuthenticationService}	from './services/authentication.service';
 //import { TravelsService }		from './services/travels.service';
 import { CountriesService }		from './services/countries.service';
 //import { AccountsService }		from './services/accounts.service';
@@ -38,6 +39,7 @@ import { TbkAccueil } 			from './components/tbk-accueil/tbk-accueil.component';
 //angular.module('tbk', ['ngMaterial', 'ngRoute', 'offClick', 'chart.js'])
 angular.module('tbk', ['ngRoute'])
 	.service('usersService', UsersService)
+	.service('authenticationService', AuthenticationService)
 	//.service('travelsService', TravelsService)
 	.service('countriesService', CountriesService)
 	//.service('accountsService', AccountsService)
