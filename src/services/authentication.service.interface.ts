@@ -1,5 +1,5 @@
 export interface IAuthenticationService {
-	saveToken(any) any;
+	saveToken(any) : any;
 	getToken(): any;
 	logout(): any;
 }

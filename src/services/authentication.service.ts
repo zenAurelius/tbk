@@ -2,11 +2,11 @@ import { IAuthenticationService } from './authentication.service.interface';
 
 export class AuthenticationService implements IAuthenticationService {
 	$http : ng.IHttpService;
-	$windows: ng.IWindowService;
+	$window: ng.IWindowService;
 	
-	constructor($http: ng.IHttpService, $windows: ng.IWindowService) {
+	constructor($http: ng.IHttpService, $window: ng.IWindowService) {
 		this.$http = $http;
-		this.$windows = $windows;
+		this.$window = $window;
 	};
 	
 	public saveToken(token : any) {
@@ -38,6 +38,6 @@ export class AuthenticationService implements IAuthenticationService {
 	
 	public login(user) {
 		return this.$http.post('/api/login', user)
-			.then(response => {this.saveToken(response.data.token);});
+			.then(response => {this.saveToken(response.data);});
 	};
 }

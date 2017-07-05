@@ -262,9 +262,9 @@ webpackJsonp([0],[
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var AuthenticationService = (function () {
-	    function AuthenticationService($http, $windows) {
+	    function AuthenticationService($http, $window) {
 	        this.$http = $http;
-	        this.$windows = $windows;
+	        this.$window = $window;
 	    }
 	    ;
 	    AuthenticationService.prototype.saveToken = function (token) {
@@ -296,7 +296,7 @@ webpackJsonp([0],[
 	    AuthenticationService.prototype.login = function (user) {
 	        var _this = this;
 	        return this.$http.post('/api/login', user)
-	            .then(function (response) { _this.saveToken(response.data.token); });
+	            .then(function (response) { _this.saveToken(response.data); });
 	    };
 	    ;
 	    return AuthenticationService;
