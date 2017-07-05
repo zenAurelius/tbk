@@ -13,13 +13,14 @@ webpackJsonp([0],[
 	__webpack_require__(9);
 	__webpack_require__(11);
 	var users_service_1 = __webpack_require__(13);
+	var authentication_service_1 = __webpack_require__(14);
 	//import { TravelsService }		from './services/travels.service';
-	var countries_service_1 = __webpack_require__(14);
+	var countries_service_1 = __webpack_require__(15);
 	//import { AccountsService }		from './services/accounts.service';
 	// import { OperationsService }		from './services/operations.service';
 	// import { ItineraryService }		from './services/itinerary.service';
-	var tbk_main_component_1 = __webpack_require__(15);
-	var tbk_accueil_component_1 = __webpack_require__(17);
+	var tbk_main_component_1 = __webpack_require__(16);
+	var tbk_accueil_component_1 = __webpack_require__(18);
 	// import { TbkTravels } 			from './components/tbk-travels/tbk-travels.component';
 	// import { TbkTravelsList } 		from './components/tbk-travels/tbk-travels-list.component';
 	// import { TbkBudget } 			from './components/tbk-budget/tbk-budget.component';
@@ -37,6 +38,7 @@ webpackJsonp([0],[
 	//angular.module('tbk', ['ngMaterial', 'ngRoute', 'offClick', 'chart.js'])
 	angular.module('tbk', ['ngRoute'])
 	    .service('usersService', users_service_1.UsersService)
+	    .service('authenticationService', authentication_service_1.AuthenticationService)
 	    .service('countriesService', countries_service_1.CountriesService)
 	    .component('tbkMain', tbk_main_component_1.TbkMain)
 	    .component('tbkAccueil', tbk_accueil_component_1.TbkAccueil)
@@ -259,6 +261,55 @@ webpackJsonp([0],[
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
+	var AuthenticationService = (function () {
+	    function AuthenticationService($http, $windows) {
+	        this.$http = $http;
+	        this.$windows = $windows;
+	    }
+	    ;
+	    AuthenticationService.prototype.saveToken = function (token) {
+	        this.$window.localStorage['tbk-token'] = token;
+	    };
+	    ;
+	    AuthenticationService.prototype.getToken = function () {
+	        return this.$window.localStorage['tbk-token'];
+	    };
+	    ;
+	    AuthenticationService.prototype.logout = function () {
+	        this.$window.localStorage.removeItem('tbk-token');
+	    };
+	    ;
+	    AuthenticationService.prototype.isLoggedIn = function () {
+	        var token = this.getToken();
+	        var payload;
+	        if (token) {
+	            payload = token.split('.')[1];
+	            payload = this.$window.atob(payload);
+	            payload = JSON.parse(payload);
+	            return payload.exp > Date.now() / 1000;
+	        }
+	        else {
+	            return false;
+	        }
+	    };
+	    ;
+	    AuthenticationService.prototype.login = function (user) {
+	        var _this = this;
+	        return this.$http.post('/api/login', user)
+	            .then(function (response) { _this.saveToken(response.data.token); });
+	    };
+	    ;
+	    return AuthenticationService;
+	}());
+	exports.AuthenticationService = AuthenticationService;
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
 	var CountriesService = (function () {
 	    function CountriesService($http) {
 	        this.$http = $http;
@@ -274,7 +325,7 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -339,7 +390,7 @@ webpackJsonp([0],[
 	    return TbkMainCtrl;
 	}());
 	exports.TbkMain = {
-	    template: __webpack_require__(16),
+	    template: __webpack_require__(17),
 	    controller: TbkMainCtrl,
 	    controllerAs: 'mainCtrl',
 	    transclude: true
@@ -347,13 +398,13 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports) {
 
 	module.exports = "<nav class=\"tbk-header\">\n\t<!-- Bouton titre, lien vers l'acceuil -->\n\t<a ng-click=\"mainCtrl.goAccueil()\" class=\"tbk-header-title\" >\n\t\t<i class=\"material-icons\">flight_takeoff</i>TBK<i class=\"material-icons\">flight_land</i>\n\t</a>\n\t<div ng-show=\"mainCtrl.connectedUser\">\n\t\t<!-- Bouton Voyages -->\n\t\t<a ng-click=\"mainCtrl.goTravels()\" class=\"tbk-header-nav-link\" >\n\t\t\t<i class=\"material-icons\">map</i>\n\t\t\t<span class=\"tbk-header-nav-link-text\">Voyages</span>\n\t\t</a> \n\t\t\n\t\t<a class=\"tbk-nav-travel-name\" ng-show=\"mainCtrl.selectedTravel\">\n\t\t\t<span class=\"tbk-header-nav-link-text\">\n\t\t\t\t{{mainCtrl.selectedTravel.countriesNames}}<br/>({{mainCtrl.selectedTravel.departDate | date:\"yyyy\" }})\n\t\t\t</span>\n\t\t</a>\n\t\n\t\t<a class=\"tbk-header-nav-link\" ng-click=\"mainCtrl.goBudget()\" ng-show=\"mainCtrl.selectedTravel\">\n\t\t\t<i class=\"material-icons\">account_balance_wallet</i>\n\t\t\t<span class=\"tbk-header-nav-link-text\">Budget</span>\n\t\t</a>\n\t\t<a class=\"tbk-header-nav-link\" ng-click=\"mainCtrl.goItineraire()\" ng-show=\"mainCtrl.selectedTravel\">\n\t\t\t<i class=\"material-icons\">directions</i>\n\t\t\t<span class=\"tbk-header-nav-link-text\">Itinéraire</span>\n\t\t</a>\n\t</div>\n\t<div class=\"tbk-header-user dropdow_container\" id=\"connectinLink\" ng-click=\"mainCtrl.showUserMenu = !mainCtrl.showUserMenu\">\n\t\t<span ng-show=\"!mainCtrl.connectedUser\" class=\"tbk-header-nav-link-text\">_login_</span>\n\t\t<span ng-show=\"mainCtrl.connectedUser\" class=\"tbk-header-nav-link-text\">{{mainCtrl.connectedUser.firstname}}</span>\t\n\t</div>\n</nav>\n\n<div class=\"dropdow user-menu\" ng-show=\"mainCtrl.showUserMenu\" off-click=\"mainCtrl.showUserMenu = false\" off-click-if=\"mainCtrl.showUserMenu\">\n\t<ul>\n\t\t<li ng-repeat=\"user in mainCtrl.users\" ng-click=\"mainCtrl.selUser($index)\">{{user.firstname}}</li>\n\t</ul>\n</div>\n\n<div class=\"main\">\n    <div class=\"page-content content\">\n        <ng-transclude></ng-transclude>\n    </div>\n</div>\n";
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -365,7 +416,7 @@ webpackJsonp([0],[
 	    return TbkAccueilCtrl;
 	}());
 	exports.TbkAccueil = {
-	    template: __webpack_require__(18),
+	    template: __webpack_require__(19),
 	    controller: TbkAccueilCtrl,
 	    controllerAs: 'accueilCtrl',
 	    require: { parent: '^tbkMain' }
@@ -373,7 +424,7 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports) {
 
 	module.exports = "<p>ACCUEIL</p>\n<span>Bonjour {{accueilCtrl.parent.connectedUser.firstname}}</span>\n<br/>\n";

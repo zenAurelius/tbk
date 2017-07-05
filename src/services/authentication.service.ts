@@ -1,3 +1,5 @@
+import { IAuthenticationService } from './authentication.service.interface';
+
 export class AuthenticationService implements IAuthenticationService {
 	$http : ng.IHttpService;
 	$windows: ng.IWindowService;
@@ -5,27 +7,27 @@ export class AuthenticationService implements IAuthenticationService {
 	constructor($http: ng.IHttpService, $windows: ng.IWindowService) {
 		this.$http = $http;
 		this.$windows = $windows;
-	}
+	};
 	
 	public saveToken(token : any) {
-		$window.localStorage['tbk-token'] = token;
+		this.$window.localStorage['tbk-token'] = token;
 	};
 	
 	public getToken() {
-		return $window.localStorage['tbk-token'];
+		return this.$window.localStorage['tbk-token'];
 	};
 	
 	public logout() {
-		$window.localStorage.removeItem('tbk-token');
+		this.$window.localStorage.removeItem('tbk-token');
 	};
 	
 	public isLoggedIn() {
-		var token = getToken();
+		var token = this.getToken();
 		var payload;
 
 		if(token){
 			payload = token.split('.')[1];
-			payload = $window.atob(payload);
+			payload = this.$window.atob(payload);
 			payload = JSON.parse(payload);
 
 			return payload.exp > Date.now() / 1000;
@@ -36,8 +38,6 @@ export class AuthenticationService implements IAuthenticationService {
 	
 	public login(user) {
 		return this.$http.post('/api/login', user)
-			then(response => {saveToken(response.data.token);});
-	});
-};
-
+			.then(response => {this.saveToken(response.data.token);});
+	};
 }
