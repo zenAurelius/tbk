@@ -1,12 +1,24 @@
-<form ng-submit="authentCtrl.onSubmit()">
-  <div class="form-group">
-    <label for="email">Email address</label>
-    <input type="email" class="form-control" id="email" placeholder="Enter email" ng-model="authentCtrl.credentials.email">
-  </div>
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input type="password" class="form-control" id="password" placeholder="Password" ng-model="authentCtrl.credentials.password">
-  </div>
-  <button type="submit" class="btn btn-default">Sign in!</button>
-</form>
+
+<div class="modal-window">
+			
+	<div class="sheet-head">
+		<div class="sheet-title">Se connecter</div>
+	</div>
+	
+	<form novalidate name="loginForm">
+		<div layout='row' layout-fill layout-margin layout-align='start'>
+			<md-input-container>
+				<label>Username :</label>
+				<input ng-model="authentCtrl.credentials.email" ng-require >
+			</md-input-container>
+			<md-input-container>
+				<label>Mot de passe :</label>
+				<input ng-model="authentCtrl.credentials.password" ng-require >
+			</md-input-container>
+		</div>	
+		<div class="actions">
+			<input type="button" value="Connexion" class="bouton" ng-click="authentCtrl.login()" ng-disabled="!loginForm.$valid"/>
+		</div>
+	</form>
+</div>
 

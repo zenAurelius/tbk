@@ -20,6 +20,7 @@ import { CountriesService }		from './services/countries.service';
 
 import { TbkMain } 				from './components/tbk-main/tbk-main.component';
 import { TbkAccueil } 			from './components/tbk-accueil/tbk-accueil.component';
+import { TbkAuthentication }	from './components/tbk-authentication/tbk-authentication.component';
 // import { TbkTravels } 			from './components/tbk-travels/tbk-travels.component';
 // import { TbkTravelsList } 		from './components/tbk-travels/tbk-travels-list.component';
 // import { TbkBudget } 			from './components/tbk-budget/tbk-budget.component';
@@ -48,6 +49,7 @@ angular.module('tbk', ['ngRoute'])
 	// .directive('tbkMap', TbkMap.factory())
 	.component('tbkMain', TbkMain)
 	.component('tbkAccueil', TbkAccueil)
+	.component('TbkAuthentication', TbkAuthentication)
 	// .component('tbkTravels', TbkTravels)
 	// .component('tbkTravelsList', TbkTravelsList)
 	// .component('tbkBudget', TbkBudget)
@@ -63,6 +65,9 @@ angular.module('tbk', ['ngRoute'])
 			// })
 			.when('/accueil', {
 				template: '<tbk-accueil></tbk-accueil>',
+			})
+			.when('/login', {
+				template: '<tbk-authentication></tbk-authentication>',
 			});
 			// .when('/budget', {
 				// template: '<tbk-budget></tbk-budget>',
