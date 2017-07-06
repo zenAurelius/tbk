@@ -37,7 +37,10 @@ export class AuthenticationService implements IAuthenticationService {
 	};
 	
 	public login(user) {
-		return this.$http.post('/api/login', user)
-			.then(response => {this.saveToken(response.data);});
+		return this.$http({
+                method: 'POST',
+                url: '/api/login',
+                data: user})
+            .then(response => {this.saveToken(response.data);});
 	};
 }
