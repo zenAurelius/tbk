@@ -2,21 +2,22 @@
 
 import { IUsersService } from '../../services/users.service.interface';
 import { ICountriesService } from '../../services/countries.service.interface';
+import { IAuthenticationService } from '../../services/authentication.service.interface';
 declare var require: any
 
 class TbkMainCtrl {
-	usersService:		IUsersService;
 	countriesService:	ICountriesService;
 	$location: 			ng.ILocationService;
-	users:	 			any[];
+	connectedUser:	 	any;
 	friends:			any[];
 	countries: 			any[];
 	continents:			any[];
 	
 	/** @ngInject */
-	constructor(usersService: IUsersService, countriesService: ICountriesService, $location: ng.ILocationService) {
+	constructor(usersService: IUsersService, countriesService: ICountriesService, authenticationService : IAuthenticationService, $location: ng.ILocationService) {
 		this.usersService = usersService;
 		this.countriesService = countriesService;
+		this.authentService = authenticationService;
 		this.$location = $location;
 		this.activate();
 	}
@@ -36,16 +37,19 @@ class TbkMainCtrl {
 	}
 	
 	public goAccueil = function() { this.$location.path('/accueil'); }
-	
 	public goTravels = function() { this.$location.path('/travels'); }
-	
 	public goBudget = function() { this.$location.path('/budget'); }
-	
 	public goItineraire = function() { this.$location.path('/itineraire'); }
+	public goLogin = function() { this.$location.path('/login'); }
 	
 	private activate() {
 		//this.getUsers().then(() => { console.log(`users  : ${angular.toJson(this.users)}`); });
 		//this.getCountries().then(() => { console.log(`countries  : ${this.countries.length}`); });
+		if(this.authentService.isLoggedIn()) {
+			this.goAccueil();
+		} else {
+			this.goLogin();
+		}
 	}
 	
 	private getUsers() {

@@ -1,27 +1,27 @@
 webpackJsonp([0],[
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
 	/// <reference path="../typings/index.d.ts" />
-	var $ = __webpack_require__(1);
-	__webpack_require__(2);
-	__webpack_require__(4);
-	__webpack_require__(6);
-	__webpack_require__(7);
-	__webpack_require__(9);
-	__webpack_require__(11);
-	var users_service_1 = __webpack_require__(13);
-	var authentication_service_1 = __webpack_require__(14);
+	var $ = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"jquery\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"angular\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"angular-route\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"angular-off-click\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"angular-animate\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"angular-aria\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	__webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"angular-material\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var users_service_1 = __webpack_require__(8);
+	var authentication_service_1 = __webpack_require__(9);
 	//import { TravelsService }		from './services/travels.service';
-	var countries_service_1 = __webpack_require__(15);
+	var countries_service_1 = __webpack_require__(10);
 	//import { AccountsService }		from './services/accounts.service';
 	// import { OperationsService }		from './services/operations.service';
 	// import { ItineraryService }		from './services/itinerary.service';
-	var tbk_main_component_1 = __webpack_require__(16);
-	var tbk_accueil_component_1 = __webpack_require__(18);
-	var tbk_authentication_component_1 = __webpack_require__(20);
+	var tbk_main_component_1 = __webpack_require__(11);
+	var tbk_accueil_component_1 = __webpack_require__(13);
+	var tbk_authentication_component_1 = __webpack_require__(15);
 	// import { TbkTravels } 			from './components/tbk-travels/tbk-travels.component';
 	// import { TbkTravelsList } 		from './components/tbk-travels/tbk-travels-list.component';
 	// import { TbkBudget } 			from './components/tbk-budget/tbk-budget.component';
@@ -69,180 +69,16 @@ webpackJsonp([0],[
 	//}); 
 
 
-/***/ },
+/***/ }),
 /* 1 */,
 /* 2 */,
 /* 3 */,
 /* 4 */,
 /* 5 */,
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*** IMPORTS FROM imports-loader ***/
-	var jQuery = __webpack_require__(1);
-	var $ = __webpack_require__(1);
-	(function() {
-
-	'use strict';
-
-	angular.module('offClick', []);
-	angular.module('offClick').directive('offClick', ["$rootScope", "$parse", "OffClickFilterCache", function ($rootScope, $parse, OffClickFilterCache) {
-	    var id = 0;
-	    var listeners = {};
-	    // add variable to detect touch users moving..
-	    var touchMove = false;
-
-	    var targetInFilter = function targetInFilter(target, elms) {
-	        if (!target || !elms) return false;
-	        var elmsLen = elms.length;
-	        for (var i = 0; i < elmsLen; ++i) {
-	            var currentElem = elms[i];
-	            var containsTarget = false;
-	            try {
-	                containsTarget = currentElem.contains(target);
-	            } catch (e) {
-	                // If the node is not an Element (e.g., an SVGElement) node.contains() throws Exception in IE,
-	                // see https://connect.microsoft.com/IE/feedback/details/780874/node-contains-is-incorrect
-	                // In this case we use compareDocumentPosition() instead.
-	                if (typeof currentElem.compareDocumentPosition !== 'undefined') {
-	                    containsTarget = currentElem === target || Boolean(currentElem.compareDocumentPosition(target) & 16);
-	                }
-	            }
-
-	            if (containsTarget) {
-	                return true;
-	            }
-	        }
-	        return false;
-	    };
-
-	    var offClickEventHandler = function offClickEventHandler(event) {
-	        // If event is a touchmove adjust touchMove state
-	        if (event.type === 'touchmove') {
-	            touchMove = true;
-	            // And end function
-	            return false;
-	        }
-	        // This will always fire on the touchend after the touchmove runs...
-	        if (touchMove) {
-	            // Reset touchmove to false
-	            touchMove = false;
-	            // And end function
-	            return false;
-	        }
-	        var target = event.target || event.srcElement;
-	        angular.forEach(listeners, function (listener, i) {
-	            var filters = OffClickFilterCache['*'] || [];
-	            if (listener.elm.id && listener.elm.id !== '') {
-	                if (OffClickFilterCache['#' + listener.elm.id]) filters = filters.concat(OffClickFilterCache['#' + listener.elm.id]);
-	            }
-	            // classList is an object in IE10 and 11 iirc, using angular.forEach to iterate both over an array or object values
-	            angular.forEach(listener.elm.classList, function (className) {
-	                if (OffClickFilterCache['.' + className]) filters = filters.concat(OffClickFilterCache['.' + className]);
-	            });
-	            if (!(listener.elm.contains(target) || targetInFilter(target, filters))) {
-	                $rootScope.$evalAsync(function () {
-	                    listener.cb(listener.scope, {
-	                        $event: event
-	                    });
-	                });
-	            }
-	        });
-	    };
-
-	    // Add event listeners to handle various events. Destop will ignore touch events
-	    document.addEventListener("touchmove", offClickEventHandler, true);
-	    document.addEventListener("touchend", offClickEventHandler, true);
-	    document.addEventListener('click', offClickEventHandler, true);
-
-	    return {
-	        restrict: 'A',
-	        compile: function compile(elem, attrs) {
-	            var fn = $parse(attrs.offClick);
-
-	            return function (scope, element) {
-	                var elmId = id++;
-	                var removeWatcher = void 0;
-
-	                var on = function on() {
-	                    listeners[elmId] = {
-	                        elm: element[0],
-	                        cb: fn,
-	                        scope: scope
-	                    };
-	                };
-
-	                var off = function off() {
-	                    listeners[elmId] = null;
-	                    delete listeners[elmId];
-	                };
-
-	                if (attrs.offClickIf) {
-	                    removeWatcher = $rootScope.$watch(function () {
-	                        return $parse(attrs.offClickIf)(scope);
-	                    }, function (newVal) {
-	                        newVal && on() || !newVal && off();
-	                    });
-	                } else on();
-
-	                scope.$on('$destroy', function () {
-	                    off();
-	                    if (removeWatcher) {
-	                        removeWatcher();
-	                    }
-	                    element = null;
-	                });
-	            };
-	        }
-	    };
-	}]);
-
-	angular.module('offClick').directive('offClickFilter', ["OffClickFilterCache", "$parse", function (OffClickFilterCache, $parse) {
-	    var filters = void 0;
-
-	    return {
-	        restrict: 'A',
-	        compile: function compile(elem, attrs) {
-	            return function (scope, element) {
-	                filters = $parse(attrs.offClickFilter)(scope).split(',').map(function (x) {
-	                    return x.trim();
-	                });
-
-	                filters.forEach(function (filter) {
-	                    OffClickFilterCache[filter] ? OffClickFilterCache[filter].push(element[0]) : OffClickFilterCache[filter] = [element[0]];
-	                });
-
-	                scope.$on('$destroy', function () {
-	                    filters.forEach(function (filter) {
-	                        if (angular.isArray(OffClickFilterCache[filter]) && OffClickFilterCache[filter].length > 1) {
-	                            OffClickFilterCache[filter].splice(OffClickFilterCache[filter].indexOf(element[0]), 1);
-	                        } else {
-	                            OffClickFilterCache[filter] = null;
-	                            delete OffClickFilterCache[filter];
-	                        }
-	                    });
-	                    element = null;
-	                });
-	            };
-	        }
-	    };
-	}]);
-
-	angular.module('offClick').factory('OffClickFilterCache', function () {
-	    var filterCache = {};
-	    return filterCache;
-	});
-	}.call(window));
-
-/***/ },
+/* 6 */,
 /* 7 */,
-/* 8 */,
-/* 9 */,
-/* 10 */,
-/* 11 */,
-/* 12 */,
-/* 13 */
-/***/ function(module, exports) {
+/* 8 */
+/***/ (function(module, exports) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -260,9 +96,9 @@ webpackJsonp([0],[
 	exports.UsersService = UsersService;
 
 
-/***/ },
-/* 14 */
-/***/ function(module, exports) {
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -313,9 +149,9 @@ webpackJsonp([0],[
 	exports.AuthenticationService = AuthenticationService;
 
 
-/***/ },
-/* 15 */
-/***/ function(module, exports) {
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
 
 	"use strict";
 	Object.defineProperty(exports, "__esModule", { value: true });
@@ -333,9 +169,9 @@ webpackJsonp([0],[
 	exports.CountriesService = CountriesService;
 
 
-/***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	/// <reference path="../../../typings/index.d.ts" />
@@ -399,22 +235,22 @@ webpackJsonp([0],[
 	    return TbkMainCtrl;
 	}());
 	exports.TbkMain = {
-	    template: __webpack_require__(17),
+	    template: __webpack_require__(12),
 	    controller: TbkMainCtrl,
 	    controllerAs: 'mainCtrl',
 	    transclude: true
 	};
 
 
-/***/ },
-/* 17 */
-/***/ function(module, exports) {
+/***/ }),
+/* 12 */
+/***/ (function(module, exports) {
 
-	module.exports = "<nav class=\"tbk-header\">\n\t<!-- Bouton titre, lien vers l'acceuil -->\n\t<a ng-click=\"mainCtrl.goAccueil()\" class=\"tbk-header-title\" >\n\t\t<i class=\"material-icons\">flight_takeoff</i>TBK<i class=\"material-icons\">flight_land</i>\n\t</a>\n\t<div ng-show=\"mainCtrl.connectedUser\">\n\t\t<!-- Bouton Voyages -->\n\t\t<a ng-click=\"mainCtrl.goTravels()\" class=\"tbk-header-nav-link\" >\n\t\t\t<i class=\"material-icons\">map</i>\n\t\t\t<span class=\"tbk-header-nav-link-text\">Voyages</span>\n\t\t</a> \n\t\t\n\t\t<a class=\"tbk-nav-travel-name\" ng-show=\"mainCtrl.selectedTravel\">\n\t\t\t<span class=\"tbk-header-nav-link-text\">\n\t\t\t\t{{mainCtrl.selectedTravel.countriesNames}}<br/>({{mainCtrl.selectedTravel.departDate | date:\"yyyy\" }})\n\t\t\t</span>\n\t\t</a>\n\t\n\t\t<a class=\"tbk-header-nav-link\" ng-click=\"mainCtrl.goBudget()\" ng-show=\"mainCtrl.selectedTravel\">\n\t\t\t<i class=\"material-icons\">account_balance_wallet</i>\n\t\t\t<span class=\"tbk-header-nav-link-text\">Budget</span>\n\t\t</a>\n\t\t<a class=\"tbk-header-nav-link\" ng-click=\"mainCtrl.goItineraire()\" ng-show=\"mainCtrl.selectedTravel\">\n\t\t\t<i class=\"material-icons\">directions</i>\n\t\t\t<span class=\"tbk-header-nav-link-text\">Itinéraire</span>\n\t\t</a>\n\t</div>\n\t<div class=\"tbk-header-user dropdow_container\" id=\"connectinLink\" ng-click=\"mainCtrl.showUserMenu = !mainCtrl.showUserMenu\">\n\t\t<span ng-show=\"!mainCtrl.connectedUser\" class=\"tbk-header-nav-link-text\">_login_</span>\n\t\t<span ng-show=\"mainCtrl.connectedUser\" class=\"tbk-header-nav-link-text\">{{mainCtrl.connectedUser.firstname}}</span>\t\n\t</div>\n</nav>\n\n<div class=\"dropdow user-menu\" ng-show=\"mainCtrl.showUserMenu\" off-click=\"mainCtrl.showUserMenu = false\" off-click-if=\"mainCtrl.showUserMenu\">\n\t<ul>\n\t\t<li ng-repeat=\"user in mainCtrl.users\" ng-click=\"mainCtrl.selUser($index)\">{{user.firstname}}</li>\n\t</ul>\n</div>\n\n<div class=\"main\">\n    <div class=\"page-content content\">\n        <ng-transclude></ng-transclude>\n    </div>\n</div>\n";
+	module.exports = "<nav class=\"tbk-header\">\r\n\t<!-- Bouton titre, lien vers l'acceuil -->\r\n\t<a ng-click=\"mainCtrl.goAccueil()\" class=\"tbk-header-title\" >\r\n\t\t<i class=\"material-icons\">flight_takeoff</i>TBK<i class=\"material-icons\">flight_land</i>\r\n\t</a>\r\n\t<div ng-show=\"mainCtrl.connectedUser\">\r\n\t\t<!-- Bouton Voyages -->\r\n\t\t<a ng-click=\"mainCtrl.goTravels()\" class=\"tbk-header-nav-link\" >\r\n\t\t\t<i class=\"material-icons\">map</i>\r\n\t\t\t<span class=\"tbk-header-nav-link-text\">Voyages</span>\r\n\t\t</a> \r\n\t\t\r\n\t\t<a class=\"tbk-nav-travel-name\" ng-show=\"mainCtrl.selectedTravel\">\r\n\t\t\t<span class=\"tbk-header-nav-link-text\">\r\n\t\t\t\t{{mainCtrl.selectedTravel.countriesNames}}<br/>({{mainCtrl.selectedTravel.departDate | date:\"yyyy\" }})\r\n\t\t\t</span>\r\n\t\t</a>\r\n\t\r\n\t\t<a class=\"tbk-header-nav-link\" ng-click=\"mainCtrl.goBudget()\" ng-show=\"mainCtrl.selectedTravel\">\r\n\t\t\t<i class=\"material-icons\">account_balance_wallet</i>\r\n\t\t\t<span class=\"tbk-header-nav-link-text\">Budget</span>\r\n\t\t</a>\r\n\t\t<a class=\"tbk-header-nav-link\" ng-click=\"mainCtrl.goItineraire()\" ng-show=\"mainCtrl.selectedTravel\">\r\n\t\t\t<i class=\"material-icons\">directions</i>\r\n\t\t\t<span class=\"tbk-header-nav-link-text\">Itinéraire</span>\r\n\t\t</a>\r\n\t</div>\r\n\t<div class=\"tbk-header-user dropdow_container\" id=\"connectinLink\" ng-click=\"mainCtrl.showUserMenu = !mainCtrl.showUserMenu\">\r\n\t\t<span ng-show=\"!mainCtrl.connectedUser\" class=\"tbk-header-nav-link-text\">_login_</span>\r\n\t\t<span ng-show=\"mainCtrl.connectedUser\" class=\"tbk-header-nav-link-text\">{{mainCtrl.connectedUser.firstname}}</span>\t\r\n\t</div>\r\n</nav>\r\n\r\n<div class=\"dropdow user-menu\" ng-show=\"mainCtrl.showUserMenu\" off-click=\"mainCtrl.showUserMenu = false\" off-click-if=\"mainCtrl.showUserMenu\">\r\n\t<ul>\r\n\t\t<li ng-repeat=\"user in mainCtrl.users\" ng-click=\"mainCtrl.selUser($index)\">{{user.firstname}}</li>\r\n\t</ul>\r\n</div>\r\n\r\n<div class=\"main\">\r\n    <div class=\"page-content content\">\r\n        <ng-transclude></ng-transclude>\r\n    </div>\r\n</div>\r\n";
 
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 13 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	/// <reference path="../../../typings/index.d.ts" />
@@ -425,22 +261,22 @@ webpackJsonp([0],[
 	    return TbkAccueilCtrl;
 	}());
 	exports.TbkAccueil = {
-	    template: __webpack_require__(19),
+	    template: __webpack_require__(14),
 	    controller: TbkAccueilCtrl,
 	    controllerAs: 'accueilCtrl',
 	    require: { parent: '^tbkMain' }
 	};
 
 
-/***/ },
-/* 19 */
-/***/ function(module, exports) {
+/***/ }),
+/* 14 */
+/***/ (function(module, exports) {
 
-	module.exports = "<p>ACCUEIL</p>\n<span>Bonjour {{accueilCtrl.parent.connectedUser.firstname}}</span>\n<br/>\n";
+	module.exports = "<p>ACCUEIL</p>\r\n<span>Bonjour {{accueilCtrl.parent.connectedUser.firstname}}</span>\r\n<br/>\r\n";
 
-/***/ },
-/* 20 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ }),
+/* 15 */
+/***/ (function(module, exports, __webpack_require__) {
 
 	"use strict";
 	/// <reference path="../../../typings/index.d.ts" />
@@ -466,18 +302,18 @@ webpackJsonp([0],[
 	    return TbkAuthenticationCtrl;
 	}());
 	exports.TbkAuthentication = {
-	    template: __webpack_require__(21),
+	    template: __webpack_require__(16),
 	    controller: TbkAuthenticationCtrl,
 	    controllerAs: 'authentCtrl',
 	    require: { parent: '^tbkMain' }
 	};
 
 
-/***/ },
-/* 21 */
-/***/ function(module, exports) {
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
 
-	module.exports = "\n<div class=\"modal-window\">\n\t\t\t\n\t<div class=\"sheet-head\">\n\t\t<div class=\"sheet-title\">Se connecter</div>\n\t</div>\n\t\n\t<form novalidate name=\"loginForm\">\n\t\t<div layout='row' layout-fill layout-margin layout-align='start'>\n\t\t\t<md-input-container>\n\t\t\t\t<label>Username :</label>\n\t\t\t\t<input ng-model=\"authentCtrl.credentials.email\" ng-require >\n\t\t\t</md-input-container>\n\t\t\t<md-input-container>\n\t\t\t\t<label>Mot de passe :</label>\n\t\t\t\t<input ng-model=\"authentCtrl.credentials.password\" ng-require >\n\t\t\t</md-input-container>\n\t\t</div>\t\n\t\t<div class=\"actions\">\n\t\t\t<input type=\"button\" value=\"Connexion\" class=\"bouton\" ng-click=\"authentCtrl.login()\" ng-disabled=\"!loginForm.$valid\"/>\n\t\t</div>\n\t</form>\n</div>\n\n";
+	module.exports = "\r\n<div class=\"modal-window\">\r\n\t\t\t\r\n\t<div class=\"sheet-head\">\r\n\t\t<div class=\"sheet-title\">Se connecter</div>\r\n\t</div>\r\n\t\r\n\t<form novalidate name=\"loginForm\">\r\n\t\t<div layout='row' layout-fill layout-margin layout-align='start'>\r\n\t\t\t<md-input-container>\r\n\t\t\t\t<label>Username :</label>\r\n\t\t\t\t<input ng-model=\"authentCtrl.credentials.email\" ng-require >\r\n\t\t\t</md-input-container>\r\n\t\t\t<md-input-container>\r\n\t\t\t\t<label>Mot de passe :</label>\r\n\t\t\t\t<input ng-model=\"authentCtrl.credentials.password\" ng-require >\r\n\t\t\t</md-input-container>\r\n\t\t</div>\t\r\n\t\t<div class=\"actions\">\r\n\t\t\t<input type=\"button\" value=\"Connexion\" class=\"bouton\" ng-click=\"authentCtrl.login()\" ng-disabled=\"!loginForm.$valid\"/>\r\n\t\t</div>\r\n\t</form>\r\n</div>\r\n\r\n";
 
-/***/ }
+/***/ })
 ]);

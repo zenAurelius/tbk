@@ -24,6 +24,14 @@ gulp.task('css', function () {
 	.pipe(gulp.dest(paths.cssDist));
 });
 
+gulp.task('set-env', function() {
+	process.env.MONGODB_URI = 'mongodb://loicbailly:dorine2845@ds147072.mlab.com:47072/tbk_database'
+    return process.env.JWT_SECRET = 'secret';
+});
+
+gulp.task('start:server', ['set-env'], function(){
+	plugins.nodemon({ext: 'html js', watch:['client', 'server'], ignore:'server/db'});
+});
 
 gulp.task('webpack', function() {
 	return gulp.src('src/app.ts')

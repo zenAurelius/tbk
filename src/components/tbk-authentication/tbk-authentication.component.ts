@@ -24,6 +24,10 @@ class TbkAuthenticationCtrl {
                 alert(err.data);
             });
     };
+	
+	public isLoggedIn = function() {
+		return false;
+	}
     
 }
 
