@@ -4,8 +4,9 @@ var jwt = require('jsonwebtoken');
 
 module.exports.login = function(req, res, next) {
 
-	if (!req.params['username'] || !req.params['password']) {
-		console.log (req.params['username'] + ':' + req.params['password']  + ' = il manque des params'  )
+	console.log(req.body);
+	if (!req.body['username'] || !req.body['password']) {
+		console.log (req.body['username'] + ':' + req.body['password']  + ' = il manque des params'  )
 		res.status(400);
 		res.json('Il manque des paramètres');
 		return;

@@ -6,7 +6,7 @@ declare var require: any
 class TbkAuthenticationCtrl {
 	parent:	any;
     authentService:		IAuthenticationService;
-    credentials: any = { email: "test", password: ""};
+    credentials: any = { username: "", password: ""};
     
     /** @ngInject */
 	constructor(authenticationService: IAuthenticationService) {

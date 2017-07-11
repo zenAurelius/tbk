@@ -7,6 +7,7 @@ declare var require: any
 
 class TbkMainCtrl {
 	countriesService:	ICountriesService;
+	authentService:		IAuthenticationService;
 	$location: 			ng.ILocationService;
 	connectedUser:	 	any;
 	friends:			any[];
@@ -15,7 +16,6 @@ class TbkMainCtrl {
 	
 	/** @ngInject */
 	constructor(usersService: IUsersService, countriesService: ICountriesService, authenticationService : IAuthenticationService, $location: ng.ILocationService) {
-		this.usersService = usersService;
 		this.countriesService = countriesService;
 		this.authentService = authenticationService;
 		this.$location = $location;
@@ -50,15 +50,6 @@ class TbkMainCtrl {
 		} else {
 			this.goLogin();
 		}
-	}
-	
-	private getUsers() {
-		var that = this;
-		return this.usersService.getUsers()
-			.then(function(data : any) {
-				that.users = data;
-				return that.users;
-			});
 	}
 	
 	private getCountries() {

@@ -37,6 +37,7 @@ export class AuthenticationService implements IAuthenticationService {
 	};
 	
 	public login(user) {
+		console.log(user);
 		return this.$http({
                 method: 'POST',
                 url: '/api/login',
