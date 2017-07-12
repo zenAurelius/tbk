@@ -284,6 +284,17 @@ webpackJsonp([0],[
 	        this.$window.localStorage.removeItem('tbk-token');
 	    };
 	    ;
+	    AuthenticationService.prototype.getLoggedUser = function () {
+	        var token = this.getToken();
+	        var payload;
+	        if (token) {
+	            payload = token.split('.')[1];
+	            payload = this.$window.atob(payload);
+	            payload = JSON.parse(payload);
+	            console.log('payload : ' + payload);
+	        }
+	    };
+	    ;
 	    AuthenticationService.prototype.isLoggedIn = function () {
 	        var token = this.getToken();
 	        var payload;
@@ -306,7 +317,10 @@ webpackJsonp([0],[
 	            url: '/api/login',
 	            data: user
 	        })
-	            .then(function (response) { _this.saveToken(response.data); });
+	            .then(function (response) {
+	            console.log('http ok');
+	            _this.saveToken(response.data['token']);
+	        });
 	    };
 	    ;
 	    return AuthenticationService;
@@ -451,9 +465,11 @@ webpackJsonp([0],[
 	        this.credentials = { username: "", password: "" };
 	        this.login = function () {
 	            console.log(this.credentials);
+	            var that = this;
 	            this.authentService.login(this.credentials)
 	                .then(function () {
-	                this.parent.goAccueil();
+	                var user = that.authentService.getLoggedUser();
+	                that.parent.goAccueil();
 	            })
 	                .catch(function (err) {
 	                console.log(err);

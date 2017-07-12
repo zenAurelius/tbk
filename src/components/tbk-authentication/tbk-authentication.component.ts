@@ -15,13 +15,15 @@ class TbkAuthenticationCtrl {
     
     public login = function () {
         console.log(this.credentials);
+		var that = this;
         this.authentService.login(this.credentials)
             .then(function(){
-               this.parent.goAccueil();
+				var user = that.authentService.getLoggedUser();
+				that.parent.goAccueil();
             })
             .catch(function(err){
-                console.log(err);
-                alert(err.data);
+				console.log(err);
+				alert(err.data);
             });
     };
 	

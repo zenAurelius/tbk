@@ -21,6 +21,18 @@ export class AuthenticationService implements IAuthenticationService {
 		this.$window.localStorage.removeItem('tbk-token');
 	};
 	
+	public getLoggedUser(){
+		var token = this.getToken();
+		var payload;
+
+		if(token){
+			payload = token.split('.')[1];
+			payload = this.$window.atob(payload);
+			payload = JSON.parse(payload);
+			console.log('payload : ' + payload);
+		}
+	};
+	
 	public isLoggedIn() {
 		var token = this.getToken();
 		var payload;
@@ -42,6 +54,8 @@ export class AuthenticationService implements IAuthenticationService {
                 method: 'POST',
                 url: '/api/login',
                 data: user})
-            .then(response => {this.saveToken(response.data);});
+            .then(response => {
+				console.log('http ok');
+				this.saveToken(response.data['token']);});
 	};
 }
