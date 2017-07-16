@@ -21,7 +21,7 @@ export class AuthenticationService implements IAuthenticationService {
 		this.$window.localStorage.removeItem('tbk-token');
 	};
 	
-	public getLoggedUser(){
+	public getLoggedUserId(){
 		var token = this.getToken();
 		var payload;
 
@@ -31,6 +31,8 @@ export class AuthenticationService implements IAuthenticationService {
 			payload = JSON.parse(payload);
 			console.log('payload : ' + payload);
 		}
+		
+		return payload._id;
 	};
 	
 	public isLoggedIn() {

@@ -17,9 +17,10 @@ class TbkAuthenticationCtrl {
         console.log(this.credentials);
 		var that = this;
         this.authentService.login(this.credentials)
-            .then(function(){
-				var user = that.authentService.getLoggedUser();
-				that.parent.goAccueil();
+            .then( () => {
+				var usrid = this.authentService.getLoggedUserId();
+				console.log(usrid);
+				this.parent.selUser(usrid);
             })
             .catch(function(err){
 				console.log(err);

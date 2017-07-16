@@ -3,4 +3,5 @@ export interface IAuthenticationService {
 	getToken(): any;
 	logout(): any;
 	isLoggedIn() : any;
+	getLoggedUserId() : any;
 }

@@ -1,3 +1,3 @@
 export interface IUsersService {
-	getUsers(): any;
+	getUser(number) : any;
 }

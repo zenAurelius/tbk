@@ -1,0 +1,26 @@
+<div class="sheet-row">
+	<div class="col full sheet-container">
+		<tbk-travels-list 
+			travels-list="travelsCtrl.travels" 
+			on-travel-select="travelsCtrl.selectTravel(travel)" 
+			on-travel-add="travelsCtrl.addTravel(travel)"
+			on-travel-delete="travelsCtrl.deleteTravel(id)"
+			on-travel-update="travelsCtrl.updateTravel(travel)"
+			countries="travelsCtrl.parent.countries"
+			friends="travelsCtrl.parent.friends">
+		</tbk-travels-list>
+	</div>
+</div>
+
+<div class="sheet-row">
+	<div class="col full sheet-container">
+		<div class="sheet">
+			<div class="sheet-head">
+					<div class="sheet-title">VISITES PAR PAYS</div>
+				</div>
+				<div class="sheet-body">
+					<div tbk-map id="map"></div>
+				</div>
+		</div>
+	</div>
+</div>

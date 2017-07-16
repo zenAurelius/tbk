@@ -8,6 +8,7 @@ declare var require: any
 class TbkMainCtrl {
 	countriesService:	ICountriesService;
 	authentService:		IAuthenticationService;
+	usersService:		IUsersService;
 	$location: 			ng.ILocationService;
 	connectedUser:	 	any;
 	friends:			any[];
@@ -18,22 +19,33 @@ class TbkMainCtrl {
 	constructor(usersService: IUsersService, countriesService: ICountriesService, authenticationService : IAuthenticationService, $location: ng.ILocationService) {
 		this.countriesService = countriesService;
 		this.authentService = authenticationService;
+		this.usersService = usersService;
 		this.$location = $location;
 		this.activate();
 	}
 	
 	public selUser = function(id : any) {
-		this.connectedUser = this.users[id];
-		this.friends = <any[]>[];
-		this.users.forEach( user => {
-			if(user != this.connectedUser) {this.friends.push(user)}
+		this.usersService.getUser(id)
+		.then( (response) => {
+			this.connectedUser = response.user; 
+			this.goAccueil();
 		});
-		this.showUserMenu = false;
-		this.goAccueil();
+		
+		//this.friends = <any[]>[];
+		//this.users.forEach( user => {
+		//	if(user != this.connectedUser) {this.friends.push(user)}
+		//});
 	}
 	
 	public setTravel = function(travel : any ) {
 		this.selectedTravel = travel;
+	}
+	
+	public logout = function() {
+		this.authentService.logout();
+		this.connectedUser = null;
+		this.showUserMenu = false;
+		this.goLogin();
 	}
 	
 	public goAccueil = function() { this.$location.path('/accueil'); }
@@ -51,6 +63,7 @@ class TbkMainCtrl {
 			this.goLogin();
 		}
 	}
+	
 	
 	private getCountries() {
 		var that = this;
