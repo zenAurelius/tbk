@@ -54,10 +54,9 @@ function create(params) {
 
 function getById(id) {
 	var deferred = Q.defer();
-	console.log("id = " + id);
+
 	dbProvider.db.collection(COLNAME).findOne( { _id: new ObjectId(id) }, function(err, user){
-		console.log("err = " + err);
-		console.log("user = " + user);
+
 		if (err) deferred.reject(err);
  
         if (user) {
@@ -76,12 +75,11 @@ function getFriends(id) {
 	
 	getById(id)
 		.then( user => {
-			console.log(user);
+
 			var friends = []
 			user.friends.forEach( f => friends.push(new ObjectId(f)));
 			dbProvider.db.collection(COLNAME).find( { _id : { $in : friends } }).toArray(function(err, users){
-				console.log("err = " + err);
-				console.log("user = " + users);
+
 				if (err) deferred.reject(err);
 		 
 				if (users) {
@@ -89,7 +87,7 @@ function getFriends(id) {
 					users.forEach( user =>
 						foundUsers.push({_id: user._id, username: user.username, firstname: user.firstname, lastname: user.lastname})
 					);
-					console.log(foundUsers);
+
 					deferred.resolve(foundUsers);
 				} else {
 					 deferred.reject();
@@ -103,7 +101,6 @@ function getFriends(id) {
 
 function validPassword(user, password) {
   var hash = crypto.pbkdf2Sync(password, user.salt, 1000, 512, 'sha512').toString('hex');
-  console.log(hash + ' : ' + user.password);
   return user.password === hash;
 };
 

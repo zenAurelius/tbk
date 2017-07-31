@@ -32,10 +32,8 @@ function list(id) {
 function add(operation) {
 	
 	var deferred = Q.defer();
-	console.log("operation service");
 	dbProvider.db.collection(COLNAME).insert(operation, (err, result) => {
-		console.log(`operation err = ${err}`)
-		console.log(`operation result = ${result}`)
+
 		if (err){
 			deferred.reject(err);
 		} else {

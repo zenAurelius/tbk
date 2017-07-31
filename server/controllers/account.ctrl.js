@@ -18,7 +18,7 @@ module.exports.add = function(req, res) {
 
 module.exports.deleteAccount = function(req, res){
 	var id = req.params['accountId'];
-	console.log(`account ${id}`);
+
 	accountService.deleteAccount(id)
 		.then( result => res.status(200).send(result) )
 		.catch(err => res.status(404).send(err) );

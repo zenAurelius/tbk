@@ -32,10 +32,9 @@ function list(userId) {
 function add(travel) {
 	
 	var deferred = Q.defer();
-	console.log("travel service");
+
 	dbProvider.db.collection(COLNAME).insert(travel, (err, result) => {
-		console.log(`travel err = ${err}`)
-		console.log(`travel result = ${result}`)
+
 		if (err){
 			deferred.reject(err);
 		} else {
