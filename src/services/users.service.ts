@@ -21,6 +21,16 @@ export class UsersService implements IUsersService {
 			})
 			.catch( error => console.log("Erreur getUser" + error.data) );
 	}
+	
+	public getFriends(id) {
+		return this.$http.get(`/api/user/${id}/friends`, {
+						  headers: { Authorization: 'Bearer '+ this.authentication.getToken() }
+						  })
+			.then( response => {
+				return response.data['friends'];
+			})
+			.catch( error => console.log("Erreur getFriends " + error.data) );
+	}
 }
 
 	

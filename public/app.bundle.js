@@ -16,37 +16,43 @@ webpackJsonp([0],[
 	var authentication_service_1 = __webpack_require__(14);
 	var travels_service_1 = __webpack_require__(15);
 	var countries_service_1 = __webpack_require__(18);
-	//import { AccountsService }		from './services/accounts.service';
-	// import { OperationsService }		from './services/operations.service';
+	var accounts_service_1 = __webpack_require__(19);
+	var operations_service_1 = __webpack_require__(20);
 	// import { ItineraryService }		from './services/itinerary.service';
-	var tbk_main_component_1 = __webpack_require__(19);
-	var tbk_accueil_component_1 = __webpack_require__(21);
-	var tbk_authentication_component_1 = __webpack_require__(23);
-	var tbk_travels_component_1 = __webpack_require__(25);
-	var tbk_travels_list_component_1 = __webpack_require__(27);
-	// import { TbkBudget } 			from './components/tbk-budget/tbk-budget.component';
-	// import { TbkAccountsList }		from './components/tbk-budget/tbk-accounts-list.component';
-	// import { TbkOperationsList }	from './components/tbk-budget/tbk-operations-list.component';
-	// import { TbkBudgetStatistics }	from './components/tbk-budget/tbk-budget-statistics.component';
+	var tbk_main_component_1 = __webpack_require__(21);
+	var tbk_accueil_component_1 = __webpack_require__(23);
+	var tbk_authentication_component_1 = __webpack_require__(25);
+	var tbk_travels_component_1 = __webpack_require__(27);
+	var tbk_travels_list_component_1 = __webpack_require__(29);
+	var tbk_budget_component_1 = __webpack_require__(31);
+	var tbk_accounts_list_component_1 = __webpack_require__(34);
+	var tbk_operations_list_component_1 = __webpack_require__(36);
+	var tbk_budget_statistics_component_1 = __webpack_require__(38);
 	// import { TbkItineraire } 		from './components/tbk-itineraire/tbk-itineraire.component';
 	// import { TbkCalendar } 			from './components/tbk-itineraire/tbk-calendar.component';
-	__webpack_require__(29);
-	__webpack_require__(30);
-	__webpack_require__(31);
-	__webpack_require__(32);
-	__webpack_require__(33);
-	var tbk_map_directive_1 = __webpack_require__(195);
+	__webpack_require__(40);
+	__webpack_require__(41);
+	__webpack_require__(42);
+	__webpack_require__(43);
+	__webpack_require__(44);
+	var tbk_map_directive_1 = __webpack_require__(206);
 	angular.module('tbk', ['ngMaterial', 'ngRoute', 'offClick', 'chart.js'])
 	    .service('usersService', users_service_1.UsersService)
 	    .service('authenticationService', authentication_service_1.AuthenticationService)
 	    .service('travelsService', travels_service_1.TravelsService)
 	    .service('countriesService', countries_service_1.CountriesService)
+	    .service('accountsService', accounts_service_1.AccountsService)
+	    .service('operationsService', operations_service_1.OperationsService)
 	    .directive('tbkMap', tbk_map_directive_1.TbkMap.factory())
 	    .component('tbkMain', tbk_main_component_1.TbkMain)
 	    .component('tbkAccueil', tbk_accueil_component_1.TbkAccueil)
 	    .component('tbkAuthentication', tbk_authentication_component_1.TbkAuthentication)
 	    .component('tbkTravels', tbk_travels_component_1.TbkTravels)
 	    .component('tbkTravelsList', tbk_travels_list_component_1.TbkTravelsList)
+	    .component('tbkBudget', tbk_budget_component_1.TbkBudget)
+	    .component('tbkAccountsList', tbk_accounts_list_component_1.TbkAccountsList)
+	    .component('tbkOperationsList', tbk_operations_list_component_1.TbkOperationsList)
+	    .component('tbkBudgetStatistics', tbk_budget_statistics_component_1.TbkBudgetStatistics)
 	    .config(['$routeProvider', function ($routeProvider) {
 	        $routeProvider
 	            .when('/travels', {
@@ -57,22 +63,24 @@ webpackJsonp([0],[
 	        })
 	            .when('/login', {
 	            template: '<tbk-authentication></tbk-authentication>',
+	        })
+	            .when('/budget', {
+	            template: '<tbk-budget></tbk-budget>',
 	        });
-	        // .when('/budget', {
-	        // template: '<tbk-budget></tbk-budget>',
-	        // })
 	        // .when('/itineraire', {
 	        // template: '<tbk-itineraire></tbk-itineraire>',
 	        // });
-	    }]);
-	// .config(function($mdDateLocaleProvider) {
-	// $mdDateLocaleProvider.formatDate = function(date) {
-	// if(date) {
-	// return date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
-	// } else {
-	// return null;}
-	// };
-	//}); 
+	    }])
+	    .config(function ($mdDateLocaleProvider) {
+	    $mdDateLocaleProvider.formatDate = function (date) {
+	        if (date) {
+	            return date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
+	        }
+	        else {
+	            return null;
+	        }
+	    };
+	});
 
 
 /***/ },
@@ -267,6 +275,15 @@ webpackJsonp([0],[
 	        })
 	            .catch(function (error) { return console.log("Erreur getUser" + error.data); });
 	    };
+	    UsersService.prototype.getFriends = function (id) {
+	        return this.$http.get("/api/user/" + id + "/friends", {
+	            headers: { Authorization: 'Bearer ' + this.authentication.getToken() }
+	        })
+	            .then(function (response) {
+	            return response.data['friends'];
+	        })
+	            .catch(function (error) { return console.log("Erreur getFriends " + error.data); });
+	    };
 	    return UsersService;
 	}());
 	exports.UsersService = UsersService;
@@ -349,14 +366,17 @@ webpackJsonp([0],[
 	Object.defineProperty(exports, "__esModule", { value: true });
 	var Travel_1 = __webpack_require__(16);
 	var TravelsService = (function () {
-	    function TravelsService($http) {
+	    function TravelsService($http, authenticationService) {
 	        this.$http = $http;
+	        this.authentication = authenticationService;
 	    }
 	    TravelsService.prototype.getTravels = function (userId) {
-	        return this.$http.get("http://localhost:3000/api/users/" + userId + "/travels")
+	        return this.$http.get("/api/users/" + userId + "/travels", {
+	            headers: { Authorization: 'Bearer ' + this.authentication.getToken() }
+	        })
 	            .then(function (response) {
 	            var travels = [];
-	            response.data.forEach(function (element) {
+	            response.data['travels'].forEach(function (element) {
 	                travels.push(Travel_1.Travel.fromData(element));
 	            });
 	            return travels;
@@ -364,17 +384,22 @@ webpackJsonp([0],[
 	            .catch(function (error) { return console.log("Erreur getTravels" + error.data); });
 	    };
 	    TravelsService.prototype.addTravel = function (travel) {
-	        return this.$http.post("http://localhost:3000/api/travels", travel)
+	        delete travel.days;
+	        return this.$http.post("/api/travels", travel, {
+	            headers: { Authorization: 'Bearer ' + this.authentication.getToken() }
+	        })
 	            .then(function (response) { return response.data; })
 	            .catch(function (error) { return console.log("Erreur addTravels" + error.data); });
 	    };
 	    TravelsService.prototype.deleteTravel = function (id) {
-	        return this.$http.delete("http://localhost:3000/api/travels/" + id)
+	        return this.$http.delete("/api/travels/" + id, {
+	            headers: { Authorization: 'Bearer ' + this.authentication.getToken() }
+	        })
 	            .then(function (response) { return response.data; })
 	            .catch(function (error) { return console.log("Erreur deleteTravel" + error.data); });
 	    };
 	    TravelsService.prototype.updateTravel = function (travel) {
-	        return this.$http.put("http://localhost:3000/api/travels/" + travel._id, travel)
+	        return this.$http.put("/api/travels/" + travel._id, travel)
 	            .then(function (response) { return response.data; })
 	            .catch(function (error) { return console.log("Erreur updateTravels" + error.data); });
 	    };
@@ -400,10 +425,10 @@ webpackJsonp([0],[
 	        this.returnDate = returnDate;
 	        this.countries.forEach(function (c) {
 	            if (_this.countriesNames != null) {
-	                _this.countriesNames += ', ' + c.name_fr;
+	                _this.countriesNames += ', ' + c.name;
 	            }
 	            else {
-	                _this.countriesNames = c.name_fr;
+	                _this.countriesNames = c.name;
 	            }
 	        });
 	        this.users.forEach(function (u) {
@@ -476,8 +501,8 @@ webpackJsonp([0],[
 	        this.$http = $http;
 	    }
 	    CountriesService.prototype.getCountries = function () {
-	        return this.$http.get("http://localhost:3000/api/countries")
-	            .then(function (response) { return response.data; })
+	        return this.$http.get("/api/countries")
+	            .then(function (response) { return response.data['countries']; })
 	            .catch(function (error) { return console.log("Erreur getCountries" + error.data); });
 	    };
 	    return CountriesService;
@@ -487,6 +512,103 @@ webpackJsonp([0],[
 
 /***/ },
 /* 19 */
+/***/ function(module, exports) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var AccountsService = (function () {
+	    function AccountsService($http, authenticationService) {
+	        this.$http = $http;
+	        this.authentication = authenticationService;
+	    }
+	    AccountsService.prototype.getAccounts = function (travelId) {
+	        return this.$http.get("/api/travel/" + travelId + "/accounts", {
+	            headers: { Authorization: 'Bearer ' + this.authentication.getToken() }
+	        })
+	            .then(function (response) { return response.data['accounts']; })
+	            .catch(function (error) { return console.log("Erreur getAccounts " + error.data); });
+	    };
+	    AccountsService.prototype.addAccount = function (account) {
+	        return this.$http.post("/api/accounts", account, {
+	            headers: { Authorization: 'Bearer ' + this.authentication.getToken() }
+	        })
+	            .then(function (response) { return response.data; })
+	            .catch(function (error) { return console.log("Erreur addAccount " + error.data); });
+	    };
+	    AccountsService.prototype.deleteAccount = function (id) {
+	        return this.$http.delete("/api/accounts/" + id, {
+	            headers: { Authorization: 'Bearer ' + this.authentication.getToken() }
+	        })
+	            .then(function (response) { return response.data; })
+	            .catch(function (error) { return console.log("Erreur deleteAccount " + error.data); });
+	    };
+	    AccountsService.prototype.updateAccount = function (account) {
+	        return this.$http.put("/api/accounts/" + account._id, account, {
+	            headers: { Authorization: 'Bearer ' + this.authentication.getToken() }
+	        })
+	            .then(function (response) { return response.data; })
+	            .catch(function (error) { return console.log("Erreur updateAccount " + error.data); });
+	    };
+	    return AccountsService;
+	}());
+	exports.AccountsService = AccountsService;
+
+
+/***/ },
+/* 20 */
+/***/ function(module, exports) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var OperationsService = (function () {
+	    function OperationsService($http, authenticationService) {
+	        this.$http = $http;
+	        this.authentication = authenticationService;
+	    }
+	    OperationsService.prototype.getOperations = function (travelId) {
+	        return this.$http.get("/api/account/" + travelId + "/operations", {
+	            headers: { Authorization: 'Bearer ' + this.authentication.getToken() }
+	        })
+	            .then(function (response) { return response.data['operations']; })
+	            .catch(function (error) { return console.log("Erreur getOperations" + error.data); });
+	    };
+	    OperationsService.prototype.addOperation = function (operation) {
+	        operation.accountDebit = operation.accountDebit._id;
+	        if (operation.accountCredit) {
+	            operation.accountCredit = operation.accountCredit._id;
+	        }
+	        ;
+	        if (operation.categorie) {
+	            operation.categorie = operation.categorie.code;
+	        }
+	        ;
+	        return this.$http.post("/api/operations", operation, {
+	            headers: { Authorization: 'Bearer ' + this.authentication.getToken() }
+	        })
+	            .then(function (response) { return response.data; })
+	            .catch(function (error) { return console.log("Erreur addOperation" + error.data); });
+	    };
+	    OperationsService.prototype.deleteOperation = function (id) {
+	        return this.$http.delete("/api/operations/" + id, {
+	            headers: { Authorization: 'Bearer ' + this.authentication.getToken() }
+	        })
+	            .then(function (response) { return response.data; })
+	            .catch(function (error) { return console.log("Erreur deleteOperation" + error.data); });
+	    };
+	    OperationsService.prototype.updateAccount = function (account) {
+	        return this.$http.put("/api/accounts/" + account._id, account, {
+	            headers: { Authorization: 'Bearer ' + this.authentication.getToken() }
+	        })
+	            .then(function (response) { return response.data; })
+	            .catch(function (error) { return console.log("Erreur updateAccount" + error.data); });
+	    };
+	    return OperationsService;
+	}());
+	exports.OperationsService = OperationsService;
+
+
+/***/ },
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -500,7 +622,11 @@ webpackJsonp([0],[
 	            this.usersService.getUser(id)
 	                .then(function (response) {
 	                _this.connectedUser = response.user;
-	                _this.goAccueil();
+	                _this.usersService.getFriends(id)
+	                    .then(function (friends) {
+	                    _this.friends = friends;
+	                    _this.goAccueil();
+	                });
 	            });
 	            //this.friends = <any[]>[];
 	            //this.users.forEach( user => {
@@ -514,6 +640,7 @@ webpackJsonp([0],[
 	            this.authentService.logout();
 	            this.connectedUser = null;
 	            this.showUserMenu = false;
+	            this.selectedTravel = null;
 	            this.goLogin();
 	        };
 	        this.goAccueil = function () { this.$location.path('/accueil'); };
@@ -528,9 +655,11 @@ webpackJsonp([0],[
 	        this.activate();
 	    }
 	    TbkMainCtrl.prototype.activate = function () {
+	        var _this = this;
 	        //this.getUsers().then(() => { console.log(`users  : ${angular.toJson(this.users)}`); });
-	        //this.getCountries().then(() => { console.log(`countries  : ${this.countries.length}`); });
+	        this.getCountries().then(function () { console.log("countries  : " + _this.countries.length); });
 	        if (this.authentService.isLoggedIn()) {
+	            this.selUser(this.authentService.getLoggedUserId());
 	            this.goAccueil();
 	        }
 	        else {
@@ -557,7 +686,7 @@ webpackJsonp([0],[
 	    return TbkMainCtrl;
 	}());
 	exports.TbkMain = {
-	    template: __webpack_require__(20),
+	    template: __webpack_require__(22),
 	    controller: TbkMainCtrl,
 	    controllerAs: 'mainCtrl',
 	    transclude: true
@@ -565,13 +694,13 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 20 */
+/* 22 */
 /***/ function(module, exports) {
 
-	module.exports = "<nav class=\"tbk-header\">\r\n\t<!-- Bouton titre, lien vers l'acceuil -->\r\n\t<a ng-click=\"mainCtrl.goAccueil()\" class=\"tbk-header-title\" >\r\n\t\t<i class=\"material-icons\">flight_takeoff</i>TBK<i class=\"material-icons\">flight_land</i>\r\n\t</a>\r\n\t<div ng-show=\"mainCtrl.connectedUser\">\r\n\t\t<!-- Bouton Voyages -->\r\n\t\t<a ng-click=\"mainCtrl.goTravels()\" class=\"tbk-header-nav-link\" >\r\n\t\t\t<i class=\"material-icons\">map</i>\r\n\t\t\t<span class=\"tbk-header-nav-link-text\">Voyages</span>\r\n\t\t</a> \r\n\t\t\r\n\t\t<a class=\"tbk-nav-travel-name\" ng-show=\"mainCtrl.selectedTravel\">\r\n\t\t\t<span class=\"tbk-header-nav-link-text\">\r\n\t\t\t\t{{mainCtrl.selectedTravel.countriesNames}}<br/>({{mainCtrl.selectedTravel.departDate | date:\"yyyy\" }})\r\n\t\t\t</span>\r\n\t\t</a>\r\n\t\r\n\t\t<a class=\"tbk-header-nav-link\" ng-click=\"mainCtrl.goBudget()\" ng-show=\"mainCtrl.selectedTravel\">\r\n\t\t\t<i class=\"material-icons\">account_balance_wallet</i>\r\n\t\t\t<span class=\"tbk-header-nav-link-text\">Budget</span>\r\n\t\t</a>\r\n\t\t<a class=\"tbk-header-nav-link\" ng-click=\"mainCtrl.goItineraire()\" ng-show=\"mainCtrl.selectedTravel\">\r\n\t\t\t<i class=\"material-icons\">directions</i>\r\n\t\t\t<span class=\"tbk-header-nav-link-text\">Itinéraire</span>\r\n\t\t</a>\r\n\t</div>\r\n\t<div class=\"tbk-header-user dropdow_container\" id=\"connectinLink\" ng-click=\"mainCtrl.showUserMenu = !mainCtrl.showUserMenu\">\r\n\t\t<span ng-show=\"!mainCtrl.connectedUser\" class=\"tbk-header-nav-link-text\">_login_</span>\r\n\t\t<span ng-show=\"mainCtrl.connectedUser\" class=\"tbk-header-nav-link-text\">{{mainCtrl.connectedUser.username}}</span>\t\r\n\t</div>\r\n</nav>\r\n\r\n<div class=\"dropdow user-menu\" ng-show=\"mainCtrl.showUserMenu\" off-click=\"mainCtrl.showUserMenu = false\" off-click-if=\"mainCtrl.showUserMenu\">\r\n\t<ul>\r\n\t\t<li ng-click=\"mainCtrl.logout()\">Deconnexion</li>\r\n\t</ul>\r\n</div>\r\n\r\n<div class=\"main\">\r\n    <div class=\"page-content content\">\r\n        <ng-transclude></ng-transclude>\r\n    </div>\r\n</div>\r\n";
+	module.exports = "<nav class=\"tbk-header\">\r\n\t<!-- Bouton titre, lien vers l'acceuil -->\r\n\t<a ng-click=\"mainCtrl.goAccueil()\" class=\"tbk-header-title\" >\r\n\t\t<i class=\"material-icons\">flight_takeoff</i>TBK<i class=\"material-icons\">flight_land</i>\r\n\t</a>\r\n\t<div ng-show=\"mainCtrl.connectedUser\">\r\n\t\t<!-- Bouton Voyages -->\r\n\t\t<a ng-click=\"mainCtrl.goTravels()\" class=\"tbk-header-nav-link\" >\r\n\t\t\t<i class=\"material-icons\">map</i>\r\n\t\t\t<span class=\"tbk-header-nav-link-text\">Voyages</span>\r\n\t\t</a> \r\n\t\t\r\n\t\t<a class=\"tbk-nav-travel-name\" ng-show=\"mainCtrl.selectedTravel\">\r\n\t\t\t<span class=\"tbk-header-nav-link-text\">\r\n\t\t\t\t{{mainCtrl.selectedTravel.countriesNames}}<br/>({{mainCtrl.selectedTravel.departDate | date:\"yyyy\" }})\r\n\t\t\t</span>\r\n\t\t</a>\r\n\t\r\n\t\t<a class=\"tbk-header-nav-link\" ng-click=\"mainCtrl.goBudget()\" ng-show=\"mainCtrl.selectedTravel\">\r\n\t\t\t<i class=\"material-icons\">account_balance_wallet</i>\r\n\t\t\t<span class=\"tbk-header-nav-link-text\">Budget</span>\r\n\t\t</a>\r\n\t\t<a class=\"tbk-header-nav-link\" ng-click=\"mainCtrl.goItineraire()\" ng-show=\"mainCtrl.selectedTravel\">\r\n\t\t\t<i class=\"material-icons\">directions</i>\r\n\t\t\t<span class=\"tbk-header-nav-link-text\">Itinéraire</span>\r\n\t\t</a>\r\n\t</div>\r\n\t<div class=\"tbk-header-user dropdow_container\" id=\"connectinLink\" ng-click=\"mainCtrl.showUserMenu = !mainCtrl.showUserMenu\">\r\n\t\t<span ng-show=\"!mainCtrl.connectedUser\" class=\"tbk-header-nav-link-text\">_login_</span>\r\n\t\t<span ng-show=\"mainCtrl.connectedUser\" class=\"tbk-header-nav-link-text\">{{mainCtrl.connectedUser.firstname}}</span>\t\r\n\t</div>\r\n</nav>\r\n\r\n<div class=\"dropdow user-menu\" ng-show=\"mainCtrl.showUserMenu\" off-click=\"mainCtrl.showUserMenu = false\" off-click-if=\"mainCtrl.showUserMenu\">\r\n\t<ul>\r\n\t\t<li ng-click=\"mainCtrl.logout()\">Deconnexion</li>\r\n\t</ul>\r\n</div>\r\n\r\n<div class=\"main\">\r\n    <div class=\"page-content content\">\r\n        <ng-transclude></ng-transclude>\r\n    </div>\r\n</div>\r\n";
 
 /***/ },
-/* 21 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -583,7 +712,7 @@ webpackJsonp([0],[
 	    return TbkAccueilCtrl;
 	}());
 	exports.TbkAccueil = {
-	    template: __webpack_require__(22),
+	    template: __webpack_require__(24),
 	    controller: TbkAccueilCtrl,
 	    controllerAs: 'accueilCtrl',
 	    require: { parent: '^tbkMain' }
@@ -591,13 +720,13 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 22 */
+/* 24 */
 /***/ function(module, exports) {
 
 	module.exports = "<p>ACCUEIL</p>\r\n<span>Bonjour {{accueilCtrl.parent.connectedUser.username}}</span>\r\n<br/>\r\n";
 
 /***/ },
-/* 23 */
+/* 25 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -631,7 +760,7 @@ webpackJsonp([0],[
 	    return TbkAuthenticationCtrl;
 	}());
 	exports.TbkAuthentication = {
-	    template: __webpack_require__(24),
+	    template: __webpack_require__(26),
 	    controller: TbkAuthenticationCtrl,
 	    controllerAs: 'authentCtrl',
 	    require: { parent: '^tbkMain' }
@@ -639,13 +768,13 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 24 */
+/* 26 */
 /***/ function(module, exports) {
 
 	module.exports = "\r\n<div class=\"modal-window\">\r\n\t\t\t\r\n\t<div class=\"sheet-head\">\r\n\t\t<div class=\"sheet-title\">Se connecter</div>\r\n\t</div>\r\n\t\r\n\t<form novalidate name=\"loginForm\">\r\n\t\t<div layout='row' layout-fill layout-margin layout-align='start'>\r\n\t\t\t<md-input-container>\r\n\t\t\t\t<label>Username :</label>\r\n\t\t\t\t<input ng-model=\"authentCtrl.credentials.username\" ng-require >\r\n\t\t\t</md-input-container>\r\n\t\t\t<md-input-container>\r\n\t\t\t\t<label>Mot de passe :</label>\r\n\t\t\t\t<input type=\"password\" ng-model=\"authentCtrl.credentials.password\" ng-require >\r\n\t\t\t</md-input-container>\r\n\t\t</div>\t\r\n\t\t<div class=\"actions\">\r\n\t\t\t<input type=\"button\" value=\"Connexion\" class=\"bouton\" ng-click=\"authentCtrl.login()\" ng-disabled=\"!loginForm.$valid\"/>\r\n\t\t</div>\r\n\t</form>\r\n</div>\r\n\r\n";
 
 /***/ },
-/* 25 */
+/* 27 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -725,7 +854,7 @@ webpackJsonp([0],[
 	    return TbkTravelsCtrl;
 	}());
 	exports.TbkTravels = {
-	    template: __webpack_require__(26),
+	    template: __webpack_require__(28),
 	    controller: TbkTravelsCtrl,
 	    controllerAs: 'travelsCtrl',
 	    require: { parent: '^tbkMain' }
@@ -733,13 +862,13 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 26 */
+/* 28 */
 /***/ function(module, exports) {
 
 	module.exports = "<div class=\"sheet-row\">\n\t<div class=\"col full sheet-container\">\n\t\t<tbk-travels-list \n\t\t\ttravels-list=\"travelsCtrl.travels\" \n\t\t\ton-travel-select=\"travelsCtrl.selectTravel(travel)\" \n\t\t\ton-travel-add=\"travelsCtrl.addTravel(travel)\"\n\t\t\ton-travel-delete=\"travelsCtrl.deleteTravel(id)\"\n\t\t\ton-travel-update=\"travelsCtrl.updateTravel(travel)\"\n\t\t\tcountries=\"travelsCtrl.parent.countries\"\n\t\t\tfriends=\"travelsCtrl.parent.friends\">\n\t\t</tbk-travels-list>\n\t</div>\n</div>\n\n<div class=\"sheet-row\">\n\t<div class=\"col full sheet-container\">\n\t\t<div class=\"sheet\">\n\t\t\t<div class=\"sheet-head\">\n\t\t\t\t\t<div class=\"sheet-title\">VISITES PAR PAYS</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"sheet-body\">\n\t\t\t\t\t<div tbk-map id=\"map\"></div>\n\t\t\t\t</div>\n\t\t</div>\n\t</div>\n</div>";
 
 /***/ },
-/* 27 */
+/* 29 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -783,7 +912,7 @@ webpackJsonp([0],[
 	    return TbkTravelsListCtrl;
 	}());
 	exports.TbkTravelsList = {
-	    template: __webpack_require__(28),
+	    template: __webpack_require__(30),
 	    controller: TbkTravelsListCtrl,
 	    controllerAs: 'travelsListCtrl',
 	    bindings: {
@@ -799,13 +928,580 @@ webpackJsonp([0],[
 
 
 /***/ },
-/* 28 */
+/* 30 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"sheet\">\n\n\n\t<div class=\"sheet-head\">\n\t\t<div class=\"sheet-title\">LISTE DES VOYAGES</div>\n\t\t<div class=\"sheet-filter\">\n\t\t\t<!--<label data-ng-repeat=\"x in travelLogs\" id=\"tl_{{$index}}\">\n\t\t\t\t<input type=\"checkbox\" data-ng-model=\"x.selected\" data-ng-change=\"changeTravelLogsSel()\">\n\t\t\t\t{{x.name}}\n\t\t\t</label>-->\n\t\t</div>\n\t</div>\n\t\n\t\n\t<div class=\"sheet-body\">\n\t\t<table class=\"tbk-table\">\n\t\t\t<thead>\n\t\t\t\t<tr><th>Lieu</th><th>Voyageurs</th><th>Date Départ</th><th>Date Retour</th><th>Durée</th></tr>\n\t\t\t</thead>\n\t\t\t<tbody id=\"travel_list_body\">\n\t\t\t\t<tr data-ng-repeat=\"x in travelsListCtrl.travelsList\" ng-click=\"travelsListCtrl.selectTravel(x)\" id=\"t_{{$index}}\" ng-class=\"{selectionnable: true, selected: x == travelsListCtrl.selectedTravel}\">\n\t\t\t\t\t<td>{{ x.countriesNames }}</td>\n\t\t\t\t\t<td>{{ x.usersNames }}</td>\n\t\t\t\t\t<td>{{ x.departDate | date : 'fullDate' }}</td>\n\t\t\t\t\t<td>{{ x.returnDate | date : 'fullDate' }}</td>\n\t\t\t\t\t<td>{{ x.duration }}</td>\n\t\t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t\t\n\t\t<div class=\"actions\" ng-show=\"travelsListCtrl.shownAction == 'action'\">\n\t\t\t<button type=\"button\" class=\"bouton\" id=\"add_travel\" data-ng-click=\"travelsListCtrl.openAddTravel()\">Ajouter</button>\n\t\t\t<button type=\"button\" class=\"bouton\" id=\"upd_travel\" data-ng-disabled=\"!travelsListCtrl.selectedTravel\" data-ng-click=\"travelsListCtrl.shownAction = 'update'\">Modifier</button>\n\t\t\t<button type=\"button\" class=\"bouton\" id=\"del_travel\" data-ng-disabled=\"!travelsListCtrl.selectedTravel\" data-ng-click=\"travelsListCtrl.shownAction = 'delete'\">Supprimer</button>\n\t\t</div>\n\t\t\n\t\t<div ng-show=\"travelsListCtrl.shownAction == 'add'\" class=\"modal-window\">\n\t\t\t\n\t\t\t<div class=\"sheet-head\">\n\t\t\t\t<div class=\"sheet-title\">Ajouter un voyage</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<form novalidate name=\"addForm\">\n\t\t\t\t<div layout='row' layout-fill layout-margin layout-align='start'>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Date Départ :</label>\n\t\t\t\t\t\t\t<md-datepicker ng-model=\"travelsListCtrl.addedTravel.departDate\" ng-require></md-datepicker>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Date Retour :</label>\n\t\t\t\t\t\t\t<md-datepicker ng-model=\"travelsListCtrl.addedTravel.returnDate\" ng-require></md-datepicker>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Pays :</label>\n\t\t\t\t\t\t<md-select ng-model=\"travelsListCtrl.addedTravel.countries\" ng-model-options=\"{trackBy: '$value._id'}\" ng-require multiple>\n\t\t\t\t\t\t\t<md-option ng-value=\"c\" ng-repeat=\"c in travelsListCtrl.countries\">{{ c.name_fr }}</md-option>\n\t\t\t\t\t\t</md-select>\n\t\t\t\t\t</md-input-container>\n\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Avec :</label>\n\t\t\t\t\t\t<md-select ng-model=\"travelsListCtrl.addedTravel.users\" ng-model-options=\"{trackBy: '$value._id'}\" multiple>\n\t\t\t\t\t\t\t<md-option ng-value=\"u\" ng-repeat=\"u in travelsListCtrl.friends\">{{ u.firstname }}</md-option>\n\t\t\t\t\t\t</md-select>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t</div>\t\n\t\t\t\t<div class=\"actions\">\n\t\t\t\t\t<input type=\"button\" value=\"Ajouter\" class=\"bouton\" ng-click=\"travelsListCtrl.addTravel()\" ng-disabled=\"!addForm.$valid\"/>\n\t\t\t\t\t<button type=\"button\" id=\"cancel_add_travel\" class=\"bouton\" data-ng-click=\"travelsListCtrl.shownAction = 'action'\">Annuler</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\n\t\t<div ng-show=\"travelsListCtrl.shownAction == 'delete'\" class=\"modal-window\">\n\t\t\t\n\t\t\t<div class=\"sheet-head\">\n\t\t\t\t<div class=\"sheet-title\">Supprimer un voyage</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t\t<span>Confirmer la suppression du voyage \"{{travelsListCtrl.selectedTravel.countriesNames}}\"\".<span>\n\t\t\t\t<div class=\"actions\">\n\t\t\t\t\t<input type=\"button\" value=\"Supprimer\" class=\"bouton\" ng-click=\"travelsListCtrl.deleteTravel()\" />\n\t\t\t\t\t<button type=\"button\" id=\"cancel_add_travel\" class=\"bouton\" data-ng-click=\"travelsListCtrl.shownAction = 'action'\">Annuler</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t\n\t\t\n\t\t<div ng-show=\"travelsListCtrl.shownAction == 'update'\" class=\"modal-window\">\n\t\t\t\n\t\t\t<div class=\"sheet-head\">\n\t\t\t\t<div class=\"sheet-title\">Modifier un voyage</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<form novalidate name=\"updForm\">\n\t\t\t\t<div layout='row' layout-fill layout-margin layout-align='start'>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Date Départ :</label>\n\t\t\t\t\t\t\t<md-datepicker ng-model=\"travelsListCtrl.selectedTravel.departDate\" ng-require></md-datepicker>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Date Retour :</label>\n\t\t\t\t\t\t\t<md-datepicker ng-model=\"travelsListCtrl.selectedTravel.returnDate\" ng-require></md-datepicker>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Pays :</label>\n\t\t\t\t\t\t<md-select ng-model=\"travelsListCtrl.selectedTravel.countries\" ng-model-options=\"{trackBy: '$value._id'}\" ng-require multiple>\n\t\t\t\t\t\t\t<md-option ng-value=\"c\" ng-repeat=\"c in travelsListCtrl.countries\">{{ c.name_fr }}</md-option>\n\t\t\t\t\t\t</md-select>\n\t\t\t\t\t</md-input-container>\n\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Avec :</label>\n\t\t\t\t\t\t<md-select ng-model=\"travelsListCtrl.selectedTravel.users\" ng-model-options=\"{trackBy: '$value._id'}\" multiple>\n\t\t\t\t\t\t\t<md-option ng-value=\"u\" ng-repeat=\"u in travelsListCtrl.friends\">{{ u.firstname }}</md-option>\n\t\t\t\t\t\t</md-select>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t</div>\t\n\t\t\t\t<div class=\"actions\">\n\t\t\t\t\t<input type=\"button\" value=\"Modifier\" class=\"bouton\" ng-click=\"travelsListCtrl.updateTravel()\" ng-disabled=\"!addForm.$valid\"/>\n\t\t\t\t\t<button type=\"button\" id=\"cancel_add_travel\" class=\"bouton\" data-ng-click=\"travelsListCtrl.shownAction = 'action'\">Annuler</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t\n\t</div>\n\t\n\t\n\t\n</div>\n";
+	module.exports = "<div class=\"sheet\">\n\n\n\t<div class=\"sheet-head\">\n\t\t<div class=\"sheet-title\">LISTE DES VOYAGES</div>\n\t\t<div class=\"sheet-filter\">\n\t\t\t<!--<label data-ng-repeat=\"x in travelLogs\" id=\"tl_{{$index}}\">\n\t\t\t\t<input type=\"checkbox\" data-ng-model=\"x.selected\" data-ng-change=\"changeTravelLogsSel()\">\n\t\t\t\t{{x.name}}\n\t\t\t</label>-->\n\t\t</div>\n\t</div>\n\t\n\t\n\t<div class=\"sheet-body\">\n\t\t<table class=\"tbk-table\">\n\t\t\t<thead>\n\t\t\t\t<tr><th>Lieu</th><th>Voyageurs</th><th>Date Départ</th><th>Date Retour</th><th>Durée</th></tr>\n\t\t\t</thead>\n\t\t\t<tbody id=\"travel_list_body\">\n\t\t\t\t<tr data-ng-repeat=\"x in travelsListCtrl.travelsList\" ng-click=\"travelsListCtrl.selectTravel(x)\" id=\"t_{{$index}}\" ng-class=\"{selectionnable: true, selected: x == travelsListCtrl.selectedTravel}\">\n\t\t\t\t\t<td>{{ x.countriesNames }}</td>\n\t\t\t\t\t<td>{{ x.usersNames }}</td>\n\t\t\t\t\t<td>{{ x.departDate | date : 'fullDate' }}</td>\n\t\t\t\t\t<td>{{ x.returnDate | date : 'fullDate' }}</td>\n\t\t\t\t\t<td>{{ x.duration }}</td>\n\t\t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t\t\n\t\t<div class=\"actions\" ng-show=\"travelsListCtrl.shownAction == 'action'\">\n\t\t\t<button type=\"button\" class=\"bouton\" id=\"add_travel\" data-ng-click=\"travelsListCtrl.openAddTravel()\">Ajouter</button>\n\t\t\t<button type=\"button\" class=\"bouton\" id=\"upd_travel\" data-ng-disabled=\"!travelsListCtrl.selectedTravel\" data-ng-click=\"travelsListCtrl.shownAction = 'update'\">Modifier</button>\n\t\t\t<button type=\"button\" class=\"bouton\" id=\"del_travel\" data-ng-disabled=\"!travelsListCtrl.selectedTravel\" data-ng-click=\"travelsListCtrl.shownAction = 'delete'\">Supprimer</button>\n\t\t</div>\n\t\t\n\t\t<div ng-show=\"travelsListCtrl.shownAction == 'add'\" class=\"modal-window\">\n\t\t\t\n\t\t\t<div class=\"sheet-head\">\n\t\t\t\t<div class=\"sheet-title\">Ajouter un voyage</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<form novalidate name=\"addForm\">\n\t\t\t\t<div layout='row' layout-fill layout-margin layout-align='start'>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Date Départ :</label>\n\t\t\t\t\t\t\t<md-datepicker ng-model=\"travelsListCtrl.addedTravel.departDate\" ng-require></md-datepicker>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Date Retour :</label>\n\t\t\t\t\t\t\t<md-datepicker ng-model=\"travelsListCtrl.addedTravel.returnDate\" ng-require></md-datepicker>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Pays :</label>\n\t\t\t\t\t\t<md-select ng-model=\"travelsListCtrl.addedTravel.countries\" ng-model-options=\"{trackBy: '$value._id'}\" ng-require multiple>\n\t\t\t\t\t\t\t<md-option ng-value=\"c\" ng-repeat=\"c in travelsListCtrl.countries\">{{ c.name }}</md-option>\n\t\t\t\t\t\t</md-select>\n\t\t\t\t\t</md-input-container>\n\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Avec :</label>\n\t\t\t\t\t\t<md-select ng-model=\"travelsListCtrl.addedTravel.users\" ng-model-options=\"{trackBy: '$value._id'}\" multiple>\n\t\t\t\t\t\t\t<md-option ng-value=\"u\" ng-repeat=\"u in travelsListCtrl.friends\">{{ u.firstname }}</md-option>\n\t\t\t\t\t\t</md-select>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t</div>\t\n\t\t\t\t<div class=\"actions\">\n\t\t\t\t\t<input type=\"button\" value=\"Ajouter\" class=\"bouton\" ng-click=\"travelsListCtrl.addTravel()\" ng-disabled=\"!addForm.$valid\"/>\n\t\t\t\t\t<button type=\"button\" id=\"cancel_add_travel\" class=\"bouton\" data-ng-click=\"travelsListCtrl.shownAction = 'action'\">Annuler</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\n\t\t<div ng-show=\"travelsListCtrl.shownAction == 'delete'\" class=\"modal-window\">\n\t\t\t\n\t\t\t<div class=\"sheet-head\">\n\t\t\t\t<div class=\"sheet-title\">Supprimer un voyage</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t\t<span>Confirmer la suppression du voyage \"{{travelsListCtrl.selectedTravel.countriesNames}}\"\".<span>\n\t\t\t\t<div class=\"actions\">\n\t\t\t\t\t<input type=\"button\" value=\"Supprimer\" class=\"bouton\" ng-click=\"travelsListCtrl.deleteTravel()\" />\n\t\t\t\t\t<button type=\"button\" id=\"cancel_add_travel\" class=\"bouton\" data-ng-click=\"travelsListCtrl.shownAction = 'action'\">Annuler</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t\n\t\t\n\t\t<div ng-show=\"travelsListCtrl.shownAction == 'update'\" class=\"modal-window\">\n\t\t\t\n\t\t\t<div class=\"sheet-head\">\n\t\t\t\t<div class=\"sheet-title\">Modifier un voyage</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<form novalidate name=\"updForm\">\n\t\t\t\t<div layout='row' layout-fill layout-margin layout-align='start'>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Date Départ :</label>\n\t\t\t\t\t\t\t<md-datepicker ng-model=\"travelsListCtrl.selectedTravel.departDate\" ng-require></md-datepicker>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Date Retour :</label>\n\t\t\t\t\t\t\t<md-datepicker ng-model=\"travelsListCtrl.selectedTravel.returnDate\" ng-require></md-datepicker>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Pays :</label>\n\t\t\t\t\t\t<md-select ng-model=\"travelsListCtrl.selectedTravel.countries\" ng-model-options=\"{trackBy: '$value._id'}\" ng-require multiple>\n\t\t\t\t\t\t\t<md-option ng-value=\"c\" ng-repeat=\"c in travelsListCtrl.countries\">{{ c.name_fr }}</md-option>\n\t\t\t\t\t\t</md-select>\n\t\t\t\t\t</md-input-container>\n\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Avec :</label>\n\t\t\t\t\t\t<md-select ng-model=\"travelsListCtrl.selectedTravel.users\" ng-model-options=\"{trackBy: '$value._id'}\" multiple>\n\t\t\t\t\t\t\t<md-option ng-value=\"u\" ng-repeat=\"u in travelsListCtrl.friends\">{{ u.firstname }}</md-option>\n\t\t\t\t\t\t</md-select>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t</div>\t\n\t\t\t\t<div class=\"actions\">\n\t\t\t\t\t<input type=\"button\" value=\"Modifier\" class=\"bouton\" ng-click=\"travelsListCtrl.updateTravel()\" ng-disabled=\"!addForm.$valid\"/>\n\t\t\t\t\t<button type=\"button\" id=\"cancel_add_travel\" class=\"bouton\" data-ng-click=\"travelsListCtrl.shownAction = 'action'\">Annuler</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t\n\t</div>\n\t\n\t\n\t\n</div>\n";
 
 /***/ },
-/* 29 */
+/* 31 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	/// <reference path="../../../typings/index.d.ts" />
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Operation_1 = __webpack_require__(32);
+	var TbkBudgetCtrl = (function () {
+	    // CONSTRUCTOR *******************************************************************************
+	    /** @ngInject */
+	    function TbkBudgetCtrl(accountsService, operationsService, $scope) {
+	        this.typeLib = { BNK: "Bancaire", CSH: "Espèces", TVL: "Traveler check" };
+	        this.accountReady = false;
+	        this.mainDevise = { code: "EUR", symb: "€" };
+	        this.selectDayIndex = 2;
+	        this.accountsService = accountsService;
+	        this.operationsService = operationsService;
+	        this.$scope = $scope;
+	    }
+	    // ON INIT ************************************************************************************
+	    TbkBudgetCtrl.prototype.$onInit = function () {
+	        if (this.parent.selectedTravel) {
+	            this.travel = this.parent.selectedTravel;
+	            this.refreshAccount();
+	        }
+	        else {
+	            this.parent.goAccueil();
+	        }
+	        ;
+	    };
+	    // REFRESH ACCOUNT ****************************************************************************
+	    TbkBudgetCtrl.prototype.refreshAccount = function () {
+	        var _this = this;
+	        this.accountReady = false;
+	        this.getAccounts(this.travel._id).then(function () {
+	            _this.getOperations(_this.travel._id).then(function () {
+	                _this.accountReady = true;
+	            });
+	        });
+	    };
+	    // ADD ACCOUNT ********************************************************************************
+	    TbkBudgetCtrl.prototype.addAccount = function (account) {
+	        var _this = this;
+	        return this.accountsService.addAccount(account)
+	            .then(function () { return _this.refreshAccount(); });
+	    };
+	    // DELETE ACCOUNT *****************************************************************************
+	    TbkBudgetCtrl.prototype.deleteAccount = function (id) {
+	        var _this = this;
+	        return this.accountsService.deleteAccount(id)
+	            .then(function () { return _this.refreshAccount(); });
+	    };
+	    // GET ACCOUNTS *******************************************************************************
+	    TbkBudgetCtrl.prototype.getAccounts = function (travelId) {
+	        var that = this;
+	        return this.accountsService.getAccounts(travelId)
+	            .then(function (data) {
+	            data.forEach(function (element) {
+	                element.deviseLibelle = element.devise.code;
+	                if (element.devise.sym) {
+	                    element.deviseLibelle += "(" + element.devise.sym + ")";
+	                }
+	                element.typeLibelle = that.typeLib[element.type];
+	                element.montant = 0;
+	            });
+	            that.accounts = data;
+	            return that.accounts;
+	        });
+	    };
+	    // GET OPERATIONS *****************************************************************************
+	    TbkBudgetCtrl.prototype.getOperations = function (travelId) {
+	        var that = this;
+	        this.accounts.forEach(function (a) { return a.montant = 0; });
+	        return this.operationsService.getOperations(travelId)
+	            .then(function (data) {
+	            var ops = [];
+	            data.forEach(function (element) {
+	                var ope = Operation_1.Operation.fromData(element, that.accounts);
+	                ops.push(ope);
+	                ope.accountDebit.montant -= ope.montantDebit;
+	                if (ope.accountCredit) {
+	                    ope.accountCredit.montant += ope.montantCredit;
+	                }
+	            });
+	            that.operations = ops;
+	            that.getChanges();
+	            that.setOperationPerDay();
+	            return that.operations;
+	        });
+	    };
+	    // SET OPERATION PER DAY **********************************************************************
+	    TbkBudgetCtrl.prototype.setOperationPerDay = function () {
+	        var _this = this;
+	        var travelLength = this.travel.days.length - 1;
+	        this.travel.days[0].operations = this.operations.filter(function (ope) { return ope.date < _this.travel.departDate; });
+	        var _loop_1 = function (i) {
+	            this_1.travel.days[i].operations = this_1.operations.filter(function (ope) { return (ope.date >= _this.travel.days[i].date && ope.date < _this.travel.days[i + 1].date); });
+	        };
+	        var this_1 = this;
+	        for (var i = 1; i < travelLength; i++) {
+	            _loop_1(i);
+	        }
+	        this.travel.days[travelLength].operations = this.operations.filter(function (ope) { return ope.date > _this.travel.returnDate; });
+	    };
+	    // SET SELECTED DAY ***************************************************************************
+	    TbkBudgetCtrl.prototype.setSelectedDay = function (i) {
+	        this.selectDayIndex = i;
+	        this.$scope.$apply();
+	    };
+	    // GET CHANGES ********************************************************************************
+	    TbkBudgetCtrl.prototype.getChanges = function () {
+	        var _this = this;
+	        this.changes = {};
+	        var ops = this.operations.filter(function (ope) { return ope.type == 'retrait'; });
+	        ops.forEach(function (ope) {
+	            var ch = ope.getChange(_this.mainDevise.code);
+	            if (!_this.changes[ch.key]) {
+	                _this.changes[ch.key] = {};
+	                _this.changes[ch.key].mt1 = ch.mt1;
+	                _this.changes[ch.key].mt2 = ch.mt2;
+	            }
+	            else {
+	                _this.changes[ch.key].mt1 += ch.mt1;
+	                _this.changes[ch.key].mt2 += ch.mt2;
+	            }
+	        });
+	        for (var key in this.changes) {
+	            var c = this.changes[key];
+	            if (c.de1 != this.mainDevise.code) {
+	                var oc = this.changes[this.mainDevise.code + c.de1];
+	                if (oc) {
+	                    var mt1 = oc.mt1 * c.mt1 / oc.mt2;
+	                    var mt2 = c.mt2;
+	                    var nkey = this.mainDevise.code + c.de2;
+	                    if (!this.changes[nkey]) {
+	                        this.changes[nkey] = {};
+	                        this.changes[nkey].mt1 = mt1;
+	                        this.changes[nkey].mt2 = mt2;
+	                    }
+	                    else {
+	                        this.changes[nkey].mt1 += mt1;
+	                        this.changes[nkey].mt2 += mt2;
+	                    }
+	                }
+	            }
+	        }
+	        ;
+	        this.accounts.forEach(function (a) {
+	            if (a.devise.code != _this.mainDevise.code) {
+	                var ch = _this.changes["EUR" + a.devise.code];
+	                if (ch) {
+	                    var mt = Math.round((a.montant * ch.mt1 / ch.mt2) * 100) / 100;
+	                    a.montantMain = "(" + mt.toString() + " " + _this.mainDevise.symb + ")";
+	                }
+	            }
+	        });
+	    };
+	    // ADD OPERATION ******************************************************************************
+	    TbkBudgetCtrl.prototype.addOperation = function (operation) {
+	        var _this = this;
+	        this.accountReady = false;
+	        return this.operationsService.addOperation(operation)
+	            .then(function () { return _this.getOperations(_this.travel._id); }).then(function () {
+	            _this.accountReady = true;
+	        });
+	    };
+	    // DELETE OPERATION ***************************************************************************
+	    TbkBudgetCtrl.prototype.deleteOperation = function (id) {
+	        var _this = this;
+	        this.accountReady = false;
+	        return this.operationsService.deleteOperation(id)
+	            .then(function () { return _this.getOperations(_this.travel._id); }).then(function () {
+	            _this.accountReady = true;
+	        });
+	    };
+	    return TbkBudgetCtrl;
+	}());
+	exports.TbkBudget = {
+	    template: __webpack_require__(33),
+	    controller: TbkBudgetCtrl,
+	    controllerAs: 'budgetCtrl',
+	    require: { parent: '^tbkMain' }
+	};
+
+
+/***/ },
+/* 32 */
+/***/ function(module, exports) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	var Operation = (function () {
+	    function Operation(_id, travelId, date, type, accountDebit, montantDebit, accountCredit, montantCredit, description, categorie, order) {
+	        this._id = _id;
+	        this.travelId = travelId;
+	        this.date = date;
+	        this.type = type;
+	        this.accountDebit = accountDebit;
+	        this.montantDebit = montantDebit;
+	        this.accountCredit = accountCredit;
+	        this.montantCredit = montantCredit;
+	        this.description = description;
+	        this.categorie = categorie;
+	        this.order = order;
+	    }
+	    Operation.fromData = function (data, accounts) {
+	        var date = new Date(data.date);
+	        var accountDebit = null;
+	        for (var _i = 0, accounts_1 = accounts; _i < accounts_1.length; _i++) {
+	            var a = accounts_1[_i];
+	            if (a._id == data.accountDebit) {
+	                accountDebit = a;
+	            }
+	        }
+	        var accountCredit = null;
+	        if (data.accountCredit) {
+	            for (var _a = 0, accounts_2 = accounts; _a < accounts_2.length; _a++) {
+	                var a = accounts_2[_a];
+	                if (a._id == data.accountCredit) {
+	                    accountCredit = a;
+	                }
+	            }
+	        }
+	        var categorie = null;
+	        if (data.categorie) {
+	            for (var _b = 0, _c = Operation.categories; _b < _c.length; _b++) {
+	                var c = _c[_b];
+	                if (c.code == data.categorie) {
+	                    categorie = c;
+	                }
+	            }
+	        }
+	        return new this(data._id, data.travelId, date, data.type, accountDebit, data.montantDebit, accountCredit, data.montantCredit, data.description, categorie, data.order);
+	    };
+	    Operation.fromScratch = function (travelId, date, order) {
+	        return new this(undefined, travelId, date, undefined, undefined, undefined, undefined, undefined, undefined, undefined, order);
+	    };
+	    Operation.prototype.getChange = function (mainDevise) {
+	        var change = {};
+	        if (this.accountDebit.devise.code == mainDevise) {
+	            change.key = this.accountDebit.devise.code + this.accountCredit.devise.code;
+	            change.mt1 = this.montantDebit;
+	            change.mt2 = this.montantCredit;
+	            change.de1 = this.accountDebit.devise.code;
+	            change.de1 = this.accountCredit.devise.code;
+	        }
+	        else if (this.accountCredit.devise.code == mainDevise) {
+	            change.key = this.accountCredit.devise.code + this.accountDebit.devise.code;
+	            change.mt1 = this.montantCredit;
+	            change.mt2 = this.montantDebit;
+	            change.de1 = this.accountCredit.devise.code;
+	            change.de1 = this.accountDebit.devise.code;
+	        }
+	        else if (this.accountDebit.devise.code > this.accountCredit.devise.code) {
+	            change.key = this.accountDebit.devise.code + this.accountCredit.devise.code;
+	            change.mt1 = this.montantDebit;
+	            change.mt2 = this.montantCredit;
+	            change.de1 = this.accountDebit.devise.code;
+	            change.de1 = this.accountCredit.devise.code;
+	        }
+	        else {
+	            change.key = this.accountCredit.devise.code + this.accountDebit.devise.code;
+	            change.mt1 = this.montantCredit;
+	            change.mt2 = this.montantDebit;
+	            change.de1 = this.accountCredit.devise.code;
+	            change.de1 = this.accountDebit.devise.code;
+	        }
+	        return change;
+	    };
+	    Operation.categories = [{ code: "BAVI", libelle: "Billet d'avion" }, { code: "TRAS", libelle: "Transport" }, { code: "LOGT", libelle: "Logement" }, { code: "FOOD", libelle: "Nourriture" }, { code: "VIST", libelle: "Visite" }, { code: "SOVN", libelle: "Souvenirs" }];
+	    return Operation;
+	}());
+	exports.Operation = Operation;
+
+
+/***/ },
+/* 33 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"sheet-row\">\r\n\t<div class=\"col full sheet-container\">\r\n\t\t<tbk-accounts-list \r\n\t\t\ttravel=\"budgetCtrl.travel\"\r\n\t\t\taccounts=\"budgetCtrl.accounts\" \r\n\t\t\ton-account-add=\"budgetCtrl.addAccount(account)\"\r\n\t\t\ton-account-delete=\"budgetCtrl.deleteAccount(id)\"\r\n\t\t\ton-account-update=\"budgetCtrl.updateAccount(account)\"\r\n\t\t</tbk-accounts-list>\r\n\t</div>\r\n</div>\r\n\r\n<div class=\"sheet-row\">\r\n\t<div class=\"col full sheet-container\">\r\n\t\t<tbk-operations-list \r\n\t\t\ttravel=\"budgetCtrl.travel\"\r\n\t\t\taccounts=\"budgetCtrl.accounts\"\r\n\t\t\tselect-day-index=\"budgetCtrl.selectDayIndex\"\r\n\t\t\ton-operation-add=\"budgetCtrl.addOperation(operation)\"\r\n\t\t\ton-operation-delete=\"budgetCtrl.deleteOperation(id)\"\r\n\t\t</tbk-operations-list>\r\n\t</div>\r\n</div>\r\n\r\n<div class=\"sheet-row\">\r\n\t<tbk-budget-statistics\r\n\t\ttravel=\"budgetCtrl.travel\"\r\n\t\tchanges=\"budgetCtrl.changes\"\r\n\t\taccount-ready=\"budgetCtrl.accountReady\"\r\n\t\ton-select-day=\"budgetCtrl.setSelectedDay(id)\"\r\n\t</tbk-budget-statistics>\r\n</div>";
+
+/***/ },
+/* 34 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	/// <reference path="../../../typings/index.d.ts" />
+	var TbkAccountsListCtrl = (function () {
+	    function TbkAccountsListCtrl() {
+	        this.shownAction = 'action';
+	        this.$onInit = function () {
+	        };
+	    }
+	    TbkAccountsListCtrl.prototype.selectAccount = function (account, id) {
+	        if (this.selectedAccount && this.selectedAccount._id == account._id) {
+	            this.selectedAccount = undefined;
+	        }
+	        else {
+	            this.selectedAccount = account;
+	        }
+	        this.shownAction = 'action';
+	    };
+	    TbkAccountsListCtrl.prototype.openAddAccount = function () {
+	        this.addedAccount = {};
+	        this.addedAccount.travelId = this.travel._id;
+	        this.addedAccount.devise = {};
+	        this.addedAccount.type = 'BNK';
+	        this.shownAction = 'add';
+	    };
+	    TbkAccountsListCtrl.prototype.addAccount = function () {
+	        this.onAccountAdd({ account: this.addedAccount });
+	        this.shownAction = 'action';
+	    };
+	    TbkAccountsListCtrl.prototype.deleteAccount = function () {
+	        this.onAccountDelete({ id: this.selectedAccount._id });
+	        this.selectedAccount = undefined;
+	        this.shownAction = 'action';
+	    };
+	    TbkAccountsListCtrl.prototype.updateAccount = function () {
+	        this.onAccountUpdate({ account: this.selectedAccount });
+	        this.selectedAccount = undefined;
+	        this.shownAction = 'action';
+	    };
+	    return TbkAccountsListCtrl;
+	}());
+	exports.TbkAccountsList = {
+	    template: __webpack_require__(35),
+	    controller: TbkAccountsListCtrl,
+	    controllerAs: 'accountsListCtrl',
+	    bindings: {
+	        travel: '<',
+	        accounts: '<',
+	        onAccountAdd: '&',
+	        onAccountDelete: '&',
+	        onAccountUpdate: '&'
+	    }
+	};
+
+
+/***/ },
+/* 35 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"sheet\">\n\n\n\t<div class=\"sheet-head\">\n\t\t<div class=\"sheet-title\">LISTE DES COMPTES DE VOYAGE</div>\n\t</div>\n\t\n\t\n\t<div class=\"sheet-body\">\n\t\t<table class=\"tbk-table\">\n\t\t\t<thead>\n\t\t\t\t<tr><th>Type</th><th>Devise</th><th>Montant</th></tr>\n\t\t\t</thead>\n\t\t\t<tbody id=\"account_list_body\">\n\t\t\t\t<tr ng-repeat=\"x in accountsListCtrl.accounts\" ng-click=\"accountsListCtrl.selectAccount(x)\" ng-class=\"{selectionnable: true, selected: x == accountsListCtrl.selectedAccount}\">\n\t\t\t\t\t<td>{{ x.typeLibelle }}</td>\n\t\t\t\t\t<td>{{ x.deviseLibelle }}</td>\n\t\t\t\t\t<td>{{ x.montant | currency:x.devise.sym }} {{x.montantMain}}</td>\n\t\t\t\t</tr>\n\t\t\t</tbody>\n\t\t</table>\n\t\t\n\t\t<div class=\"actions\" ng-show=\"accountsListCtrl.shownAction == 'action'\">\n\t\t\t<button type=\"button\" class=\"bouton\" ng-click=\"accountsListCtrl.openAddAccount()\">Ajouter</button>\n\t\t\t<button type=\"button\" class=\"bouton\" ng-disabled=\"!accountsListCtrl.selectedAccount\" ng-click=\"accountsListCtrl.shownAction = 'update'\">Modifier</button>\n\t\t\t<button type=\"button\" class=\"bouton\" ng-disabled=\"!accountsListCtrl.selectedAccount\" ng-click=\"accountsListCtrl.shownAction = 'delete'\">Supprimer</button>\n\t\t</div>\n\t\t\n\t\t<div ng-show=\"accountsListCtrl.shownAction == 'add'\" class=\"modal-window\">\n\t\t\t\n\t\t\t<div class=\"sheet-head\">\n\t\t\t\t<div class=\"sheet-title\">Ajouter un compte</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<form novalidate name=\"addForm\">\n\t\t\t\t<div layout='row' layout-fill layout-margin layout-align='start'>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Type :</label>\n\t\t\t\t\t\t<md-select ng-model=\"accountsListCtrl.addedAccount.type\" ng-require >\n\t\t\t\t\t\t\t<md-option value=\"BNK\">Bancaire</md-option>\n\t\t\t\t\t\t\t<md-option value=\"CSH\">Espèces</md-option>\n\t\t\t\t\t\t\t<md-option value=\"TVL\">Travelers</md-option>\n\t\t\t\t\t\t</md-select>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Devise (code) :</label>\n\t\t\t\t\t\t<input ng-model=\"accountsListCtrl.addedAccount.devise.code\" ng-require >\n\t\t\t\t\t</md-input-container>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Devise (symbole) :</label>\n\t\t\t\t\t\t<input ng-model=\"accountsListCtrl.addedAccount.devise.sym\">\n\t\t\t\t\t</md-input-container>\n\t\t\t\t</div>\t\n\t\t\t\t<div class=\"actions\">\n\t\t\t\t\t<input type=\"button\" value=\"Ajouter\" class=\"bouton\" ng-click=\"accountsListCtrl.addAccount()\" ng-disabled=\"!addForm.$valid\"/>\n\t\t\t\t\t<button type=\"button\" class=\"bouton\" ng-click=\"accountsListCtrl.shownAction = 'action'\">Annuler</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\n\t\t<div ng-show=\"accountsListCtrl.shownAction == 'delete'\" class=\"modal-window\">\n\t\t\t\n\t\t\t<div class=\"sheet-head\">\n\t\t\t\t<div class=\"sheet-title\">Supprimer un compte</div>\n\t\t\t</div>\n\t\t\t\t<span>Confirmer la suppression du compte.<span>\n\t\t\t\t<div class=\"actions\">\n\t\t\t\t\t<input type=\"button\" value=\"Supprimer\" class=\"bouton\" ng-click=\"accountsListCtrl.deleteAccount()\" />\n\t\t\t\t\t<button type=\"button\" class=\"bouton\" ng-click=\"accountsListCtrl.shownAction = 'action'\">Annuler</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t\n\t\t\n\t\t<!--<div ng-show=\"travelsListCtrl.shownAction == 'update'\" class=\"modal-window\">\n\t\t\t\n\t\t\t<div class=\"sheet-head\">\n\t\t\t\t<div class=\"sheet-title\">Modifier un voyage</div>\n\t\t\t</div>\n\t\t\t\n\t\t\t<form novalidate name=\"updForm\">\n\t\t\t\t<div layout='row' layout-fill layout-margin layout-align='start'>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Date Départ :</label>\n\t\t\t\t\t\t\t<md-datepicker ng-model=\"travelsListCtrl.selectedTravel.departDate\" ng-require></md-datepicker>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Date Retour :</label>\n\t\t\t\t\t\t\t<md-datepicker ng-model=\"travelsListCtrl.selectedTravel.returnDate\" ng-require></md-datepicker>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Pays :</label>\n\t\t\t\t\t\t<md-select ng-model=\"travelsListCtrl.selectedTravel.countries\" ng-model-options=\"{trackBy: '$value._id'}\" ng-require multiple>\n\t\t\t\t\t\t\t<md-option ng-value=\"c\" ng-repeat=\"c in travelsListCtrl.countries\">{{ c.name_fr }}</md-option>\n\t\t\t\t\t\t</md-select>\n\t\t\t\t\t</md-input-container>\n\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Avec :</label>\n\t\t\t\t\t\t<md-select ng-model=\"travelsListCtrl.selectedTravel.users\" ng-model-options=\"{trackBy: '$value._id'}\" multiple>\n\t\t\t\t\t\t\t<md-option ng-value=\"u\" ng-repeat=\"u in travelsListCtrl.friends\">{{ u.firstname }}</md-option>\n\t\t\t\t\t\t</md-select>\n\t\t\t\t\t</md-input-container>\n\t\t\t\t</div>\t\n\t\t\t\t<div class=\"actions\">\n\t\t\t\t\t<input type=\"button\" value=\"Modifier\" class=\"bouton\" ng-click=\"travelsListCtrl.updateTravel()\" ng-disabled=\"!addForm.$valid\"/>\n\t\t\t\t\t<button type=\"button\" id=\"cancel_add_travel\" class=\"bouton\" data-ng-click=\"travelsListCtrl.shownAction = 'action'\">Annuler</button>\n\t\t\t\t</div>\n\t\t\t</form>\n\t\t</div>\n\t\t\n\t</div>-->\n\t\n\t\n\t\n</div>\n";
+
+/***/ },
+/* 36 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	/// <reference path="../../../typings/index.d.ts" />
+	var Operation_1 = __webpack_require__(32);
+	var TbkOperationsListCtrl = (function () {
+	    // CONSTRUCTOR ********************************************************************************
+	    function TbkOperationsListCtrl($scope) {
+	        var _this = this;
+	        this.shownAction = 'action';
+	        this.categories = Operation_1.Operation.categories;
+	        // ON INIT ************************************************************************************
+	        this.$onInit = function () {
+	            this.days = this.travel.days;
+	            this.travelLength = this.days.length - 1;
+	            this.selectedDay = this.days[this.selectDayIndex];
+	        };
+	        $scope.$watch('operationsListCtrl.selectDayIndex', function (newValue, oldValue) {
+	            if (newValue != oldValue) {
+	                _this.selectedDay = _this.days[_this.selectDayIndex];
+	                _this.shownAction = 'action';
+	            }
+	        });
+	    }
+	    // PREV DAY ***********************************************************************************
+	    TbkOperationsListCtrl.prototype.prevDay = function () {
+	        if (this.selectDayIndex > 0) {
+	            this.selectDayIndex--;
+	        }
+	    };
+	    // NEXT DAY ***********************************************************************************
+	    TbkOperationsListCtrl.prototype.nextDay = function () {
+	        if (this.selectDayIndex < this.travelLength) {
+	            this.selectDayIndex++;
+	        }
+	    };
+	    // OPEN ADD OPERATION *************************************************************************
+	    TbkOperationsListCtrl.prototype.openAddOperation = function () {
+	        this.addedOperation = Operation_1.Operation.fromScratch(this.travel._id, this.selectedDay.date, this.selectedDay.operations.length);
+	    };
+	    // OPEN ADD DEPENSE ***************************************************************************
+	    TbkOperationsListCtrl.prototype.openAddDepense = function () {
+	        this.openAddOperation();
+	        this.addedOperation.type = 'depense';
+	        this.shownAction = 'addDepense';
+	    };
+	    // OPEN ADD RETRAIT ***************************************************************************
+	    TbkOperationsListCtrl.prototype.openAddRetrait = function () {
+	        this.openAddOperation();
+	        this.addedOperation.type = 'retrait';
+	        this.shownAction = 'addRetrait';
+	    };
+	    // ADD OPERATION ******************************************************************************
+	    TbkOperationsListCtrl.prototype.addOperation = function () {
+	        this.onOperationAdd({ operation: this.addedOperation });
+	        this.shownAction = 'action';
+	    };
+	    // DELETE OPERATION ***************************************************************************
+	    TbkOperationsListCtrl.prototype.deleteOperation = function () {
+	        this.onOperationDelete({ id: this.selectedOperation._id });
+	        this.selectedOperation = undefined;
+	        this.shownAction = 'action';
+	    };
+	    // SELECT OPERATION ***************************************************************************
+	    TbkOperationsListCtrl.prototype.selectOperation = function (operation) {
+	        if (this.selectedOperation && this.selectedOperation._id == operation._id) {
+	            this.selectedOperation = undefined;
+	        }
+	        else {
+	            this.selectedOperation = operation;
+	        }
+	        this.shownAction = 'action';
+	    };
+	    return TbkOperationsListCtrl;
+	}());
+	// ************************************************************************************************
+	// ************************************************************************************************
+	exports.TbkOperationsList = {
+	    template: __webpack_require__(37),
+	    controller: TbkOperationsListCtrl,
+	    controllerAs: 'operationsListCtrl',
+	    bindings: {
+	        travel: '<',
+	        accounts: '<',
+	        selectDayIndex: '=',
+	        onOperationAdd: '&',
+	        onOperationDelete: '&'
+	    }
+	};
+
+
+/***/ },
+/* 37 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"sheet\">\n\n\n\t<div class=\"sheet-head\">\n\t\t<div class=\"sheet-title\">LISTE DES DEPENSES</div>\n\t</div>\n\t\t\n\t<div class=\"sheet-body\">\n\t\t<md-slider-container>\n\t\t\t<button type=\"button\" class=\"bouton\" ng-click=\"operationsListCtrl.prevDay()\">&lt</button>\n\t\t\t<md-slider md-discrete ng-model=\"operationsListCtrl.selectDayIndex\" step=\"1\" min=\"0\" max=\"{{operationsListCtrl.travelLength}}\"></md-slider>\n\t\t\t<button type=\"button\" class=\"bouton\" ng-click=\"operationsListCtrl.nextDay()\">&gt</button>\n\t\t</md-slider-container>\n\t</div>\n\t\n\t<table class=\"tbk-table\">\n\t\t<thead>\n\t\t\t<tr><th colspan=\"5\"><span>Opérations pour </span><span>{{ operationsListCtrl.selectedDay.libelle }} : </span></th></tr>\n\t\t</thead>\n\t\t<tbody>\n\t\t\t<tr ng-repeat=\"x in operationsListCtrl.selectedDay.operations\" ng-click=\"operationsListCtrl.selectOperation(x)\" ng-class=\"{selectionnable: true, selected: x == operationsListCtrl.selectedOperation, retrait: isRetrait}\" ng-init=\"isRetrait = (x.type == 'retrait')\">\n\t\t\t\t<td>{{ x.date | date }}</td>\n\t\t\t\t<td ng-if=\"!isRetrait\">{{ x.accountDebit.typeLibelle }} en {{x.accountDebit.deviseLibelle}}</td>\n\t\t\t\t<td ng-if=\"!isRetrait\">{{ x.categorie.libelle }}</td>\n\t\t\t\t<td ng-if=\"!isRetrait\">{{ x.description }}</td>\n\t\t\t\t<td ng-if=\"!isRetrait\">{{ x.montantDebit | currency:x.accountDebit.devise.sym}}</td>\n\t\t\t\t<td ng-if=\"isRetrait\">{{ x.accountDebit.typeLibelle }} en {{x.accountDebit.deviseLibelle}}</td>\n\t\t\t\t<td ng-if=\"isRetrait\">{{ x.montantDebit | currency:x.accountDebit.devise.sym}}</td>\n\t\t\t\t<td ng-if=\"isRetrait\">{{ x.accountCredit.typeLibelle }} en {{x.accountCredit.deviseLibelle}}</td>\n\t\t\t\t<td ng-if=\"isRetrait\">{{ x.montantCredit | currency:x.accountCredit.devise.sym}}</td>\n\t\t\t</tr>\n\t\t</tbody>\n\t</table>\n\t<span ng-if=\"operationsListCtrl.selectedDay.operations.length == 0\">Il n'y a pas d'opération pour ce jour</span>\n\t\n\t<div class=\"actions\" ng-show=\"operationsListCtrl.shownAction == 'action'\">\n\t\t<button type=\"button\" class=\"bouton\" ng-click=\"operationsListCtrl.openAddDepense()\">Ajouter une dépense</button>\n\t\t<button type=\"button\" class=\"bouton\" ng-click=\"operationsListCtrl.openAddRetrait()\">Ajouter un retrait / change</button>\n\t\t<button type=\"button\" class=\"bouton\" ng-disabled=\"!operationsListCtrl.selectedOperation\" ng-click=\"operationsListCtrl.shownAction = 'delete'\">Supprimer</button>\n\t</div>\n\t\n\t<div ng-show=\"operationsListCtrl.shownAction == 'addDepense'\" class=\"modal-window\">\n\t\t\n\t\t<div class=\"sheet-head\">\n\t\t\t<div class=\"sheet-title\">Ajouter une dépense</div>\n\t\t</div>\n\t\t\n\t\t<form novalidate name=\"addForm\">\n\t\t\t<div layout='row' layout-fill layout-margin layout-align='start'>\n\t\t\t\t<md-input-container>\n\t\t\t\t\t<label>Date :</label>\n\t\t\t\t\t<md-datepicker ng-disabled=\"operationsListCtrl.selectedDay.isFixDate\" ng-model=\"operationsListCtrl.addedOperation.date\" ng-require></md-datepicker>\n\t\t\t\t</md-input-container>\n\t\t\t\t<md-input-container>\n\t\t\t\t\t<label>Compte débité :</label>\n\t\t\t\t\t<md-select ng-model=\"operationsListCtrl.addedOperation.accountDebit\" ng-require>\n\t\t\t\t\t\t<md-option ng-value=\"c\" ng-repeat=\"c in operationsListCtrl.accounts\">{{ c.typeLibelle }} en {{c.deviseLibelle}}</md-option>\n\t\t\t\t\t</md-select>\n\t\t\t\t</md-input-container>\n\t\t\t\t<md-input-container>\n\t\t\t\t\t<label>Catégorie :</label>\n\t\t\t\t\t<md-select ng-model=\"operationsListCtrl.addedOperation.categorie\" ng-require>\n\t\t\t\t\t\t<md-option ng-value=\"c\" ng-repeat=\"c in operationsListCtrl.categories\">{{ c.libelle }}</md-option>\n\t\t\t\t\t</md-select>\n\t\t\t\t</md-input-container>\n\t\t\t</div>\n\t\t\t<div layout='row' layout-fill layout-margin layout-align='start'>\n\t\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Description :</label>\n\t\t\t\t\t\t<input ng-model=\"operationsListCtrl.addedOperation.description\" ng-require>\n\t\t\t\t</md-input-container>\n\t\t\t\t<md-input-container>\n\t\t\t\t\t\t<label>Montant ({{operationsListCtrl.addedOperation.accountDebit.devise.code}}) :</label>\n\t\t\t\t\t\t<input ng-model=\"operationsListCtrl.addedOperation.montantDebit\" type=\"number\" ng-require>\n\t\t\t\t</md-input-container>\n\t\t\t</div>\n\t\t\t<div class=\"actions\">\n\t\t\t\t<input type=\"button\" value=\"Ajouter\" class=\"bouton\" ng-click=\"operationsListCtrl.addOperation()\" ng-disabled=\"!addForm.$valid\"/>\n\t\t\t\t<button type=\"button\" class=\"bouton\" ng-click=\"operationsListCtrl.shownAction = 'action'\">Annuler</button>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\t\n\t<div ng-show=\"operationsListCtrl.shownAction == 'addRetrait'\" class=\"modal-window\">\n\t\t\n\t\t<div class=\"sheet-head\">\n\t\t\t<div class=\"sheet-title\">Ajouter un retrait ou une opération de change</div>\n\t\t</div>\n\t\t\n\t\t<form novalidate name=\"addForm\">\n\t\t\t<div layout='row' layout-fill layout-margin layout-align='start'>\n\t\t\t\t<md-input-container>\n\t\t\t\t\t<label>Date :</label>\n\t\t\t\t\t<md-datepicker ng-disabled=\"operationsListCtrl.selectedDay.isFixDate\" ng-model=\"operationsListCtrl.addedOperation.date\" ng-require></md-datepicker>\n\t\t\t\t</md-input-container>\n\t\t\t\t<md-input-container>\n\t\t\t\t\t<label>Compte débité :</label>\n\t\t\t\t\t<md-select ng-model=\"operationsListCtrl.addedOperation.accountDebit\" ng-require>\n\t\t\t\t\t\t<md-option ng-value=\"c\" ng-repeat=\"c in operationsListCtrl.accounts\">{{ c.typeLibelle }} en {{c.deviseLibelle}}</md-option>\n\t\t\t\t\t</md-select>\n\t\t\t\t</md-input-container>\n\t\t\t\t<md-input-container>\n\t\t\t\t\t<label>Montant Débit({{operationsListCtrl.addedOperation.accountDebit.devise.code}}) :</label>\n\t\t\t\t\t<input ng-model=\"operationsListCtrl.addedOperation.montantDebit\" type=\"number\" ng-require>\n\t\t\t\t</md-input-container>\n\t\t\t</div>\n\t\t\t<div layout='row' layout-fill layout-margin layout-align='start'>\n\t\t\t\t<md-input-container>\n\t\t\t\t\t<label>Compte crédité :</label>\n\t\t\t\t\t<md-select ng-model=\"operationsListCtrl.addedOperation.accountCredit\" ng-require>\n\t\t\t\t\t\t<md-option ng-value=\"c\" ng-repeat=\"c in operationsListCtrl.accounts\">{{ c.typeLibelle }} en {{c.deviseLibelle}}</md-option>\n\t\t\t\t\t</md-select>\n\t\t\t\t</md-input-container>\n\t\t\t\t<md-input-container>\n\t\t\t\t\t<label>Montant Crédit({{operationsListCtrl.addedOperation.accountCredit.devise.code}}) :</label>\n\t\t\t\t\t<input ng-model=\"operationsListCtrl.addedOperation.montantCredit\" type=\"number\" ng-require>\n\t\t\t\t</md-input-container>\n\t\t\t</div>\n\t\t\t<div class=\"actions\">\n\t\t\t\t<input type=\"button\" value=\"Ajouter\" class=\"bouton\" ng-click=\"operationsListCtrl.addOperation()\" ng-disabled=\"!addForm.$valid\"/>\n\t\t\t\t<button type=\"button\" class=\"bouton\" ng-click=\"operationsListCtrl.shownAction = 'action'\">Annuler</button>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\n\t<div ng-show=\"operationsListCtrl.shownAction == 'delete'\" class=\"modal-window\">\n\t\t\n\t\t<div class=\"sheet-head\">\n\t\t\t<div class=\"sheet-title\">Supprimer une operation</div>\n\t\t</div>\n\t\t\t<span>Confirmer la suppression de l'operation.<span>\n\t\t\t<div class=\"actions\">\n\t\t\t\t<input type=\"button\" value=\"Supprimer\" class=\"bouton\" ng-click=\"operationsListCtrl.deleteOperation()\" />\n\t\t\t\t<button type=\"button\" class=\"bouton\" ng-click=\"operationsListCtrl.shownAction = 'action'\">Annuler</button>\n\t\t\t</div>\n\t\t</form>\n\t</div>\n\n</div>\n";
+
+/***/ },
+/* 38 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	Object.defineProperty(exports, "__esModule", { value: true });
+	/// <reference path="../../../typings/index.d.ts" />
+	var Operation_1 = __webpack_require__(32);
+	var TbkBudgetStatisticsCtrl = (function () {
+	    // CONSTRUCTOR ********************************************************************************
+	    function TbkBudgetStatisticsCtrl($scope) {
+	        var _this = this;
+	        this.selectedCategorie = '*';
+	        this.mainDevise = { code: "EUR", symb: "€" };
+	        this.categories = Operation_1.Operation.categories;
+	        this.modeTotal = true;
+	        // ON INIT ************************************************************************************
+	        this.$onInit = function () {
+	        };
+	        this.changeModeTotal = function () {
+	            this.modeTotal = !this.modeTotal;
+	        };
+	        $scope.$watch('statisticsCtrl.accountReady', function (newValue, oldValue) {
+	            if (newValue) {
+	                _this.refreshDepPerDay();
+	            }
+	        });
+	    }
+	    TbkBudgetStatisticsCtrl.prototype.clickDay = function (evt) {
+	        this.$parent.statisticsCtrl.onSelectDay({ id: evt[0]._index + 1 });
+	    };
+	    TbkBudgetStatisticsCtrl.prototype.refreshDepPerDay = function () {
+	        var _this = this;
+	        this.depPerDay = {};
+	        this.depPerDay.val = [];
+	        this.depPerDay.lib = [];
+	        this.depPerDay.val.push([]);
+	        var d_index = 1;
+	        this.totaux = {};
+	        this.totaux.symb = this.mainDevise.symb;
+	        this.totaux.tot = 0.0;
+	        this.totaux.sans = 0.0;
+	        this.totaux.dtCod = [];
+	        this.totaux.dtLibelle = [];
+	        this.totaux.dtValTotal = [];
+	        this.totaux.dtValSans = [];
+	        var _loop_1 = function (i) {
+	            var day = this_1.travel.days[i];
+	            var mtDaily = 0;
+	            day.operations.filter(function (ope) { return ope.type == 'depense'; }).forEach(function (ope) {
+	                var addingMt = 0;
+	                if (ope.accountDebit.devise.code == _this.mainDevise.code) {
+	                    addingMt = ope.montantDebit;
+	                }
+	                else {
+	                    var c = _this.changes["EUR" + ope.accountDebit.devise.code];
+	                    addingMt = ope.montantDebit * c.mt1 / c.mt2;
+	                }
+	                if ((_this.selectedCategorie == '*' || ope.categorie.code == _this.selectedCategorie.code)
+	                    && i > 0 && i < _this.travel.days.length - 1) {
+	                    mtDaily += addingMt;
+	                }
+	                _this.totaux.tot += addingMt;
+	                if (ope.categorie.code != "BAVI") {
+	                    _this.totaux.sans += addingMt;
+	                }
+	                var d = _this.totaux.dtCod.indexOf(ope.categorie.code);
+	                if (d < 0) {
+	                    _this.totaux.dtCod.push(ope.categorie.code);
+	                    _this.totaux.dtLibelle.push(ope.categorie.libelle);
+	                    _this.totaux.dtValTotal.push(Math.round(addingMt * 100) / 100);
+	                    if (ope.categorie.code == "BAVI") {
+	                        _this.totaux.dtValSans.push(0.0);
+	                    }
+	                    else {
+	                        _this.totaux.dtValSans.push(Math.round(addingMt * 100) / 100);
+	                    }
+	                }
+	                else {
+	                    _this.totaux.dtValTotal[d] += Math.round(addingMt * 100) / 100;
+	                    if (ope.categorie.code != "BAVI") {
+	                        _this.totaux.dtValSans[d] += Math.round(addingMt * 100) / 100;
+	                    }
+	                }
+	            });
+	            if (i > 0 && i < this_1.travel.days.length - 1) {
+	                this_1.depPerDay.val[0].push(Math.round(mtDaily * 100) / 100);
+	                this_1.depPerDay.lib.push(d_index.toString());
+	                d_index++;
+	            }
+	        };
+	        var this_1 = this;
+	        for (var i = 0; i < this.travel.days.length; i++) {
+	            _loop_1(i);
+	        }
+	        this.totaux.tot = Math.round(this.totaux.tot * 100) / 100;
+	    };
+	    return TbkBudgetStatisticsCtrl;
+	}());
+	// ************************************************************************************************
+	// ************************************************************************************************
+	exports.TbkBudgetStatistics = {
+	    template: __webpack_require__(39),
+	    controller: TbkBudgetStatisticsCtrl,
+	    controllerAs: 'statisticsCtrl',
+	    bindings: {
+	        travel: '<',
+	        changes: '<',
+	        accountReady: '<',
+	        onSelectDay: '&'
+	    }
+	};
+
+
+/***/ },
+/* 39 */
+/***/ function(module, exports) {
+
+	module.exports = "\r\n<div class=\"col onethird\">\r\n\t<div class=\"sheet\">\r\n\t\t<div class=\"sheet-head\">\r\n\t\t\t<div class=\"sheet-title\">TOTAL DES DEPENSES</div>\r\n\t\t\t<div class=\"sheet-filter\">\r\n\t\t\t\t<span class=\"basculeMode\" data-ng-click=\"statisticsCtrl.changeModeTotal()\">\r\n\t\t\t\t\t{{statisticsCtrl.modeTotal ? '(voir sans avion)' : '(voir avec avion)'}}\r\n\t\t\t\t</span>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t\t<div class=\"sheet-body\">\r\n\t\t\t\t<canvas class=\"chart chart-doughnut\" \r\n\t\t\t\t\tchart-data=\"statisticsCtrl.modeTotal ? statisticsCtrl.totaux.dtValTotal : statisticsCtrl.totaux.dtValSans\" \r\n\t\t\t\t\tchart-labels=\"statisticsCtrl.totaux.dtLibelle\" \r\n\t\t\t\t\tchart-legend=\"true\" >\r\n\t\t\t\t</canvas>\r\n\t\t\t\t<div class=\"donut-inner\">\r\n\t\t\t\t\t<span>\r\n\t\t\t\t\t\t{{statisticsCtrl.modeTotal ?  statisticsCtrl.totaux.tot : statisticsCtrl.totaux.sans | currency:statisticsCtrl.totaux.symb }}\r\n\t\t\t\t\t</span>\r\n\t\t\t\t</div>\r\n\t\t</div> \r\n\t</div>\r\n</div>\r\n\r\n\r\n<div class=\"col twothird sheet-container\">\r\n\t<div class=\"sheet\">\r\n\t\t<div class=\"sheet-head\">\r\n\t\t\t<div class=\"sheet-title\">DEPENSES PAR JOURS</div>\r\n\t\t\t<div class=\"sheet-filter\">\r\n\t\t\t\t<md-input-container>\r\n\t\t\t\t\t<md-select ng-model=\"statisticsCtrl.selectedCategorie\" ng-require md-on-close=\"statisticsCtrl.refreshDepPerDay()\">\r\n\t\t\t\t\t\t<md-option value=\"*\">Toutes</md-option>\r\n\t\t\t\t\t\t<md-option ng-value=\"c\" ng-repeat=\"c in statisticsCtrl.categories\">{{ c.libelle }}</md-option>\r\n\t\t\t\t\t</md-select>\r\n\t\t\t\t</md-input-container>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t\t<div class=\"sheet-body\">\r\n\t\t\t<div class=\"charts_row\">\r\n\t\t\t\t<div class=\"charts_sheet\">\r\n\t\t\t\t\t<canvas class=\"chart chart-bar\" width=\"500\" chart-data=\"statisticsCtrl.depPerDay.val\" chart-labels=\"statisticsCtrl.depPerDay.lib\" chart-click=\"statisticsCtrl.clickDay\"></canvas>\r\n\t\t\t\t</div>\r\n\t\t\t</div>\r\n\t\t</div>\r\n\t</div>\r\n</div>";
+
+/***/ },
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*** IMPORTS FROM imports-loader ***/
@@ -4191,7 +4887,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 30 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -4203,7 +4899,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 31 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -4339,7 +5035,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 32 */
+/* 43 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var require;var require;/*** IMPORTS FROM imports-loader ***/
@@ -14985,7 +15681,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 33 */
+/* 44 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -15008,7 +15704,7 @@ webpackJsonp([0],[
 	    // Node/CommonJS
 	    module.exports = factory(
 	      typeof angular !== 'undefined' ? angular : __webpack_require__(2),
-	      typeof Chart !== 'undefined' ? Chart : __webpack_require__(34));
+	      typeof Chart !== 'undefined' ? Chart : __webpack_require__(45));
 	  }  else if (typeof define === 'function' && define.amd) {
 	    // AMD. Register as an anonymous module.
 	    define(['angular', 'chart'], factory);
@@ -15397,7 +16093,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 34 */
+/* 45 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -15408,57 +16104,57 @@ webpackJsonp([0],[
 	/**
 	 * @namespace Chart
 	 */
-	var Chart = __webpack_require__(35)();
+	var Chart = __webpack_require__(46)();
 
-	__webpack_require__(36)(Chart);
-	__webpack_require__(42)(Chart);
-	__webpack_require__(43)(Chart);
-	__webpack_require__(44)(Chart);
-	__webpack_require__(45)(Chart);
-	__webpack_require__(46)(Chart);
 	__webpack_require__(47)(Chart);
-	__webpack_require__(48)(Chart);
-	__webpack_require__(49)(Chart);
-	__webpack_require__(50)(Chart);
-	__webpack_require__(51)(Chart);
-	__webpack_require__(52)(Chart);
 	__webpack_require__(53)(Chart);
-
 	__webpack_require__(54)(Chart);
 	__webpack_require__(55)(Chart);
 	__webpack_require__(56)(Chart);
 	__webpack_require__(57)(Chart);
-
 	__webpack_require__(58)(Chart);
 	__webpack_require__(59)(Chart);
 	__webpack_require__(60)(Chart);
 	__webpack_require__(61)(Chart);
 	__webpack_require__(62)(Chart);
 	__webpack_require__(63)(Chart);
+	__webpack_require__(64)(Chart);
+
+	__webpack_require__(65)(Chart);
+	__webpack_require__(66)(Chart);
+	__webpack_require__(67)(Chart);
+	__webpack_require__(68)(Chart);
+
+	__webpack_require__(69)(Chart);
+	__webpack_require__(70)(Chart);
+	__webpack_require__(71)(Chart);
+	__webpack_require__(72)(Chart);
+	__webpack_require__(73)(Chart);
+	__webpack_require__(74)(Chart);
 
 	// Controllers must be loaded after elements
 	// See Chart.core.datasetController.dataElementType
-	__webpack_require__(182)(Chart);
-	__webpack_require__(183)(Chart);
-	__webpack_require__(184)(Chart);
-	__webpack_require__(185)(Chart);
-	__webpack_require__(186)(Chart);
-	__webpack_require__(187)(Chart);
-
-	__webpack_require__(188)(Chart);
-	__webpack_require__(189)(Chart);
-	__webpack_require__(190)(Chart);
-	__webpack_require__(191)(Chart);
-	__webpack_require__(192)(Chart);
 	__webpack_require__(193)(Chart);
 	__webpack_require__(194)(Chart);
+	__webpack_require__(195)(Chart);
+	__webpack_require__(196)(Chart);
+	__webpack_require__(197)(Chart);
+	__webpack_require__(198)(Chart);
+
+	__webpack_require__(199)(Chart);
+	__webpack_require__(200)(Chart);
+	__webpack_require__(201)(Chart);
+	__webpack_require__(202)(Chart);
+	__webpack_require__(203)(Chart);
+	__webpack_require__(204)(Chart);
+	__webpack_require__(205)(Chart);
 
 	window.Chart = module.exports = Chart;
 
 	}.call(window));
 
 /***/ },
-/* 35 */
+/* 46 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -15580,7 +16276,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 36 */
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -15592,7 +16288,7 @@ webpackJsonp([0],[
 	/* global document: false */
 	'use strict';
 
-	var color = __webpack_require__(37);
+	var color = __webpack_require__(48);
 
 	module.exports = function(Chart) {
 		// Global Chart helpers object for utility methods and classes
@@ -16636,7 +17332,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 37 */
+/* 48 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -16645,8 +17341,8 @@ webpackJsonp([0],[
 	(function() {
 
 	/* MIT license */
-	var convert = __webpack_require__(38);
-	var string = __webpack_require__(40);
+	var convert = __webpack_require__(49);
+	var string = __webpack_require__(51);
 
 	var Color = function (obj) {
 		if (obj instanceof Color) {
@@ -17133,7 +17829,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 38 */
+/* 49 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -17141,7 +17837,7 @@ webpackJsonp([0],[
 	var $ = __webpack_require__(1);
 	(function() {
 
-	var conversions = __webpack_require__(39);
+	var conversions = __webpack_require__(50);
 
 	var convert = function() {
 	   return new Converter();
@@ -17236,7 +17932,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 39 */
+/* 50 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -17946,7 +18642,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 40 */
+/* 51 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -17955,7 +18651,7 @@ webpackJsonp([0],[
 	(function() {
 
 	/* MIT license */
-	var colorNames = __webpack_require__(41);
+	var colorNames = __webpack_require__(52);
 
 	module.exports = {
 	   getRgba: getRgba,
@@ -18179,7 +18875,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 41 */
+/* 52 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -18340,7 +19036,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 42 */
+/* 53 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -18456,7 +19152,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 43 */
+/* 54 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -18564,7 +19260,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 44 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -18707,7 +19403,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 45 */
+/* 56 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -19409,7 +20105,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 46 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -19585,7 +20281,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 47 */
+/* 58 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -19918,7 +20614,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 48 */
+/* 59 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -19970,7 +20666,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 49 */
+/* 60 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -20111,7 +20807,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 50 */
+/* 61 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -20881,7 +21577,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 51 */
+/* 62 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -21097,7 +21793,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 52 */
+/* 63 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -21593,7 +22289,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 53 */
+/* 64 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -22319,7 +23015,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 54 */
+/* 65 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -22422,7 +23118,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 55 */
+/* 66 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -22609,7 +23305,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 56 */
+/* 67 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -22678,7 +23374,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 57 */
+/* 68 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -22785,7 +23481,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 58 */
+/* 69 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -22922,7 +23618,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 59 */
+/* 70 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -23063,7 +23759,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 60 */
+/* 71 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -23267,7 +23963,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 61 */
+/* 72 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -23545,7 +24241,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 62 */
+/* 73 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -23971,7 +24667,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 63 */
+/* 74 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -23982,7 +24678,7 @@ webpackJsonp([0],[
 	/* global window: false */
 	'use strict';
 
-	var moment = __webpack_require__(64);
+	var moment = __webpack_require__(75);
 	moment = typeof(moment) === 'function' ? moment : window.moment;
 
 	module.exports = function(Chart) {
@@ -24443,7 +25139,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 64 */
+/* 75 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(module) {/*** IMPORTS FROM imports-loader ***/
@@ -26280,7 +26976,7 @@ webpackJsonp([0],[
 	            module && module.exports) {
 	        try {
 	            oldLocale = globalLocale._abbr;
-	            __webpack_require__(66)("./" + name);
+	            __webpack_require__(77)("./" + name);
 	            // because defineLocale currently also sets the global locale, we
 	            // want to undo that for lazy loaded locales
 	            getSetGlobalLocale(oldLocale);
@@ -28916,10 +29612,10 @@ webpackJsonp([0],[
 	})));
 
 	}.call(window));
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(65)(module)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(76)(module)))
 
 /***/ },
-/* 65 */
+/* 76 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -28941,240 +29637,240 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 66 */
+/* 77 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var map = {
-		"./af": 67,
-		"./af.js": 67,
-		"./ar": 68,
-		"./ar-dz": 69,
-		"./ar-dz.js": 69,
-		"./ar-kw": 70,
-		"./ar-kw.js": 70,
-		"./ar-ly": 71,
-		"./ar-ly.js": 71,
-		"./ar-ma": 72,
-		"./ar-ma.js": 72,
-		"./ar-sa": 73,
-		"./ar-sa.js": 73,
-		"./ar-tn": 74,
-		"./ar-tn.js": 74,
-		"./ar.js": 68,
-		"./az": 75,
-		"./az.js": 75,
-		"./be": 76,
-		"./be.js": 76,
-		"./bg": 77,
-		"./bg.js": 77,
-		"./bn": 78,
-		"./bn.js": 78,
-		"./bo": 79,
-		"./bo.js": 79,
-		"./br": 80,
-		"./br.js": 80,
-		"./bs": 81,
-		"./bs.js": 81,
-		"./ca": 82,
-		"./ca.js": 82,
-		"./cs": 83,
-		"./cs.js": 83,
-		"./cv": 84,
-		"./cv.js": 84,
-		"./cy": 85,
-		"./cy.js": 85,
-		"./da": 86,
-		"./da.js": 86,
-		"./de": 87,
-		"./de-at": 88,
-		"./de-at.js": 88,
-		"./de-ch": 89,
-		"./de-ch.js": 89,
-		"./de.js": 87,
-		"./dv": 90,
-		"./dv.js": 90,
-		"./el": 91,
-		"./el.js": 91,
-		"./en-au": 92,
-		"./en-au.js": 92,
-		"./en-ca": 93,
-		"./en-ca.js": 93,
-		"./en-gb": 94,
-		"./en-gb.js": 94,
-		"./en-ie": 95,
-		"./en-ie.js": 95,
-		"./en-nz": 96,
-		"./en-nz.js": 96,
-		"./eo": 97,
-		"./eo.js": 97,
-		"./es": 98,
-		"./es-do": 99,
-		"./es-do.js": 99,
-		"./es.js": 98,
-		"./et": 100,
-		"./et.js": 100,
-		"./eu": 101,
-		"./eu.js": 101,
-		"./fa": 102,
-		"./fa.js": 102,
-		"./fi": 103,
-		"./fi.js": 103,
-		"./fo": 104,
-		"./fo.js": 104,
-		"./fr": 105,
-		"./fr-ca": 106,
-		"./fr-ca.js": 106,
-		"./fr-ch": 107,
-		"./fr-ch.js": 107,
-		"./fr.js": 105,
-		"./fy": 108,
-		"./fy.js": 108,
-		"./gd": 109,
-		"./gd.js": 109,
-		"./gl": 110,
-		"./gl.js": 110,
-		"./gom-latn": 111,
-		"./gom-latn.js": 111,
-		"./he": 112,
-		"./he.js": 112,
-		"./hi": 113,
-		"./hi.js": 113,
-		"./hr": 114,
-		"./hr.js": 114,
-		"./hu": 115,
-		"./hu.js": 115,
-		"./hy-am": 116,
-		"./hy-am.js": 116,
-		"./id": 117,
-		"./id.js": 117,
-		"./is": 118,
-		"./is.js": 118,
-		"./it": 119,
-		"./it.js": 119,
-		"./ja": 120,
-		"./ja.js": 120,
-		"./jv": 121,
-		"./jv.js": 121,
-		"./ka": 122,
-		"./ka.js": 122,
-		"./kk": 123,
-		"./kk.js": 123,
-		"./km": 124,
-		"./km.js": 124,
-		"./kn": 125,
-		"./kn.js": 125,
-		"./ko": 126,
-		"./ko.js": 126,
-		"./ky": 127,
-		"./ky.js": 127,
-		"./lb": 128,
-		"./lb.js": 128,
-		"./lo": 129,
-		"./lo.js": 129,
-		"./lt": 130,
-		"./lt.js": 130,
-		"./lv": 131,
-		"./lv.js": 131,
-		"./me": 132,
-		"./me.js": 132,
-		"./mi": 133,
-		"./mi.js": 133,
-		"./mk": 134,
-		"./mk.js": 134,
-		"./ml": 135,
-		"./ml.js": 135,
-		"./mr": 136,
-		"./mr.js": 136,
-		"./ms": 137,
-		"./ms-my": 138,
-		"./ms-my.js": 138,
-		"./ms.js": 137,
-		"./my": 139,
-		"./my.js": 139,
-		"./nb": 140,
-		"./nb.js": 140,
-		"./ne": 141,
-		"./ne.js": 141,
-		"./nl": 142,
-		"./nl-be": 143,
-		"./nl-be.js": 143,
-		"./nl.js": 142,
-		"./nn": 144,
-		"./nn.js": 144,
-		"./pa-in": 145,
-		"./pa-in.js": 145,
-		"./pl": 146,
-		"./pl.js": 146,
-		"./pt": 147,
-		"./pt-br": 148,
-		"./pt-br.js": 148,
-		"./pt.js": 147,
-		"./ro": 149,
-		"./ro.js": 149,
-		"./ru": 150,
-		"./ru.js": 150,
-		"./sd": 151,
-		"./sd.js": 151,
-		"./se": 152,
-		"./se.js": 152,
-		"./si": 153,
-		"./si.js": 153,
-		"./sk": 154,
-		"./sk.js": 154,
-		"./sl": 155,
-		"./sl.js": 155,
-		"./sq": 156,
-		"./sq.js": 156,
-		"./sr": 157,
-		"./sr-cyrl": 158,
-		"./sr-cyrl.js": 158,
-		"./sr.js": 157,
-		"./ss": 159,
-		"./ss.js": 159,
-		"./sv": 160,
-		"./sv.js": 160,
-		"./sw": 161,
-		"./sw.js": 161,
-		"./ta": 162,
-		"./ta.js": 162,
-		"./te": 163,
-		"./te.js": 163,
-		"./tet": 164,
-		"./tet.js": 164,
-		"./th": 165,
-		"./th.js": 165,
-		"./tl-ph": 166,
-		"./tl-ph.js": 166,
-		"./tlh": 167,
-		"./tlh.js": 167,
-		"./tr": 168,
-		"./tr.js": 168,
-		"./tzl": 169,
-		"./tzl.js": 169,
-		"./tzm": 170,
-		"./tzm-latn": 171,
-		"./tzm-latn.js": 171,
-		"./tzm.js": 170,
-		"./uk": 172,
-		"./uk.js": 172,
-		"./ur": 173,
-		"./ur.js": 173,
-		"./uz": 174,
-		"./uz-latn": 175,
-		"./uz-latn.js": 175,
-		"./uz.js": 174,
-		"./vi": 176,
-		"./vi.js": 176,
-		"./x-pseudo": 177,
-		"./x-pseudo.js": 177,
-		"./yo": 178,
-		"./yo.js": 178,
-		"./zh-cn": 179,
-		"./zh-cn.js": 179,
-		"./zh-hk": 180,
-		"./zh-hk.js": 180,
-		"./zh-tw": 181,
-		"./zh-tw.js": 181
+		"./af": 78,
+		"./af.js": 78,
+		"./ar": 79,
+		"./ar-dz": 80,
+		"./ar-dz.js": 80,
+		"./ar-kw": 81,
+		"./ar-kw.js": 81,
+		"./ar-ly": 82,
+		"./ar-ly.js": 82,
+		"./ar-ma": 83,
+		"./ar-ma.js": 83,
+		"./ar-sa": 84,
+		"./ar-sa.js": 84,
+		"./ar-tn": 85,
+		"./ar-tn.js": 85,
+		"./ar.js": 79,
+		"./az": 86,
+		"./az.js": 86,
+		"./be": 87,
+		"./be.js": 87,
+		"./bg": 88,
+		"./bg.js": 88,
+		"./bn": 89,
+		"./bn.js": 89,
+		"./bo": 90,
+		"./bo.js": 90,
+		"./br": 91,
+		"./br.js": 91,
+		"./bs": 92,
+		"./bs.js": 92,
+		"./ca": 93,
+		"./ca.js": 93,
+		"./cs": 94,
+		"./cs.js": 94,
+		"./cv": 95,
+		"./cv.js": 95,
+		"./cy": 96,
+		"./cy.js": 96,
+		"./da": 97,
+		"./da.js": 97,
+		"./de": 98,
+		"./de-at": 99,
+		"./de-at.js": 99,
+		"./de-ch": 100,
+		"./de-ch.js": 100,
+		"./de.js": 98,
+		"./dv": 101,
+		"./dv.js": 101,
+		"./el": 102,
+		"./el.js": 102,
+		"./en-au": 103,
+		"./en-au.js": 103,
+		"./en-ca": 104,
+		"./en-ca.js": 104,
+		"./en-gb": 105,
+		"./en-gb.js": 105,
+		"./en-ie": 106,
+		"./en-ie.js": 106,
+		"./en-nz": 107,
+		"./en-nz.js": 107,
+		"./eo": 108,
+		"./eo.js": 108,
+		"./es": 109,
+		"./es-do": 110,
+		"./es-do.js": 110,
+		"./es.js": 109,
+		"./et": 111,
+		"./et.js": 111,
+		"./eu": 112,
+		"./eu.js": 112,
+		"./fa": 113,
+		"./fa.js": 113,
+		"./fi": 114,
+		"./fi.js": 114,
+		"./fo": 115,
+		"./fo.js": 115,
+		"./fr": 116,
+		"./fr-ca": 117,
+		"./fr-ca.js": 117,
+		"./fr-ch": 118,
+		"./fr-ch.js": 118,
+		"./fr.js": 116,
+		"./fy": 119,
+		"./fy.js": 119,
+		"./gd": 120,
+		"./gd.js": 120,
+		"./gl": 121,
+		"./gl.js": 121,
+		"./gom-latn": 122,
+		"./gom-latn.js": 122,
+		"./he": 123,
+		"./he.js": 123,
+		"./hi": 124,
+		"./hi.js": 124,
+		"./hr": 125,
+		"./hr.js": 125,
+		"./hu": 126,
+		"./hu.js": 126,
+		"./hy-am": 127,
+		"./hy-am.js": 127,
+		"./id": 128,
+		"./id.js": 128,
+		"./is": 129,
+		"./is.js": 129,
+		"./it": 130,
+		"./it.js": 130,
+		"./ja": 131,
+		"./ja.js": 131,
+		"./jv": 132,
+		"./jv.js": 132,
+		"./ka": 133,
+		"./ka.js": 133,
+		"./kk": 134,
+		"./kk.js": 134,
+		"./km": 135,
+		"./km.js": 135,
+		"./kn": 136,
+		"./kn.js": 136,
+		"./ko": 137,
+		"./ko.js": 137,
+		"./ky": 138,
+		"./ky.js": 138,
+		"./lb": 139,
+		"./lb.js": 139,
+		"./lo": 140,
+		"./lo.js": 140,
+		"./lt": 141,
+		"./lt.js": 141,
+		"./lv": 142,
+		"./lv.js": 142,
+		"./me": 143,
+		"./me.js": 143,
+		"./mi": 144,
+		"./mi.js": 144,
+		"./mk": 145,
+		"./mk.js": 145,
+		"./ml": 146,
+		"./ml.js": 146,
+		"./mr": 147,
+		"./mr.js": 147,
+		"./ms": 148,
+		"./ms-my": 149,
+		"./ms-my.js": 149,
+		"./ms.js": 148,
+		"./my": 150,
+		"./my.js": 150,
+		"./nb": 151,
+		"./nb.js": 151,
+		"./ne": 152,
+		"./ne.js": 152,
+		"./nl": 153,
+		"./nl-be": 154,
+		"./nl-be.js": 154,
+		"./nl.js": 153,
+		"./nn": 155,
+		"./nn.js": 155,
+		"./pa-in": 156,
+		"./pa-in.js": 156,
+		"./pl": 157,
+		"./pl.js": 157,
+		"./pt": 158,
+		"./pt-br": 159,
+		"./pt-br.js": 159,
+		"./pt.js": 158,
+		"./ro": 160,
+		"./ro.js": 160,
+		"./ru": 161,
+		"./ru.js": 161,
+		"./sd": 162,
+		"./sd.js": 162,
+		"./se": 163,
+		"./se.js": 163,
+		"./si": 164,
+		"./si.js": 164,
+		"./sk": 165,
+		"./sk.js": 165,
+		"./sl": 166,
+		"./sl.js": 166,
+		"./sq": 167,
+		"./sq.js": 167,
+		"./sr": 168,
+		"./sr-cyrl": 169,
+		"./sr-cyrl.js": 169,
+		"./sr.js": 168,
+		"./ss": 170,
+		"./ss.js": 170,
+		"./sv": 171,
+		"./sv.js": 171,
+		"./sw": 172,
+		"./sw.js": 172,
+		"./ta": 173,
+		"./ta.js": 173,
+		"./te": 174,
+		"./te.js": 174,
+		"./tet": 175,
+		"./tet.js": 175,
+		"./th": 176,
+		"./th.js": 176,
+		"./tl-ph": 177,
+		"./tl-ph.js": 177,
+		"./tlh": 178,
+		"./tlh.js": 178,
+		"./tr": 179,
+		"./tr.js": 179,
+		"./tzl": 180,
+		"./tzl.js": 180,
+		"./tzm": 181,
+		"./tzm-latn": 182,
+		"./tzm-latn.js": 182,
+		"./tzm.js": 181,
+		"./uk": 183,
+		"./uk.js": 183,
+		"./ur": 184,
+		"./ur.js": 184,
+		"./uz": 185,
+		"./uz-latn": 186,
+		"./uz-latn.js": 186,
+		"./uz.js": 185,
+		"./vi": 187,
+		"./vi.js": 187,
+		"./x-pseudo": 188,
+		"./x-pseudo.js": 188,
+		"./yo": 189,
+		"./yo.js": 189,
+		"./zh-cn": 190,
+		"./zh-cn.js": 190,
+		"./zh-hk": 191,
+		"./zh-hk.js": 191,
+		"./zh-tw": 192,
+		"./zh-tw.js": 192
 	};
 	function webpackContext(req) {
 		return __webpack_require__(webpackContextResolve(req));
@@ -29187,11 +29883,11 @@ webpackJsonp([0],[
 	};
 	webpackContext.resolve = webpackContextResolve;
 	module.exports = webpackContext;
-	webpackContext.id = 66;
+	webpackContext.id = 77;
 
 
 /***/ },
-/* 67 */
+/* 78 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -29204,7 +29900,7 @@ webpackJsonp([0],[
 	//! author : Werner Mollentze : https://github.com/wernerm
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -29275,7 +29971,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 68 */
+/* 79 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -29290,7 +29986,7 @@ webpackJsonp([0],[
 	//! author : forabi https://github.com/forabi
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -29428,7 +30124,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 69 */
+/* 80 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -29441,7 +30137,7 @@ webpackJsonp([0],[
 	//! author : Noureddine LOUAHEDJ : https://github.com/noureddineme
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -29498,7 +30194,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 70 */
+/* 81 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -29511,7 +30207,7 @@ webpackJsonp([0],[
 	//! author : Nusret Parlak: https://github.com/nusretparlak
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -29568,7 +30264,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 71 */
+/* 82 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -29581,7 +30277,7 @@ webpackJsonp([0],[
 	//! author : Ali Hmer: https://github.com/kikoanis
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -29705,7 +30401,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 72 */
+/* 83 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -29719,7 +30415,7 @@ webpackJsonp([0],[
 	//! author : Abdel Said : https://github.com/abdelsaid
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -29776,7 +30472,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 73 */
+/* 84 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -29789,7 +30485,7 @@ webpackJsonp([0],[
 	//! author : Suhail Alkowaileet : https://github.com/xsoh
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -29892,7 +30588,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 74 */
+/* 85 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -29905,7 +30601,7 @@ webpackJsonp([0],[
 	//! author : Nader Toukabri : https://github.com/naderio
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -29962,7 +30658,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 75 */
+/* 86 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -29975,7 +30671,7 @@ webpackJsonp([0],[
 	//! author : topchiyev : https://github.com/topchiyev
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -30078,7 +30774,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 76 */
+/* 87 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -30093,7 +30789,7 @@ webpackJsonp([0],[
 	//! Author : Menelion Elensúle : https://github.com/Oire
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -30223,7 +30919,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 77 */
+/* 88 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -30236,7 +30932,7 @@ webpackJsonp([0],[
 	//! author : Krasen Borisov : https://github.com/kraz
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -30324,7 +31020,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 78 */
+/* 89 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -30337,7 +31033,7 @@ webpackJsonp([0],[
 	//! author : Kaushik Gandhi : https://github.com/kaushikgandhi
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -30454,7 +31150,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 79 */
+/* 90 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -30467,7 +31163,7 @@ webpackJsonp([0],[
 	//! author : Thupten N. Chakrishar : https://github.com/vajradog
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -30584,7 +31280,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 80 */
+/* 91 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -30597,7 +31293,7 @@ webpackJsonp([0],[
 	//! author : Jean-Baptiste Le Duigou : https://github.com/jbleduigou
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -30703,7 +31399,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 81 */
+/* 92 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -30717,7 +31413,7 @@ webpackJsonp([0],[
 	//! based on (hr) translation by Bojan Marković
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -30857,7 +31553,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 82 */
+/* 93 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -30870,7 +31566,7 @@ webpackJsonp([0],[
 	//! author : Juan G. Hurtado : https://github.com/juanghurtado
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -30956,7 +31652,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 83 */
+/* 94 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -30969,7 +31665,7 @@ webpackJsonp([0],[
 	//! author : petrbela : https://github.com/petrbela
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -31139,7 +31835,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 84 */
+/* 95 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -31152,7 +31848,7 @@ webpackJsonp([0],[
 	//! author : Anatoly Mironov : https://github.com/mirontoli
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -31213,7 +31909,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 85 */
+/* 96 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -31227,7 +31923,7 @@ webpackJsonp([0],[
 	//! author : https://github.com/ryangreaves
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -31305,7 +32001,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 86 */
+/* 97 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -31318,7 +32014,7 @@ webpackJsonp([0],[
 	//! author : Ulrik Nielsen : https://github.com/mrbase
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -31376,7 +32072,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 87 */
+/* 98 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -31391,7 +32087,7 @@ webpackJsonp([0],[
 	//! author : Mikolaj Dadela : https://github.com/mik01aj
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -31465,7 +32161,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 88 */
+/* 99 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -31481,7 +32177,7 @@ webpackJsonp([0],[
 	//! author : Mikolaj Dadela : https://github.com/mik01aj
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -31555,7 +32251,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 89 */
+/* 100 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -31568,7 +32264,7 @@ webpackJsonp([0],[
 	//! author : sschueller : https://github.com/sschueller
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -31644,7 +32340,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 90 */
+/* 101 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -31657,7 +32353,7 @@ webpackJsonp([0],[
 	//! author : Jawish Hameed : https://github.com/jawish
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -31755,7 +32451,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 91 */
+/* 102 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -31768,7 +32464,7 @@ webpackJsonp([0],[
 	//! author : Aggelos Karalias : https://github.com/mehiel
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -31866,7 +32562,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 92 */
+/* 103 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -31879,7 +32575,7 @@ webpackJsonp([0],[
 	//! author : Jared Morse : https://github.com/jarcoal
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -31944,7 +32640,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 93 */
+/* 104 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -31957,7 +32653,7 @@ webpackJsonp([0],[
 	//! author : Jonathan Abourbih : https://github.com/jonbca
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -32018,7 +32714,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 94 */
+/* 105 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -32031,7 +32727,7 @@ webpackJsonp([0],[
 	//! author : Chris Gedrim : https://github.com/chrisgedrim
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -32096,7 +32792,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 95 */
+/* 106 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -32109,7 +32805,7 @@ webpackJsonp([0],[
 	//! author : Chris Cartlidge : https://github.com/chriscartlidge
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -32174,7 +32870,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 96 */
+/* 107 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -32187,7 +32883,7 @@ webpackJsonp([0],[
 	//! author : Luke McGregor : https://github.com/lukemcgregor
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -32252,7 +32948,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 97 */
+/* 108 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -32267,7 +32963,7 @@ webpackJsonp([0],[
 	//! comment : miestasmia corrected the translation by colindean
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -32336,7 +33032,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 98 */
+/* 109 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -32349,7 +33045,7 @@ webpackJsonp([0],[
 	//! author : Julio Napurí : https://github.com/julionc
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -32430,7 +33126,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 99 */
+/* 110 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -32442,7 +33138,7 @@ webpackJsonp([0],[
 	//! locale : Spanish (Dominican Republic) [es-do]
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -32523,7 +33219,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 100 */
+/* 111 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -32537,7 +33233,7 @@ webpackJsonp([0],[
 	//! improvements : Illimar Tambek : https://github.com/ragulka
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -32614,7 +33310,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 101 */
+/* 112 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -32627,7 +33323,7 @@ webpackJsonp([0],[
 	//! author : Eneko Illarramendi : https://github.com/eillarra
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -32691,7 +33387,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 102 */
+/* 113 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -32704,7 +33400,7 @@ webpackJsonp([0],[
 	//! author : Ebrahim Byagowi : https://github.com/ebraminio
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -32809,7 +33505,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 103 */
+/* 114 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -32822,7 +33518,7 @@ webpackJsonp([0],[
 	//! author : Tarmo Aidantausta : https://github.com/bleadof
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -32927,7 +33623,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 104 */
+/* 115 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -32940,7 +33636,7 @@ webpackJsonp([0],[
 	//! author : Ragnar Johannesen : https://github.com/ragnar123
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -32998,7 +33694,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 105 */
+/* 116 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -33011,7 +33707,7 @@ webpackJsonp([0],[
 	//! author : John Fischer : https://github.com/jfroffice
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -33092,7 +33788,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 106 */
+/* 117 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -33105,7 +33801,7 @@ webpackJsonp([0],[
 	//! author : Jonathan Abourbih : https://github.com/jonbca
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -33177,7 +33873,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 107 */
+/* 118 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -33190,7 +33886,7 @@ webpackJsonp([0],[
 	//! author : Gaspard Bucher : https://github.com/gaspard
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -33266,7 +33962,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 108 */
+/* 119 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -33279,7 +33975,7 @@ webpackJsonp([0],[
 	//! author : Robin van der Vliet : https://github.com/robin0van0der0v
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -33352,7 +34048,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 109 */
+/* 120 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -33365,7 +34061,7 @@ webpackJsonp([0],[
 	//! author : Jon Ashdown : https://github.com/jonashdown
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -33439,7 +34135,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 110 */
+/* 121 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -33452,7 +34148,7 @@ webpackJsonp([0],[
 	//! author : Juan G. Hurtado : https://github.com/juanghurtado
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -33527,7 +34223,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 111 */
+/* 122 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -33540,7 +34236,7 @@ webpackJsonp([0],[
 	//! author : The Discoverer : https://github.com/WikiDiscoverer
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -33660,7 +34356,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 112 */
+/* 123 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -33675,7 +34371,7 @@ webpackJsonp([0],[
 	//! author : Tal Ater : https://github.com/TalAter
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -33770,7 +34466,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 113 */
+/* 124 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -33783,7 +34479,7 @@ webpackJsonp([0],[
 	//! author : Mayank Singhal : https://github.com/mayanksinghal
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -33905,7 +34601,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 114 */
+/* 125 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -33918,7 +34614,7 @@ webpackJsonp([0],[
 	//! author : Bojan Marković : https://github.com/bmarkovic
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -34061,7 +34757,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 115 */
+/* 126 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -34074,7 +34770,7 @@ webpackJsonp([0],[
 	//! author : Adam Brunner : https://github.com/adambrunner
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -34181,7 +34877,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 116 */
+/* 127 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -34194,7 +34890,7 @@ webpackJsonp([0],[
 	//! author : Armendarabyan : https://github.com/armendarabyan
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -34287,7 +34983,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 117 */
+/* 128 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -34301,7 +34997,7 @@ webpackJsonp([0],[
 	//! reference: http://id.wikisource.org/wiki/Pedoman_Umum_Ejaan_Bahasa_Indonesia_yang_Disempurnakan
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -34381,7 +35077,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 118 */
+/* 129 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -34394,7 +35090,7 @@ webpackJsonp([0],[
 	//! author : Hinrik Örn Sigurðsson : https://github.com/hinrik
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -34519,7 +35215,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 119 */
+/* 130 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -34533,7 +35229,7 @@ webpackJsonp([0],[
 	//! author: Mattia Larentis: https://github.com/nostalgiaz
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -34600,7 +35296,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 120 */
+/* 131 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -34613,7 +35309,7 @@ webpackJsonp([0],[
 	//! author : LI Long : https://github.com/baryon
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -34691,7 +35387,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 121 */
+/* 132 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -34705,7 +35401,7 @@ webpackJsonp([0],[
 	//! reference: http://jv.wikipedia.org/wiki/Basa_Jawa
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -34785,7 +35481,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 122 */
+/* 133 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -34798,7 +35494,7 @@ webpackJsonp([0],[
 	//! author : Irakli Janiashvili : https://github.com/irakli-janiashvili
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -34885,7 +35581,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 123 */
+/* 134 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -34898,7 +35594,7 @@ webpackJsonp([0],[
 	//! authors : Nurlan Rakhimzhanov : https://github.com/nurlan
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -34983,7 +35679,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 124 */
+/* 135 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -34996,7 +35692,7 @@ webpackJsonp([0],[
 	//! author : Kruy Vanna : https://github.com/kruyvanna
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -35052,7 +35748,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 125 */
+/* 136 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -35065,7 +35761,7 @@ webpackJsonp([0],[
 	//! author : Rajeev Naik : https://github.com/rajeevnaikte
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -35189,7 +35885,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 126 */
+/* 137 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -35203,7 +35899,7 @@ webpackJsonp([0],[
 	//! author : Jeeeyul Lee <jeeeyul@gmail.com>
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -35269,7 +35965,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 127 */
+/* 138 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -35282,7 +35978,7 @@ webpackJsonp([0],[
 	//! author : Chyngyz Arystan uulu : https://github.com/chyngyz
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -35368,7 +36064,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 128 */
+/* 139 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -35382,7 +36078,7 @@ webpackJsonp([0],[
 	//! author : David Raison : https://github.com/kwisatz
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -35516,7 +36212,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 129 */
+/* 140 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -35529,7 +36225,7 @@ webpackJsonp([0],[
 	//! author : Ryan Hart : https://github.com/ryanhart2
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -35597,7 +36293,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 130 */
+/* 141 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -35610,7 +36306,7 @@ webpackJsonp([0],[
 	//! author : Mindaugas Mozūras : https://github.com/mmozuras
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -35725,7 +36421,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 131 */
+/* 142 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -35739,7 +36435,7 @@ webpackJsonp([0],[
 	//! author : Jānis Elmeris : https://github.com/JanisE
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -35833,7 +36529,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 132 */
+/* 143 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -35846,7 +36542,7 @@ webpackJsonp([0],[
 	//! author : Miodrag Nikač <miodrag@restartit.me> : https://github.com/miodragnikac
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -35955,7 +36651,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 133 */
+/* 144 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -35968,7 +36664,7 @@ webpackJsonp([0],[
 	//! author : John Corrigan <robbiecloset@gmail.com> : https://github.com/johnideal
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -36030,7 +36726,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 134 */
+/* 145 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -36043,7 +36739,7 @@ webpackJsonp([0],[
 	//! author : Borislav Mickov : https://github.com/B0k0
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -36131,7 +36827,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 135 */
+/* 146 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -36144,7 +36840,7 @@ webpackJsonp([0],[
 	//! author : Floyd Pink : https://github.com/floydpink
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -36223,7 +36919,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 136 */
+/* 147 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -36237,7 +36933,7 @@ webpackJsonp([0],[
 	//! author : Vivek Athalye : https://github.com/vnathalye
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -36393,7 +37089,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 137 */
+/* 148 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -36406,7 +37102,7 @@ webpackJsonp([0],[
 	//! author : Weldan Jamili : https://github.com/weldan
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -36486,7 +37182,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 138 */
+/* 149 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -36500,7 +37196,7 @@ webpackJsonp([0],[
 	//! author : Weldan Jamili : https://github.com/weldan
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -36580,7 +37276,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 139 */
+/* 150 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -36595,7 +37291,7 @@ webpackJsonp([0],[
 	//! author : Tin Aung Lin : https://github.com/thanyawzinmin
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -36687,7 +37383,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 140 */
+/* 151 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -36701,7 +37397,7 @@ webpackJsonp([0],[
 	//!           Sigurd Gartmann : https://github.com/sigurdga
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -36761,7 +37457,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 141 */
+/* 152 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -36774,7 +37470,7 @@ webpackJsonp([0],[
 	//! author : suvash : https://github.com/suvash
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -36895,7 +37591,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 142 */
+/* 153 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -36909,7 +37605,7 @@ webpackJsonp([0],[
 	//! author : Jacob Middag : https://github.com/middagj
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -36994,7 +37690,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 143 */
+/* 154 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -37008,7 +37704,7 @@ webpackJsonp([0],[
 	//! author : Jacob Middag : https://github.com/middagj
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -37093,7 +37789,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 144 */
+/* 155 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -37106,7 +37802,7 @@ webpackJsonp([0],[
 	//! author : https://github.com/mechuwind
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -37164,7 +37860,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 145 */
+/* 156 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -37177,7 +37873,7 @@ webpackJsonp([0],[
 	//! author : Harpreet Singh : https://github.com/harpreetkhalsagtbit
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -37299,7 +37995,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 146 */
+/* 157 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -37312,7 +38008,7 @@ webpackJsonp([0],[
 	//! author : Rafal Hirsz : https://github.com/evoL
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -37417,7 +38113,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 147 */
+/* 158 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -37430,7 +38126,7 @@ webpackJsonp([0],[
 	//! author : Jefferson : https://github.com/jalex79
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -37493,7 +38189,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 148 */
+/* 159 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -37506,7 +38202,7 @@ webpackJsonp([0],[
 	//! author : Caio Ribeiro Pereira : https://github.com/caio-ribeiro-pereira
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -37565,7 +38261,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 149 */
+/* 160 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -37579,7 +38275,7 @@ webpackJsonp([0],[
 	//! author : Valentin Agachi : https://github.com/avaly
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -37651,7 +38347,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 150 */
+/* 161 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -37666,7 +38362,7 @@ webpackJsonp([0],[
 	//! author : Коренберг Марк : https://github.com/socketpair
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -37845,7 +38541,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 151 */
+/* 162 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -37858,7 +38554,7 @@ webpackJsonp([0],[
 	//! author : Narain Sagar : https://github.com/narainsagar
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -37954,7 +38650,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 152 */
+/* 163 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -37967,7 +38663,7 @@ webpackJsonp([0],[
 	//! authors : Bård Rolstad Henriksen : https://github.com/karamell
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -38026,7 +38722,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 153 */
+/* 164 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -38039,7 +38735,7 @@ webpackJsonp([0],[
 	//! author : Sampath Sitinamaluwa : https://github.com/sampathsris
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -38108,7 +38804,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 154 */
+/* 165 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -38122,7 +38818,7 @@ webpackJsonp([0],[
 	//! based on work of petrbela : https://github.com/petrbela
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -38269,7 +38965,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 155 */
+/* 166 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -38282,7 +38978,7 @@ webpackJsonp([0],[
 	//! author : Robert Sedovšek : https://github.com/sedovsek
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -38442,7 +39138,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 156 */
+/* 167 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -38457,7 +39153,7 @@ webpackJsonp([0],[
 	//! author : Oerd Cukalla : https://github.com/oerd
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -38523,7 +39219,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 157 */
+/* 168 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -38536,7 +39232,7 @@ webpackJsonp([0],[
 	//! author : Milan Janačković<milanjanackovic@gmail.com> : https://github.com/milan-j
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -38644,7 +39340,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 158 */
+/* 169 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -38657,7 +39353,7 @@ webpackJsonp([0],[
 	//! author : Milan Janačković<milanjanackovic@gmail.com> : https://github.com/milan-j
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -38765,7 +39461,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 159 */
+/* 170 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -38778,7 +39474,7 @@ webpackJsonp([0],[
 	//! author : Nicolai Davies<mail@nicolai.io> : https://github.com/nicolaidavies
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -38865,7 +39561,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 160 */
+/* 171 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -38878,7 +39574,7 @@ webpackJsonp([0],[
 	//! author : Jens Alm : https://github.com/ulmus
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -38945,7 +39641,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 161 */
+/* 172 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -38958,7 +39654,7 @@ webpackJsonp([0],[
 	//! author : Fahad Kassim : https://github.com/fadsel
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -39015,7 +39711,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 162 */
+/* 173 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -39028,7 +39724,7 @@ webpackJsonp([0],[
 	//! author : Arjunkumar Krishnamoorthy : https://github.com/tk120404
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -39156,7 +39852,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 163 */
+/* 174 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -39169,7 +39865,7 @@ webpackJsonp([0],[
 	//! author : Krishna Chaitanya Thota : https://github.com/kcthota
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -39256,7 +39952,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 164 */
+/* 175 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -39270,7 +39966,7 @@ webpackJsonp([0],[
 	//! author : Onorio De J. Afonso : https://github.com/marobo
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -39335,7 +40031,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 165 */
+/* 176 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -39348,7 +40044,7 @@ webpackJsonp([0],[
 	//! author : Kridsada Thanabulpong : https://github.com/sirn
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -39413,7 +40109,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 166 */
+/* 177 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -39426,7 +40122,7 @@ webpackJsonp([0],[
 	//! author : Dan Hagman : https://github.com/hagmandan
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -39486,7 +40182,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 167 */
+/* 178 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -39499,7 +40195,7 @@ webpackJsonp([0],[
 	//! author : Dominika Kruk : https://github.com/amaranthrose
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -39617,7 +40313,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 168 */
+/* 179 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -39631,7 +40327,7 @@ webpackJsonp([0],[
 	//!           Burak Yiğit Kaya: https://github.com/BYK
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -39718,7 +40414,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 169 */
+/* 180 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -39732,7 +40428,7 @@ webpackJsonp([0],[
 	//! author : Iustì Canun
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -39820,7 +40516,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 170 */
+/* 181 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -39833,7 +40529,7 @@ webpackJsonp([0],[
 	//! author : Abdel Said : https://github.com/abdelsaid
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -39889,7 +40585,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 171 */
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -39902,7 +40598,7 @@ webpackJsonp([0],[
 	//! author : Abdel Said : https://github.com/abdelsaid
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -39958,7 +40654,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 172 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -39972,7 +40668,7 @@ webpackJsonp([0],[
 	//! Author : Menelion Elensúle : https://github.com/Oire
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -40120,7 +40816,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 173 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -40134,7 +40830,7 @@ webpackJsonp([0],[
 	//! author : Zack : https://github.com/ZackVision
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -40230,7 +40926,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 174 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -40243,7 +40939,7 @@ webpackJsonp([0],[
 	//! author : Sardor Muminov : https://github.com/muminoff
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -40299,7 +40995,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 175 */
+/* 186 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -40312,7 +41008,7 @@ webpackJsonp([0],[
 	//! author : Rasulbek Mirzayev : github.com/Rasulbeeek
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -40368,7 +41064,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 176 */
+/* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -40381,7 +41077,7 @@ webpackJsonp([0],[
 	//! author : Bang Nguyen : https://github.com/bangnk
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -40458,7 +41154,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 177 */
+/* 188 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -40471,7 +41167,7 @@ webpackJsonp([0],[
 	//! author : Andrew Hood : https://github.com/andrewhood125
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -40537,7 +41233,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 178 */
+/* 189 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -40550,7 +41246,7 @@ webpackJsonp([0],[
 	//! author : Atolagbe Abisoye : https://github.com/andela-batolagbe
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -40608,7 +41304,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 179 */
+/* 190 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -40622,7 +41318,7 @@ webpackJsonp([0],[
 	//! author : Zeno Zeng : https://github.com/zenozeng
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -40730,7 +41426,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 180 */
+/* 191 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -40745,7 +41441,7 @@ webpackJsonp([0],[
 	//! author : Konstantin : https://github.com/skfd
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -40846,7 +41542,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 181 */
+/* 192 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -40860,7 +41556,7 @@ webpackJsonp([0],[
 	//! author : Chris Lam : https://github.com/hehachris
 
 	;(function (global, factory) {
-	    true ? factory(__webpack_require__(64)) :
+	    true ? factory(__webpack_require__(75)) :
 	   typeof define === 'function' && define.amd ? define(['../moment'], factory) :
 	   factory(global.moment)
 	}(this, (function (moment) { 'use strict';
@@ -40961,7 +41657,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 182 */
+/* 193 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -41546,7 +42242,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 183 */
+/* 194 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -41680,7 +42376,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 184 */
+/* 195 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -41983,7 +42679,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 185 */
+/* 196 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -42345,7 +43041,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 186 */
+/* 197 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -42572,7 +43268,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 187 */
+/* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -42772,7 +43468,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 188 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -42795,7 +43491,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 189 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -42817,7 +43513,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 190 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -42840,7 +43536,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 191 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -42863,7 +43559,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 192 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -42886,7 +43582,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 193 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -42910,7 +43606,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 194 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*** IMPORTS FROM imports-loader ***/
@@ -42969,7 +43665,7 @@ webpackJsonp([0],[
 	}.call(window));
 
 /***/ },
-/* 195 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -43004,7 +43700,7 @@ webpackJsonp([0],[
 	                series: {
 	                    regions: [{
 	                            values: [],
-	                            scale: ['#BBD3FB', '#0C67FF'],
+	                            scale: ['#F58484', '#FB0000'],
 	                            normalizeFunction: 'linear',
 	                            min: 1, max: 5
 	                        }]

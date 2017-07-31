@@ -9,8 +9,8 @@ export class CountriesService implements ICountriesService {
 	}
 	
 	public getCountries() {
-		return this.$http.get(`http://localhost:3000/api/countries`)
-			.then( response => response.data )
+		return this.$http.get(`/api/countries`)
+			.then( response => response.data['countries'] )
 			.catch( error => console.log("Erreur getCountries" + error.data) );
 	}
 }

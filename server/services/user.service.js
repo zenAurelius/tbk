@@ -9,6 +9,7 @@ service.getById = getById;
 service.getByUsername = getByUsername;
 service.create = create;
 service.validPassword = validPassword;
+service.getFriends = getFriends;
 //service.update = update;
 //service.delete = _delete;
  
@@ -32,6 +33,8 @@ function create(params) {
 		//Création du nouveau User
 		var newUser = {};
 		newUser.username = params.username;
+		newUser.firstname = params.firstname;
+		newUser.lastname = params.lastname;
 		var hashedPwd = hashPwd(params.password);
 		newUser.password = hashedPwd.hash;
 		newUser.salt = hashedPwd.salt;
@@ -58,12 +61,42 @@ function getById(id) {
 		if (err) deferred.reject(err);
  
         if (user) {
-			var foundUser = {_id: user._id, username: user.username};
+			var foundUser = {_id: user._id, username: user.username, firstname: user.firstname, lastname: user.lastname, friends: user.friends};
             deferred.resolve(foundUser);
         } else {
              deferred.reject();
         }
 	});
+	
+	return deferred.promise;
+}
+
+function getFriends(id) {
+	var deferred = Q.defer();
+	
+	getById(id)
+		.then( user => {
+			console.log(user);
+			var friends = []
+			user.friends.forEach( f => friends.push(new ObjectId(f)));
+			dbProvider.db.collection(COLNAME).find( { _id : { $in : friends } }).toArray(function(err, users){
+				console.log("err = " + err);
+				console.log("user = " + users);
+				if (err) deferred.reject(err);
+		 
+				if (users) {
+					var foundUsers = [];
+					users.forEach( user =>
+						foundUsers.push({_id: user._id, username: user.username, firstname: user.firstname, lastname: user.lastname})
+					);
+					console.log(foundUsers);
+					deferred.resolve(foundUsers);
+				} else {
+					 deferred.reject();
+				}
+			});
+		})
+		.catch( function (err) {deferred.reject()} );
 	
 	return deferred.promise;
 }

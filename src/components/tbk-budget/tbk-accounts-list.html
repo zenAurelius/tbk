@@ -1,0 +1,116 @@
+<div class="sheet">
+
+
+	<div class="sheet-head">
+		<div class="sheet-title">LISTE DES COMPTES DE VOYAGE</div>
+	</div>
+	
+	
+	<div class="sheet-body">
+		<table class="tbk-table">
+			<thead>
+				<tr><th>Type</th><th>Devise</th><th>Montant</th></tr>
+			</thead>
+			<tbody id="account_list_body">
+				<tr ng-repeat="x in accountsListCtrl.accounts" ng-click="accountsListCtrl.selectAccount(x)" ng-class="{selectionnable: true, selected: x == accountsListCtrl.selectedAccount}">
+					<td>{{ x.typeLibelle }}</td>
+					<td>{{ x.deviseLibelle }}</td>
+					<td>{{ x.montant | currency:x.devise.sym }} {{x.montantMain}}</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<div class="actions" ng-show="accountsListCtrl.shownAction == 'action'">
+			<button type="button" class="bouton" ng-click="accountsListCtrl.openAddAccount()">Ajouter</button>
+			<button type="button" class="bouton" ng-disabled="!accountsListCtrl.selectedAccount" ng-click="accountsListCtrl.shownAction = 'update'">Modifier</button>
+			<button type="button" class="bouton" ng-disabled="!accountsListCtrl.selectedAccount" ng-click="accountsListCtrl.shownAction = 'delete'">Supprimer</button>
+		</div>
+		
+		<div ng-show="accountsListCtrl.shownAction == 'add'" class="modal-window">
+			
+			<div class="sheet-head">
+				<div class="sheet-title">Ajouter un compte</div>
+			</div>
+			
+			<form novalidate name="addForm">
+				<div layout='row' layout-fill layout-margin layout-align='start'>
+					<md-input-container>
+						<label>Type :</label>
+						<md-select ng-model="accountsListCtrl.addedAccount.type" ng-require >
+							<md-option value="BNK">Bancaire</md-option>
+							<md-option value="CSH">Espèces</md-option>
+							<md-option value="TVL">Travelers</md-option>
+						</md-select>
+					</md-input-container>
+					<md-input-container>
+						<label>Devise (code) :</label>
+						<input ng-model="accountsListCtrl.addedAccount.devise.code" ng-require >
+					</md-input-container>
+					<md-input-container>
+						<label>Devise (symbole) :</label>
+						<input ng-model="accountsListCtrl.addedAccount.devise.sym">
+					</md-input-container>
+				</div>	
+				<div class="actions">
+					<input type="button" value="Ajouter" class="bouton" ng-click="accountsListCtrl.addAccount()" ng-disabled="!addForm.$valid"/>
+					<button type="button" class="bouton" ng-click="accountsListCtrl.shownAction = 'action'">Annuler</button>
+				</div>
+			</form>
+		</div>
+
+		<div ng-show="accountsListCtrl.shownAction == 'delete'" class="modal-window">
+			
+			<div class="sheet-head">
+				<div class="sheet-title">Supprimer un compte</div>
+			</div>
+				<span>Confirmer la suppression du compte.<span>
+				<div class="actions">
+					<input type="button" value="Supprimer" class="bouton" ng-click="accountsListCtrl.deleteAccount()" />
+					<button type="button" class="bouton" ng-click="accountsListCtrl.shownAction = 'action'">Annuler</button>
+				</div>
+			</form>
+		</div>
+		
+		
+		<!--<div ng-show="travelsListCtrl.shownAction == 'update'" class="modal-window">
+			
+			<div class="sheet-head">
+				<div class="sheet-title">Modifier un voyage</div>
+			</div>
+			
+			<form novalidate name="updForm">
+				<div layout='row' layout-fill layout-margin layout-align='start'>
+					<md-input-container>
+						<label>Date Départ :</label>
+							<md-datepicker ng-model="travelsListCtrl.selectedTravel.departDate" ng-require></md-datepicker>
+					</md-input-container>
+					<md-input-container>
+						<label>Date Retour :</label>
+							<md-datepicker ng-model="travelsListCtrl.selectedTravel.returnDate" ng-require></md-datepicker>
+					</md-input-container>
+					<md-input-container>
+						<label>Pays :</label>
+						<md-select ng-model="travelsListCtrl.selectedTravel.countries" ng-model-options="{trackBy: '$value._id'}" ng-require multiple>
+							<md-option ng-value="c" ng-repeat="c in travelsListCtrl.countries">{{ c.name_fr }}</md-option>
+						</md-select>
+					</md-input-container>
+
+					<md-input-container>
+						<label>Avec :</label>
+						<md-select ng-model="travelsListCtrl.selectedTravel.users" ng-model-options="{trackBy: '$value._id'}" multiple>
+							<md-option ng-value="u" ng-repeat="u in travelsListCtrl.friends">{{ u.firstname }}</md-option>
+						</md-select>
+					</md-input-container>
+				</div>	
+				<div class="actions">
+					<input type="button" value="Modifier" class="bouton" ng-click="travelsListCtrl.updateTravel()" ng-disabled="!addForm.$valid"/>
+					<button type="button" id="cancel_add_travel" class="bouton" data-ng-click="travelsListCtrl.shownAction = 'action'">Annuler</button>
+				</div>
+			</form>
+		</div>
+		
+	</div>-->
+	
+	
+	
+</div>

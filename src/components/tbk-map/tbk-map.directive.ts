@@ -29,7 +29,7 @@ export class TbkMap implements ng.IDirective {
                 series: {
 					regions: [{
 						values: [],
-						scale: ['#BBD3FB', '#0C67FF'],
+						scale: ['#F58484', '#FB0000'],
 						normalizeFunction: 'linear',
 						min:1, max:5
 						}]

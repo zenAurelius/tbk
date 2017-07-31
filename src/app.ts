@@ -14,8 +14,8 @@ import { UsersService }			from './services/users.service';
 import { AuthenticationService}	from './services/authentication.service';
 import { TravelsService }		from './services/travels.service';
 import { CountriesService }		from './services/countries.service';
-//import { AccountsService }		from './services/accounts.service';
-// import { OperationsService }		from './services/operations.service';
+import { AccountsService }		from './services/accounts.service';
+import { OperationsService }		from './services/operations.service';
 // import { ItineraryService }		from './services/itinerary.service';
 
 import { TbkMain } 				from './components/tbk-main/tbk-main.component';
@@ -23,10 +23,10 @@ import { TbkAccueil } 			from './components/tbk-accueil/tbk-accueil.component';
 import { TbkAuthentication }	from './components/tbk-authentication/tbk-authentication.component';
 import { TbkTravels } 			from './components/tbk-travels/tbk-travels.component';
 import { TbkTravelsList } 		from './components/tbk-travels/tbk-travels-list.component';
-// import { TbkBudget } 			from './components/tbk-budget/tbk-budget.component';
-// import { TbkAccountsList }		from './components/tbk-budget/tbk-accounts-list.component';
-// import { TbkOperationsList }	from './components/tbk-budget/tbk-operations-list.component';
-// import { TbkBudgetStatistics }	from './components/tbk-budget/tbk-budget-statistics.component';
+import { TbkBudget } 			from './components/tbk-budget/tbk-budget.component';
+import { TbkAccountsList }		from './components/tbk-budget/tbk-accounts-list.component';
+import { TbkOperationsList }	from './components/tbk-budget/tbk-operations-list.component';
+import { TbkBudgetStatistics }	from './components/tbk-budget/tbk-budget-statistics.component';
 // import { TbkItineraire } 		from './components/tbk-itineraire/tbk-itineraire.component';
 // import { TbkCalendar } 			from './components/tbk-itineraire/tbk-calendar.component';
 
@@ -42,8 +42,8 @@ angular.module('tbk', ['ngMaterial', 'ngRoute', 'offClick', 'chart.js'])
 	.service('authenticationService', AuthenticationService)
 	.service('travelsService', TravelsService)
 	.service('countriesService', CountriesService)
-	//.service('accountsService', AccountsService)
-	// .service('operationsService', OperationsService)
+	.service('accountsService', AccountsService)
+	.service('operationsService', OperationsService)
 	// .service('itineraryService', ItineraryService)
 	.directive('tbkMap', TbkMap.factory())
 	.component('tbkMain', TbkMain)
@@ -51,10 +51,10 @@ angular.module('tbk', ['ngMaterial', 'ngRoute', 'offClick', 'chart.js'])
 	.component('tbkAuthentication', TbkAuthentication)
 	.component('tbkTravels', TbkTravels)
 	.component('tbkTravelsList', TbkTravelsList)
-	// .component('tbkBudget', TbkBudget)
-	// .component('tbkAccountsList', TbkAccountsList)
-	// .component('tbkOperationsList', TbkOperationsList)
-	// .component('tbkBudgetStatistics', TbkBudgetStatistics)
+	.component('tbkBudget', TbkBudget)
+	.component('tbkAccountsList', TbkAccountsList)
+	.component('tbkOperationsList', TbkOperationsList)
+	.component('tbkBudgetStatistics', TbkBudgetStatistics)
 	// .component('tbkItineraire', TbkItineraire)
 	// .component('tbkCalendar', TbkCalendar)
 	.config(['$routeProvider', function($routeProvider) {
@@ -67,20 +67,20 @@ angular.module('tbk', ['ngMaterial', 'ngRoute', 'offClick', 'chart.js'])
 			})
 			.when('/login', {
 				template: '<tbk-authentication></tbk-authentication>',
+			})
+			.when('/budget', {
+				template: '<tbk-budget></tbk-budget>',
 			});
-			// .when('/budget', {
-				// template: '<tbk-budget></tbk-budget>',
-			// })
 			// .when('/itineraire', {
 				// template: '<tbk-itineraire></tbk-itineraire>',
 			// });
 	}])
-	// .config(function($mdDateLocaleProvider) {
-		// $mdDateLocaleProvider.formatDate = function(date) {
-			// if(date) {
-				// return date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
-			// } else {
-				// return null;}
-		// };
+	.config(function($mdDateLocaleProvider) {
+		$mdDateLocaleProvider.formatDate = function(date) {
+			if(date) {
+				return date.getDate().toString() + '/' + (date.getMonth() + 1).toString() + '/' + date.getFullYear().toString();
+			} else {
+				return null;}
+		};
 
-	//});
+	});

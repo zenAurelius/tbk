@@ -17,9 +17,9 @@ export class Travel {
 	) {
 		this.countries.forEach( c => {
 			if(this.countriesNames != null) { 
-				this.countriesNames += ', ' + c.name_fr
+				this.countriesNames += ', ' + c.name
 			} else {
-				this.countriesNames = c.name_fr;}
+				this.countriesNames = c.name;}
 		});
 		
 		this.users.forEach( u => {

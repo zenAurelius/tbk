@@ -27,8 +27,12 @@ class TbkMainCtrl {
 	public selUser = function(id : any) {
 		this.usersService.getUser(id)
 		.then( (response) => {
-			this.connectedUser = response.user; 
-			this.goAccueil();
+			this.connectedUser = response.user;
+			this.usersService.getFriends(id)
+				.then( friends => {
+					this.friends = friends;
+					this.goAccueil();
+				});
 		});
 		
 		//this.friends = <any[]>[];
@@ -45,6 +49,7 @@ class TbkMainCtrl {
 		this.authentService.logout();
 		this.connectedUser = null;
 		this.showUserMenu = false;
+		this.selectedTravel = null;
 		this.goLogin();
 	}
 	
@@ -56,8 +61,9 @@ class TbkMainCtrl {
 	
 	private activate() {
 		//this.getUsers().then(() => { console.log(`users  : ${angular.toJson(this.users)}`); });
-		//this.getCountries().then(() => { console.log(`countries  : ${this.countries.length}`); });
+		this.getCountries().then(() => { console.log(`countries  : ${this.countries.length}`); });
 		if(this.authentService.isLoggedIn()) {
+			this.selUser(this.authentService.getLoggedUserId());
 			this.goAccueil();
 		} else {
 			this.goLogin();

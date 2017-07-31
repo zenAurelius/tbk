@@ -1,0 +1,49 @@
+
+<div class="col onethird">
+	<div class="sheet">
+		<div class="sheet-head">
+			<div class="sheet-title">TOTAL DES DEPENSES</div>
+			<div class="sheet-filter">
+				<span class="basculeMode" data-ng-click="statisticsCtrl.changeModeTotal()">
+					{{statisticsCtrl.modeTotal ? '(voir sans avion)' : '(voir avec avion)'}}
+				</span>
+			</div>
+		</div>
+		<div class="sheet-body">
+				<canvas class="chart chart-doughnut" 
+					chart-data="statisticsCtrl.modeTotal ? statisticsCtrl.totaux.dtValTotal : statisticsCtrl.totaux.dtValSans" 
+					chart-labels="statisticsCtrl.totaux.dtLibelle" 
+					chart-legend="true" >
+				</canvas>
+				<div class="donut-inner">
+					<span>
+						{{statisticsCtrl.modeTotal ?  statisticsCtrl.totaux.tot : statisticsCtrl.totaux.sans | currency:statisticsCtrl.totaux.symb }}
+					</span>
+				</div>
+		</div> 
+	</div>
+</div>
+
+
+<div class="col twothird sheet-container">
+	<div class="sheet">
+		<div class="sheet-head">
+			<div class="sheet-title">DEPENSES PAR JOURS</div>
+			<div class="sheet-filter">
+				<md-input-container>
+					<md-select ng-model="statisticsCtrl.selectedCategorie" ng-require md-on-close="statisticsCtrl.refreshDepPerDay()">
+						<md-option value="*">Toutes</md-option>
+						<md-option ng-value="c" ng-repeat="c in statisticsCtrl.categories">{{ c.libelle }}</md-option>
+					</md-select>
+				</md-input-container>
+			</div>
+		</div>
+		<div class="sheet-body">
+			<div class="charts_row">
+				<div class="charts_sheet">
+					<canvas class="chart chart-bar" width="500" chart-data="statisticsCtrl.depPerDay.val" chart-labels="statisticsCtrl.depPerDay.lib" chart-click="statisticsCtrl.clickDay"></canvas>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

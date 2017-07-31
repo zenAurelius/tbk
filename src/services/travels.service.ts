@@ -1,19 +1,25 @@
 
 import { ITravelsService } from './travels.service.interface';
+import { IAuthenticationService } from './authentication.service.interface';
+
 import { Travel } from '../domain/Travel';
 
 export class TravelsService implements ITravelsService {
 	$http : ng.IHttpService;
+	authentication : IAuthenticationService;
 	
-	constructor($http: ng.IHttpService) {
+	constructor($http: ng.IHttpService, authenticationService: IAuthenticationService) {
 		this.$http = $http;
+		this.authentication = authenticationService;
 	}
 	
 	public getTravels( userId : any ) {
-		return this.$http.get(`http://localhost:3000/api/users/${userId}/travels`)
+		return this.$http.get(`/api/users/${userId}/travels`,{
+						  headers: { Authorization: 'Bearer '+ this.authentication.getToken() }
+						  })
 			.then( response => {
 				let travels : Travel[] = [];
-				(response.data as Array<any>).forEach(element => {
+				(response.data['travels'] as Array<any>).forEach(element => {
 					travels.push(Travel.fromData(element));
 				});
 				return travels;
@@ -22,19 +28,24 @@ export class TravelsService implements ITravelsService {
 	}
 	
 	public addTravel(travel : any ) {
-		return this.$http.post(`http://localhost:3000/api/travels`, travel)
+		delete travel.days;
+		return this.$http.post(`/api/travels`, travel,{
+						  headers: { Authorization: 'Bearer '+ this.authentication.getToken() }
+						  })
 			.then( response => response.data )
 			.catch( error => console.log("Erreur addTravels" + error.data) );
 	}
 	
 	public deleteTravel(id: any) {
-		return this.$http.delete(`http://localhost:3000/api/travels/${id}`)
+		return this.$http.delete(`/api/travels/${id}`, {
+						  headers: { Authorization: 'Bearer '+ this.authentication.getToken() }
+						  })
 			.then( response => response.data )
 			.catch( error => console.log("Erreur deleteTravel" + error.data) );
 	}
 	
 	public updateTravel(travel : any ) {
-		return this.$http.put(`http://localhost:3000/api/travels/${travel._id}`, travel)
+		return this.$http.put(`/api/travels/${travel._id}`, travel)
 			.then( response => response.data )
 			.catch( error => console.log("Erreur updateTravels" + error.data) );
 	}
