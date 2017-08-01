@@ -1203,7 +1203,7 @@ webpackJsonp([0],[
 	        }
 	        return change;
 	    };
-	    Operation.categories = [{ code: "BAVI", libelle: "Billet d'avion" }, { code: "TRAS", libelle: "Transport" }, { code: "LOGT", libelle: "Logement" }, { code: "FOOD", libelle: "Nourriture" }, { code: "VIST", libelle: "Visite" }, { code: "SOVN", libelle: "Souvenirs" }];
+	    Operation.categories = [{ code: "BAVI", libelle: "Billet d'avion" }, { code: "TRAS", libelle: "Transport" }, { code: "LOGT", libelle: "Logement" }, { code: "FOOD", libelle: "Nourriture" }, { code: "VIST", libelle: "Visite" }, { code: "SOVN", libelle: "Souvenirs" }, { code: "DIVS", Libelle: "Divers" }];
 	    return Operation;
 	}());
 	exports.Operation = Operation;

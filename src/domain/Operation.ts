@@ -1,7 +1,7 @@
 
 export class Operation {
 
-	public static categories: any[] = [{code:"BAVI", libelle:"Billet d'avion"}, {code:"TRAS", libelle:"Transport"}, {code:"LOGT", libelle:"Logement"}, {code:"FOOD", libelle:"Nourriture"}, {code:"VIST", libelle:"Visite"}, {code:"SOVN", libelle:"Souvenirs"}];
+	public static categories: any[] = [{code:"BAVI", libelle:"Billet d'avion"}, {code:"TRAS", libelle:"Transport"}, {code:"LOGT", libelle:"Logement"}, {code:"FOOD", libelle:"Nourriture"}, {code:"VIST", libelle:"Visite"}, {code:"SOVN", libelle:"Souvenirs"}, {code:"DIVS", Libelle:"Divers"}];
 	
 	constructor(
 		public _id: any,
