@@ -40,6 +40,14 @@ export class OperationsService implements IOperationsService {
 			.catch( error => console.log("Erreur deleteOperation" + error.data) );
 	}
 	
+	public updateOperation(operation : any ) {
+		return this.$http.put(`/api/operations/${operation._id}`, operation,{
+						  headers: { Authorization: 'Bearer '+ this.authentication.getToken() }
+						  })
+			.then( response => response.data )
+			.catch( error => console.log("Erreur updateOperation" + error.data) );
+	}
+	
 	public updateAccount(account : any ) {
 		return this.$http.put(`/api/accounts/${account._id}`, account,{
 						  headers: { Authorization: 'Bearer '+ this.authentication.getToken() }

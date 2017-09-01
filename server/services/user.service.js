@@ -40,7 +40,7 @@ function create(params) {
 		newUser.salt = hashedPwd.salt;
 		
 		//Enregistrement du nouveau User
-		dbProvider.db.collection(COLNAME).insertOne(newUser, function(err, doc) {
+		dbProvider.db.collection(COLNAME).insert(newUser, function(err, doc) {
 			if (err) {
 				deferred.reject(err);
 			} else {
@@ -55,8 +55,10 @@ function create(params) {
 function getById(id) {
 	var deferred = Q.defer();
 
-	dbProvider.db.collection(COLNAME).findOne( { _id: new ObjectId(id) }, function(err, user){
+	console.log('appel User : ' + dbProvider.getID(id));
+	dbProvider.db.collection(COLNAME).findOne( { _id: dbProvider.getID(id) }, function(err, user){
 
+		console.log('retour User');
 		if (err) deferred.reject(err);
  
         if (user) {
@@ -77,9 +79,9 @@ function getFriends(id) {
 		.then( user => {
 
 			var friends = []
-			user.friends.forEach( f => friends.push(new ObjectId(f)));
+			user.friends.forEach( f => friends.push(dbProvider.getID(f)));
 			dbProvider.db.collection(COLNAME).find( { _id : { $in : friends } }).toArray(function(err, users){
-
+				
 				if (err) deferred.reject(err);
 		 
 				if (users) {
@@ -87,7 +89,7 @@ function getFriends(id) {
 					users.forEach( user =>
 						foundUsers.push({_id: user._id, username: user.username, firstname: user.firstname, lastname: user.lastname})
 					);
-
+					console.log(foundUsers);
 					deferred.resolve(foundUsers);
 				} else {
 					 deferred.reject();

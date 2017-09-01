@@ -24,13 +24,13 @@ module.exports = {
 	module: {
 		loaders: [
 			{ 	test: /\.ts$/, 
-				loaders: ['ts'], exclude: /node_modules/ 
+				loaders: ['ts-loader'], exclude: /node_modules/ 
 			},
 			{ 	test: /.html$/,
 				loaders: [ 'html' ] 
 			},
 			{ 	test: /\.js$/,
-				loader: 'imports?jQuery=jquery,$=jquery,this=>window'
+				loader: 'imports-loader?jQuery=jquery,$=jquery,this=>window'
 			}
       ]
     },

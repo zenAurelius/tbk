@@ -20,6 +20,7 @@ class TbkOperationsListCtrl {
 	
 	onOperationAdd:		(any) => any;
 	onOperationDelete:	(any) => any;
+	onOperationUpdate:	(any) => any;
 
 	
 	// CONSTRUCTOR ********************************************************************************
@@ -60,6 +61,15 @@ class TbkOperationsListCtrl {
 		this.addedOperation.type = 'depense';
 		this.shownAction = 'addDepense';
 	}
+	
+	// OPEN MODIFICATION **************************************************************************
+	public openModification() {
+		if(this.selectedOperation.type == 'depense') {
+			this.shownAction = 'updDepense';
+		} else {
+			this.shownAction = 'updRetrait';
+		}
+	}
 
 	// OPEN ADD RETRAIT ***************************************************************************
 	public openAddRetrait() {
@@ -79,6 +89,11 @@ class TbkOperationsListCtrl {
 	public deleteOperation() {
 		this.onOperationDelete({id: this.selectedOperation._id});
 		this.selectedOperation = undefined;
+		this.shownAction = 'action';
+	}
+	
+	public updOperation() {
+		this.onOperationUpdate({operation: this.selectedOperation});
 		this.shownAction = 'action';
 	}
 	
@@ -105,6 +120,7 @@ export const TbkOperationsList : angular.IComponentOptions = {
 		accounts: '<',
 		selectDayIndex: '=',
 		onOperationAdd: '&',
-		onOperationDelete: '&'
+		onOperationDelete: '&',
+		onOperationUpdate: '&'
 	}
 }

@@ -1,0 +1,268 @@
+{"_id":"002","type":"c","name":"Afrique"}
+{"_id":"004","_id_3":"AFG","_id_2":"AF","zone":"034","cont":"142","type":"p","name":"Afghanistan"}
+{"_id":"005","zone":"419","cont":"019","type":"z","name":"Amérique du Sud"}
+{"_id":"008","_id_3":"ALB","_id_2":"AL","zone":"039","cont":"150","type":"p","name":"Albanie"}
+{"_id":"009","type":"c","name":"Océanie"}
+{"_id":"010","_id_3":"ATA","_id_2":"AQ","type":"p","name":"Antartique"}
+{"_id":"011","cont":"002","type":"z","name":"Afrique occidentale"}
+{"_id":"012","_id_3":"DZA","_id_2":"DZ","zone":"015","cont":"002","type":"p","name":"Algérie"}
+{"_id":"013","zone":"419","cont":"019","type":"z","name":"Amérique centrale"}
+{"_id":"015","cont":"002","type":"z","name":"Afrique septentrionale"}
+{"_id":"016","_id_3":"ASM","_id_2":"AS","zone":"061","cont":"009","type":"p","name":"Samoa américaines"}
+{"_id":"017","cont":"002","type":"z","name":"Afrique centrale"}
+{"_id":"018","cont":"002","type":"z","name":"Afrique australe"}
+{"_id":"019","type":"c","name":"Amériques"}
+{"_id":"020","_id_3":"AND","_id_2":"AD","zone":"039","cont":"150","type":"p","name":"Andorre"}
+{"_id":"021","cont":"019","type":"z","name":"Amérique septentrionale"}
+{"_id":"024","_id_3":"AGO","_id_2":"AO","zone":"017","cont":"002","type":"p","name":"Angola"}
+{"_id":"028","_id_3":"ATG","_id_2":"AG","zone":"029","cont":"019","type":"p","name":"Antigua-et-Barbuda"}
+{"_id":"029","zone":"419","cont":"019","type":"z","name":"Caraïbes"}
+{"_id":"030","cont":"142","type":"z","name":"Asie orientale"}
+{"_id":"031","_id_3":"AZE","_id_2":"AZ","zone":"145","cont":"142","type":"p","name":"Azerbaïdjan"}
+{"_id":"032","_id_3":"ARG","_id_2":"AR","zone":"005","cont":"019","type":"p","name":"Argentina"}
+{"_id":"034","cont":"142","type":"z","name":"Asie méridionale"}
+{"_id":"035","cont":"142","type":"z","name":"Asie du Sud-Est"}
+{"_id":"036","_id_3":"AUS","_id_2":"AU","zone":"053","cont":"009","type":"p","name":"Australie"}
+{"_id":"039","cont":"150","type":"z","name":"Europe méridionale"}
+{"_id":"040","_id_3":"AUT","_id_2":"AT","zone":"155","cont":"150","type":"p","name":"Autriche"}
+{"_id":"044","_id_3":"BHS","_id_2":"BS","zone":"029","cont":"019","type":"p","name":"Bahamas"}
+{"_id":"048","_id_3":"BHR","_id_2":"BH","zone":"145","cont":"142","type":"p","name":"Bahreïn"}
+{"_id":"050","_id_3":"BGD","_id_2":"BD","zone":"034","cont":"142","type":"p","name":"Bangladesh"}
+{"_id":"051","_id_3":"ARM","_id_2":"AM","zone":"145","cont":"142","type":"p","name":"Arménie"}
+{"_id":"052","_id_3":"BRB","_id_2":"BB","zone":"029","cont":"019","type":"p","name":"Barbade"}
+{"_id":"053","cont":"009","type":"z","name":"Australie et Nouvelle-Zélande"}
+{"_id":"054","cont":"009","type":"z","name":"Mélanésie"}
+{"_id":"056","_id_3":"BEL","_id_2":"BE","zone":"155","cont":"150","type":"p","name":"Belgique"}
+{"_id":"057","cont":"009","type":"z","name":"Micronésie"}
+{"_id":"060","_id_3":"BMU","_id_2":"BM","zone":"021","cont":"019","type":"p","name":"Bermudes"}
+{"_id":"061","cont":"009","type":"z","name":"Polynésie"}
+{"_id":"064","_id_3":"BTN","_id_2":"BT","zone":"034","cont":"142","type":"p","name":"Bhoutan"}
+{"_id":"068","_id_3":"BOL","_id_2":"BO","zone":"005","cont":"019","type":"p","name":"Bolivie (Etat plurinational de)"}
+{"_id":"070","_id_3":"BIH","_id_2":"BA","zone":"039","cont":"150","type":"p","name":"Bosnie-Herzégovine"}
+{"_id":"072","_id_3":"BWA","_id_2":"BW","zone":"018","cont":"002","type":"p","name":"Botswana"}
+{"_id":"076","_id_3":"BRA","_id_2":"BR","zone":"005","cont":"019","type":"p","name":"Brésil"}
+{"_id":"084","_id_3":"BLZ","_id_2":"BZ","zone":"013","cont":"019","type":"p","name":"Belize"}
+{"_id":"090","_id_3":"SLB","_id_2":"SB","zone":"054","cont":"009","type":"p","name":"Iles Salomon"}
+{"_id":"092","_id_3":"VGB","_id_2":"VG","zone":"029","cont":"019","type":"p","name":"Iles Vierges britanniques"}
+{"_id":"096","_id_3":"BRN","_id_2":"BN","zone":"035","cont":"142","type":"p","name":"Brunéi Darussalam"}
+{"_id":"100","_id_3":"BGR","_id_2":"BG","zone":"151","cont":"150","type":"p","name":"Bulgarie"}
+{"_id":"104","_id_3":"MMR","_id_2":"MM","zone":"035","cont":"142","type":"p","name":"Myanmar"}
+{"_id":"108","_id_3":"BDI","_id_2":"BI","zone":"014","cont":"019","type":"p","name":"Burundi"}
+{"_id":"112","_id_3":"BLR","_id_2":"BY","zone":"151","cont":"150","type":"p","name":"Bélarus"}
+{"_id":"116","_id_3":"KHM","_id_2":"KH","zone":"035","cont":"142","type":"p","name":"Cambodge"}
+{"_id":"120","_id_3":"CMR","_id_2":"CM","zone":"017","cont":"002","type":"p","name":"Cameroun"}
+{"_id":"124","_id_3":"CAN","_id_2":"CA","zone":"021","cont":"019","type":"p","name":"Canada"}
+{"_id":"132","_id_3":"CPV","_id_2":"CV","zone":"011","cont":"002","type":"p","name":"Cabo Verde"}
+{"_id":"136","_id_3":"CYM","_id_2":"KY","zone":"029","cont":"019","type":"p","name":"Iles Caïmanes"}
+{"_id":"140","_id_3":"CAF","_id_2":"CF","zone":"017","cont":"002","type":"p","name":"République centrafricaine"}
+{"_id":"142","type":"c","name":"Asie"}
+{"_id":"143","cont":"142","type":"z","name":"Asie centrale"}
+{"_id":"144","_id_3":"LKA","_id_2":"LK","zone":"034","cont":"142","type":"p","name":"Sri Lanka"}
+{"_id":"145","cont":"142","type":"z","name":"Asie occidentale"}
+{"_id":"148","_id_3":"TCD","_id_2":"TD","zone":"017","cont":"002","type":"p","name":"Tchad"}
+{"_id":"150","type":"c","name":"Europe"}
+{"_id":"151","cont":"150","type":"z","name":"Europe orientale"}
+{"_id":"152","_id_3":"CHL","_id_2":"CL","zone":"005","cont":"019","type":"p","name":"Chili"}
+{"_id":"154","cont":"150","type":"z","name":"Europe septentrionale"}
+{"_id":"155","cont":"150","type":"z","name":"Europe occidentale"}
+{"_id":"156","_id_3":"CHN","_id_2":"CN","zone":"030","cont":"142","type":"p","name":"Chine"}
+{"_id":"158","_id_3":"TWN","_id_2":"TW","zone":"030","cont":"142","type":"p","name":"Taiwan"}
+{"_id":"170","_id_3":"COL","_id_2":"CO","zone":"005","cont":"019","type":"p","name":"Colombie"}
+{"_id":"174","_id_3":"COM","_id_2":"KM","zone":"014","cont":"019","type":"p","name":"Comores"}
+{"_id":"175","_id_3":"MYT","_id_2":"YT","zone":"014","cont":"019","type":"p","name":"Mayotte"}
+{"_id":"178","_id_3":"COG","_id_2":"CG","zone":"017","cont":"002","type":"p","name":"Congo"}
+{"_id":"180","_id_3":"COD","_id_2":"CD","zone":"017","cont":"002","type":"p","name":"République démocratique du Congo"}
+{"_id":"184","_id_3":"COK","_id_2":"CK","zone":"061","cont":"009","type":"p","name":"Iles Cook"}
+{"_id":"188","_id_3":"CRI","_id_2":"CR","zone":"013","cont":"019","type":"p","name":"Costa Rica"}
+{"_id":"191","_id_3":"HRV","_id_2":"HR","zone":"039","cont":"150","type":"p","name":"Croatie"}
+{"_id":"192","_id_3":"CUB","_id_2":"CU","zone":"029","cont":"019","type":"p","name":"Cuba"}
+{"_id":"196","_id_3":"CYP","_id_2":"CY","zone":"145","cont":"142","type":"p","name":"Chypre"}
+{"_id":"203","_id_3":"CZE","_id_2":"CZ","zone":"151","cont":"150","type":"p","name":"République tchèque"}
+{"_id":"204","_id_3":"BEN","_id_2":"BJ","zone":"011","cont":"002","type":"p","name":"Bénin"}
+{"_id":"208","_id_3":"DNK","_id_2":"DK","zone":"154","cont":"150","type":"p","name":"Danemark"}
+{"_id":"212","_id_3":"DMA","_id_2":"DM","zone":"029","cont":"019","type":"p","name":"Dominique"}
+{"_id":"214","_id_3":"DOM","_id_2":"DO","zone":"029","cont":"019","type":"p","name":"République dominicaine"}
+{"_id":"218","_id_3":"ECU","_id_2":"EC","zone":"005","cont":"019","type":"p","name":"Equateur"}
+{"_id":"222","_id_3":"SLV","_id_2":"SV","zone":"013","cont":"019","type":"p","name":"El Salvador"}
+{"_id":"226","_id_3":"GNQ","_id_2":"GQ","zone":"017","cont":"002","type":"p","name":"Guinée équatoriale"}
+{"_id":"231","_id_3":"ETH","_id_2":"ET","zone":"014","cont":"019","type":"p","name":"Ethiopie"}
+{"_id":"232","_id_3":"ERI","_id_2":"ER","zone":"014","cont":"019","type":"p","name":"Erythrée"}
+{"_id":"233","_id_3":"EST","_id_2":"EE","zone":"154","cont":"150","type":"p","name":"Estonie"}
+{"_id":"234","_id_3":"FRO","_id_2":"FO","zone":"154","cont":"150","type":"p","name":"Iles Féroé"}
+{"_id":"238","_id_3":"FLK","_id_2":"FK","zone":"005","cont":"019","type":"p","name":"Iles Falkland (Malvinas)"}
+{"_id":"242","_id_3":"FJI","_id_2":"FJ","zone":"054","cont":"009","type":"p","name":"Fidji"}
+{"_id":"246","_id_3":"FIN","_id_2":"FI","zone":"154","cont":"150","type":"p","name":"Finlande"}
+{"_id":"248","_id_3":"ALA","_id_2":"AX","zone":"154","cont":"150","type":"p","name":"Iles d'Åland"}
+{"_id":"250","_id_3":"FRA","_id_2":"FR","zone":"155","cont":"150","type":"p","name":"France"}
+{"_id":"254","_id_3":"GUF","_id_2":"GF","zone":"005","cont":"019","type":"p","name":"Guyane française"}
+{"_id":"258","_id_3":"PYF","_id_2":"PF","zone":"061","cont":"009","type":"p","name":"Polynésie française"}
+{"_id":"262","_id_3":"DJI","_id_2":"DJ","zone":"014","cont":"019","type":"p","name":"Djibouti"}
+{"_id":"266","_id_3":"GAB","_id_2":"GA","zone":"017","cont":"002","type":"p","name":"Gabon"}
+{"_id":"268","_id_3":"GEO","_id_2":"GE","zone":"145","cont":"142","type":"p","name":"Géorgie"}
+{"_id":"270","_id_3":"GMB","_id_2":"GM","zone":"011","cont":"002","type":"p","name":"Gambie"}
+{"_id":"275","_id_3":"PSE","_id_2":"PS","zone":"145","cont":"142","type":"p","name":"Etat de Palestine"}
+{"_id":"276","_id_3":"DEU","_id_2":"DE","zone":"155","cont":"150","type":"p","name":"Allemagne"}
+{"_id":"288","_id_3":"GHA","_id_2":"GH","zone":"011","cont":"002","type":"p","name":"Ghana"}
+{"_id":"292","_id_3":"GIB","_id_2":"GI","zone":"039","cont":"150","type":"p","name":"Gibraltar"}
+{"_id":"296","_id_3":"KIR","_id_2":"KI","zone":"057","cont":"009","type":"p","name":"Kiribati"}
+{"_id":"300","_id_3":"GRC","_id_2":"GR","zone":"039","cont":"150","type":"p","name":"Grèce"}
+{"_id":"304","_id_3":"GRL","_id_2":"GL","zone":"021","cont":"019","type":"p","name":"Groenland"}
+{"_id":"308","_id_3":"GRD","_id_2":"GD","zone":"029","cont":"019","type":"p","name":"Grenada"}
+{"_id":"312","_id_3":"GLP","_id_2":"GP","zone":"029","cont":"019","type":"p","name":"Guadeloupe"}
+{"_id":"316","_id_3":"GUM","_id_2":"GU","zone":"057","cont":"009","type":"p","name":"Guam"}
+{"_id":"320","_id_3":"GTM","_id_2":"GT","zone":"013","cont":"019","type":"p","name":"Guatemala"}
+{"_id":"324","_id_3":"GIN","_id_2":"GN","zone":"011","cont":"002","type":"p","name":"Guinée"}
+{"_id":"328","_id_3":"GUY","_id_2":"GY","zone":"005","cont":"019","type":"p","name":"Guyana"}
+{"_id":"332","_id_3":"HTI","_id_2":"HT","zone":"029","cont":"019","type":"p","name":"Haiti"}
+{"_id":"336","_id_3":"VAT","_id_2":"VA","zone":"039","cont":"150","type":"p","name":"Saint-Siège"}
+{"_id":"340","_id_3":"HND","_id_2":"HN","zone":"013","cont":"019","type":"p","name":"Honduras"}
+{"_id":"344","_id_3":"HKG","_id_2":"HK","zone":"030","cont":"142","type":"p","name":"Chine région administrative spéciale de Hong Kong"}
+{"_id":"348","_id_3":"HUN","_id_2":"HU","zone":"151","cont":"150","type":"p","name":"Hongrie"}
+{"_id":"352","_id_3":"ISL","_id_2":"IS","zone":"154","cont":"150","type":"p","name":"Islande"}
+{"_id":"356","_id_3":"IND","_id_2":"IN","zone":"034","cont":"142","type":"p","name":"Inde"}
+{"_id":"360","_id_3":"IDN","_id_2":"ID","zone":"035","cont":"142","type":"p","name":"Indonésie"}
+{"_id":"364","_id_3":"IRN","_id_2":"IR","zone":"034","cont":"142","type":"p","name":"Iran (République islamique d')"}
+{"_id":"368","_id_3":"IRQ","_id_2":"IQ","zone":"145","cont":"142","type":"p","name":"Iraq"}
+{"_id":"372","_id_3":"IRL","_id_2":"IE","zone":"154","cont":"150","type":"p","name":"Irlande"}
+{"_id":"376","_id_3":"ISR","_id_2":"IL","zone":"145","cont":"142","type":"p","name":"Israël"}
+{"_id":"380","_id_3":"ITA","_id_2":"IT","zone":"039","cont":"150","type":"p","name":"Italie"}
+{"_id":"384","_id_3":"CIV","_id_2":"CI","zone":"011","cont":"002","type":"p","name":"Côte d'Ivoire"}
+{"_id":"388","_id_3":"JAM","_id_2":"JM","zone":"029","cont":"019","type":"p","name":"Jamaïque"}
+{"_id":"392","_id_3":"JPN","_id_2":"JP","zone":"030","cont":"142","type":"p","name":"Japon"}
+{"_id":"398","_id_3":"KAZ","_id_2":"KZ","zone":"143","cont":"142","type":"p","name":"Kazakhstan"}
+{"_id":"400","_id_3":"JOR","_id_2":"JO","zone":"145","cont":"142","type":"p","name":"Jordanie"}
+{"_id":"404","_id_3":"KEN","_id_2":"KE","zone":"014","cont":"019","type":"p","name":"Kenya"}
+{"_id":"408","_id_3":"PRK","_id_2":"KP","zone":"030","cont":"142","type":"p","name":"République populaire démocratique de Corée"}
+{"_id":"410","_id_3":"KOR","_id_2":"KR","zone":"030","cont":"142","type":"p","name":"République de Corée"}
+{"_id":"414","_id_3":"KWT","_id_2":"KW","zone":"145","cont":"142","type":"p","name":"Koweït"}
+{"_id":"417","_id_3":"KGZ","_id_2":"KG","zone":"143","cont":"142","type":"p","name":"Kirghizistan"}
+{"_id":"418","_id_3":"LAO","_id_2":"LA","zone":"035","cont":"142","type":"p","name":"République démocratique populaire lao"}
+{"_id":"419","cont":"019","type":"z","name":"Amérique latine et Caraïbes"}
+{"_id":"422","_id_3":"LBN","_id_2":"LB","zone":"145","cont":"142","type":"p","name":"Liban"}
+{"_id":"426","_id_3":"LSO","_id_2":"LS","zone":"018","cont":"002","type":"p","name":"Lesotho"}
+{"_id":"428","_id_3":"LVA","_id_2":"LV","zone":"154","cont":"150","type":"p","name":"Lettonie"}
+{"_id":"430","_id_3":"LBR","_id_2":"LR","zone":"011","cont":"002","type":"p","name":"Libéria"}
+{"_id":"434","_id_3":"LBY","_id_2":"LY","zone":"015","cont":"002","type":"p","name":"Libye"}
+{"_id":"438","_id_3":"LIE","_id_2":"LI","zone":"155","cont":"150","type":"p","name":"Liechtenstein"}
+{"_id":"440","_id_3":"LTU","_id_2":"LT","zone":"154","cont":"150","type":"p","name":"Lituanie"}
+{"_id":"442","_id_3":"LUX","_id_2":"LU","zone":"155","cont":"150","type":"p","name":"Luxembourg"}
+{"_id":"446","_id_3":"MAC","_id_2":"MO","zone":"030","cont":"142","type":"p","name":"Chine région administrative spéciale de Macao"}
+{"_id":"450","_id_3":"MDG","_id_2":"MG","zone":"014","cont":"019","type":"p","name":"Madagascar"}
+{"_id":"454","_id_3":"MWI","_id_2":"MW","zone":"014","cont":"019","type":"p","name":"Malawi"}
+{"_id":"458","_id_3":"MYS","_id_2":"MY","zone":"035","cont":"142","type":"p","name":"Malaisie"}
+{"_id":"462","_id_3":"MDV","_id_2":"MV","zone":"034","cont":"142","type":"p","name":"Maldives"}
+{"_id":"466","_id_3":"MLI","_id_2":"ML","zone":"011","cont":"002","type":"p","name":"Mali"}
+{"_id":"470","_id_3":"MLT","_id_2":"MT","zone":"039","cont":"150","type":"p","name":"Malte"}
+{"_id":"474","_id_3":"MTQ","_id_2":"MQ","zone":"029","cont":"019","type":"p","name":"Martinique"}
+{"_id":"478","_id_3":"MRT","_id_2":"MR","zone":"011","cont":"002","type":"p","name":"Mauritanie"}
+{"_id":"480","_id_3":"MUS","_id_2":"MU","zone":"014","cont":"019","type":"p","name":"Maurice"}
+{"_id":"484","_id_3":"MEX","_id_2":"MX","zone":"013","cont":"019","type":"p","name":"Mexico"}
+{"_id":"492","_id_3":"MCO","_id_2":"MC","zone":"155","cont":"150","type":"p","name":"Monaco"}
+{"_id":"496","_id_3":"MNG","_id_2":"MN","zone":"030","cont":"142","type":"p","name":"Mongolie"}
+{"_id":"498","_id_3":"MDA","_id_2":"MD","zone":"151","cont":"150","type":"p","name":"République de Moldova"}
+{"_id":"499","_id_3":"MNE","_id_2":"ME","zone":"039","cont":"150","type":"p","name":"Monténégro (le)"}
+{"_id":"500","_id_3":"MSR","_id_2":"MS","zone":"029","cont":"019","type":"p","name":"Montserrat"}
+{"_id":"504","_id_3":"MAR","_id_2":"MA","zone":"015","cont":"002","type":"p","name":"Maroc"}
+{"_id":"508","_id_3":"MOZ","_id_2":"MZ","zone":"014","cont":"019","type":"p","name":"Mozambique"}
+{"_id":"512","_id_3":"OMN","_id_2":"OM","zone":"145","cont":"142","type":"p","name":"Oman"}
+{"_id":"516","_id_3":"NAM","_id_2":"NA","zone":"018","cont":"002","type":"p","name":"Namibie"}
+{"_id":"520","_id_3":"NRU","_id_2":"NR","zone":"057","cont":"009","type":"p","name":"Nauru"}
+{"_id":"524","_id_3":"NPL","_id_2":"NP","zone":"034","cont":"142","type":"p","name":"Népal"}
+{"_id":"528","_id_3":"NLD","_id_2":"NL","zone":"155","cont":"150","type":"p","name":"Pays-Bas"}
+{"_id":"531","_id_3":"CUW","_id_2":"CW","zone":"029","cont":"019","type":"p","name":"Curaçao"}
+{"_id":"533","_id_3":"ABW","_id_2":"AW","zone":"029","cont":"019","type":"p","name":"Aruba"}
+{"_id":"534","_id_3":"SXM","_id_2":"SX","zone":"029","cont":"019","type":"p","name":"Saint-Martin (partie néerlandaise)"}
+{"_id":"535","_id_3":"BES","_id_2":"BQ","zone":"029","cont":"019","type":"p","name":"Bonaire Saint-Eustache et Saba"}
+{"_id":"540","_id_3":"NCL","_id_2":"NC","zone":"054","cont":"009","type":"p","name":"Nouvelle-Calédonie"}
+{"_id":"548","_id_3":"VUT","_id_2":"VU","zone":"054","cont":"009","type":"p","name":"Vanuatu"}
+{"_id":"554","_id_3":"NZL","_id_2":"NZ","zone":"053","cont":"009","type":"p","name":"Nouvelle-Zélande"}
+{"_id":"558","_id_3":"NIC","_id_2":"NI","zone":"013","cont":"019","type":"p","name":"Nicaragua"}
+{"_id":"562","_id_3":"NER","_id_2":"NE","zone":"011","cont":"002","type":"p","name":"Niger"}
+{"_id":"566","_id_3":"NGA","_id_2":"NG","zone":"011","cont":"002","type":"p","name":"Nigéria"}
+{"_id":"570","_id_3":"NIU","_id_2":"NU","zone":"061","cont":"009","type":"p","name":"Nioué"}
+{"_id":"574","_id_3":"NFK","_id_2":"NF","zone":"053","cont":"009","type":"p","name":"Iles Norfolk"}
+{"_id":"578","_id_3":"NOR","_id_2":"NO","zone":"154","cont":"150","type":"p","name":"Norvège"}
+{"_id":"580","_id_3":"MNP","_id_2":"MP","zone":"057","cont":"009","type":"p","name":"Iles Mariannes septentrionales"}
+{"_id":"583","_id_3":"FSM","_id_2":"FM","zone":"057","cont":"009","type":"p","name":"Micronésie (Etats fédérés de)"}
+{"_id":"584","_id_3":"MHL","_id_2":"MH","zone":"057","cont":"009","type":"p","name":"Iles Marshall"}
+{"_id":"585","_id_3":"PLW","_id_2":"PW","zone":"057","cont":"009","type":"p","name":"Palaos"}
+{"_id":"586","_id_3":"PAK","_id_2":"PK","zone":"034","cont":"142","type":"p","name":"Pakistan"}
+{"_id":"591","_id_3":"PAN","_id_2":"PA","zone":"013","cont":"019","type":"p","name":"Panama"}
+{"_id":"598","_id_3":"PNG","_id_2":"PG","zone":"054","cont":"009","type":"p","name":"Papouasie-Nouvelle-Guinée"}
+{"_id":"600","_id_3":"PRY","_id_2":"PY","zone":"005","cont":"019","type":"p","name":"Paraguay"}
+{"_id":"604","_id_3":"PER","_id_2":"PE","zone":"005","cont":"019","type":"p","name":"Pérou"}
+{"_id":"608","_id_3":"PHL","_id_2":"PH","zone":"035","cont":"142","type":"p","name":"Philippines"}
+{"_id":"612","_id_3":"PCN","_id_2":"PN","zone":"061","cont":"009","type":"p","name":"Pitcairn"}
+{"_id":"616","_id_3":"POL","_id_2":"PL","zone":"151","cont":"150","type":"p","name":"Pologne"}
+{"_id":"620","_id_3":"PRT","_id_2":"PT","zone":"039","cont":"150","type":"p","name":"Portugal"}
+{"_id":"624","_id_3":"GNB","_id_2":"GW","zone":"011","cont":"002","type":"p","name":"Guinée-Bissau"}
+{"_id":"626","_id_3":"TLS","_id_2":"TL","zone":"035","cont":"142","type":"p","name":"Timor-Leste"}
+{"_id":"630","_id_3":"PRI","_id_2":"PR","zone":"029","cont":"019","type":"p","name":"Porto Rico"}
+{"_id":"634","_id_3":"QAT","_id_2":"QA","zone":"145","cont":"142","type":"p","name":"Qatar"}
+{"_id":"638","_id_3":"REU","_id_2":"RE","zone":"014","cont":"019","type":"p","name":"Réunion"}
+{"_id":"642","_id_3":"ROU","_id_2":"RO","zone":"151","cont":"150","type":"p","name":"Roumanie"}
+{"_id":"643","_id_3":"RUS","_id_2":"RU","zone":"151","cont":"150","type":"p","name":"Fédération de Russie"}
+{"_id":"646","_id_3":"RWA","_id_2":"RW","zone":"014","cont":"019","type":"p","name":"Rwanda"}
+{"_id":"652","_id_3":"BLM","_id_2":"BL","zone":"029","cont":"019","type":"p","name":"Saint-Barthélemy"}
+{"_id":"654","_id_3":"SHN","_id_2":"SH","zone":"011","cont":"002","type":"p","name":"Sainte-Hélène"}
+{"_id":"659","_id_3":"KNA","_id_2":"KN","zone":"029","cont":"019","type":"p","name":"Saint-Kitts-et-Nevis"}
+{"_id":"660","_id_3":"AIA","_id_2":"AI","zone":"029","cont":"019","type":"p","name":"Anguilla"}
+{"_id":"662","_id_3":"LCA","_id_2":"LC","zone":"029","cont":"019","type":"p","name":"Sainte-Lucie"}
+{"_id":"663","_id_3":"MAF","_id_2":"MF","zone":"029","cont":"019","type":"p","name":"Saint-Martin (partie française)"}
+{"_id":"666","_id_3":"SPM","_id_2":"PM","zone":"021","cont":"019","type":"p","name":"Saint-Pierre-et-Miquelon"}
+{"_id":"670","_id_3":"VCT","_id_2":"VC","zone":"029","cont":"019","type":"p","name":"Saint-Vincent-et-les Grenadines"}
+{"_id":"674","_id_3":"SMR","_id_2":"SM","zone":"039","cont":"150","type":"p","name":"Saint-Marin"}
+{"_id":"678","_id_3":"STP","_id_2":"ST","zone":"017","cont":"002","type":"p","name":"Sao Tomé-et-Principe"}
+{"_id":"682","_id_3":"SAU","_id_2":"SA","zone":"145","cont":"142","type":"p","name":"Arabie saoudite"}
+{"_id":"686","_id_3":"SEN","_id_2":"SN","zone":"011","cont":"002","type":"p","name":"Sénégal"}
+{"_id":"688","_id_3":"SRB","_id_2":"RS","zone":"039","cont":"150","type":"p","name":"Serbie (la)"}
+{"_id":"690","_id_3":"SYC","_id_2":"SC","zone":"014","cont":"019","type":"p","name":"Seychelles"}
+{"_id":"694","_id_3":"SLE","_id_2":"SL","zone":"011","cont":"002","type":"p","name":"Sierra Leone"}
+{"_id":"702","_id_3":"SGP","_id_2":"SG","zone":"035","cont":"142","type":"p","name":"Singapour"}
+{"_id":"703","_id_3":"SVK","_id_2":"SK","zone":"151","cont":"150","type":"p","name":"Slovaquie"}
+{"_id":"704","_id_3":"VNM","_id_2":"VN","zone":"035","cont":"142","type":"p","name":"Viet Nam"}
+{"_id":"705","_id_3":"SVN","_id_2":"SI","zone":"039","cont":"150","type":"p","name":"Slovénie"}
+{"_id":"706","_id_3":"SOM","_id_2":"SO","zone":"014","cont":"019","type":"p","name":"Somalie"}
+{"_id":"710","_id_3":"ZAF","_id_2":"ZA","zone":"018","cont":"002","type":"p","name":"Afrique du Sud"}
+{"_id":"716","_id_3":"ZWE","_id_2":"ZW","zone":"014","cont":"019","type":"p","name":"Zimbabwe"}
+{"_id":"724","_id_3":"ESP","_id_2":"ES","zone":"039","cont":"150","type":"p","name":"Espagne"}
+{"_id":"728","_id_3":"SSD","_id_2":"SS","zone":"014","cont":"019","type":"p","name":"Soudan du Sud"}
+{"_id":"729","_id_3":"SDN","_id_2":"SD","zone":"015","cont":"002","type":"p","name":"Soudan"}
+{"_id":"732","_id_3":"ESH","_id_2":"EH","zone":"015","cont":"002","type":"p","name":"Sahara occidental"}
+{"_id":"740","_id_3":"SUR","_id_2":"SR","zone":"005","cont":"019","type":"p","name":"Suriname"}
+{"_id":"744","_id_3":"SJM","_id_2":"SJ","zone":"154","cont":"150","type":"p","name":"Iles Svalbard et Jan Mayen"}
+{"_id":"748","_id_3":"SWZ","_id_2":"SZ","zone":"018","cont":"002","type":"p","name":"Swaziland"}
+{"_id":"752","_id_3":"SWE","_id_2":"SE","zone":"154","cont":"150","type":"p","name":"Suède"}
+{"_id":"756","_id_3":"CHE","_id_2":"CH","zone":"155","cont":"150","type":"p","name":"Suisse"}
+{"_id":"760","_id_3":"SYR","_id_2":"SY","zone":"145","cont":"142","type":"p","name":"République arabe syrienne"}
+{"_id":"762","_id_3":"TJK","_id_2":"TJ","zone":"143","cont":"142","type":"p","name":"Tadjikistan"}
+{"_id":"764","_id_3":"THA","_id_2":"TH","zone":"035","cont":"142","type":"p","name":"Thaïlande"}
+{"_id":"768","_id_3":"TGO","_id_2":"TG","zone":"011","cont":"002","type":"p","name":"Togo"}
+{"_id":"772","_id_3":"TKL","_id_2":"TK","zone":"061","cont":"009","type":"p","name":"Tokelau"}
+{"_id":"776","_id_3":"TON","_id_2":"TO","zone":"061","cont":"009","type":"p","name":"Tonga"}
+{"_id":"780","_id_3":"TTO","_id_2":"TT","zone":"029","cont":"019","type":"p","name":"Trinité-et-Tobago"}
+{"_id":"784","_id_3":"ARE","_id_2":"AE","zone":"145","cont":"142","type":"p","name":"Emirats arabes unis"}
+{"_id":"788","_id_3":"TUN","_id_2":"TN","zone":"015","cont":"002","type":"p","name":"Tunisie"}
+{"_id":"792","_id_3":"TUR","_id_2":"TR","zone":"145","cont":"142","type":"p","name":"Turquie"}
+{"_id":"795","_id_3":"TKM","_id_2":"TM","zone":"143","cont":"142","type":"p","name":"Turkménistan"}
+{"_id":"796","_id_3":"TCA","_id_2":"TC","zone":"029","cont":"019","type":"p","name":"Iles Turques-et-Caïques"}
+{"_id":"798","_id_3":"TUV","_id_2":"TV","zone":"061","cont":"009","type":"p","name":"Tuvalu"}
+{"_id":"800","_id_3":"UGA","_id_2":"UG","zone":"014","cont":"019","type":"p","name":"Ouganda"}
+{"_id":"804","_id_3":"UKR","_id_2":"UA","zone":"151","cont":"150","type":"p","name":"Ukraine"}
+{"_id":"807","_id_3":"MKD","_id_2":"MK","zone":"039","cont":"150","type":"p","name":"Ex-République yougoslave de Macédoine"}
+{"_id":"818","_id_3":"EGY","_id_2":"EG","zone":"015","cont":"002","type":"p","name":"Egypte"}
+{"_id":"826","_id_3":"GBR","_id_2":"GB","zone":"154","cont":"150","type":"p","name":"Royaume-Uni de Grande-Bretagne et d'Irlande du Nord"}
+{"_id":"831","_id_3":"GGY","_id_2":"GG","zone":"154","cont":"150","type":"p","name":"Guernesey"}
+{"_id":"832","_id_3":"JEY","_id_2":"JE","zone":"154","cont":"150","type":"p","name":"Le Jersey"}
+{"_id":"833","_id_3":"IMN","_id_2":"IM","zone":"154","cont":"150","type":"p","name":"Ile de Man"}
+{"_id":"834","_id_3":"TZA","_id_2":"TZ","zone":"014","cont":"019","type":"p","name":"République-Unie de Tanzanie"}
+{"_id":"840","_id_3":"USA","_id_2":"US","zone":"021","cont":"019","type":"p","name":"Etats-Unis d'Amérique"}
+{"_id":"850","_id_3":"VIR","_id_2":"VI","zone":"029","cont":"019","type":"p","name":"Iles Vierges américaines"}
+{"_id":"854","_id_3":"BFA","_id_2":"BF","zone":"011","cont":"002","type":"p","name":"Burkina Faso"}
+{"_id":"858","_id_3":"URY","_id_2":"UY","zone":"005","cont":"019","type":"p","name":"Uruguay"}
+{"_id":"860","_id_3":"UZB","_id_2":"UZ","zone":"143","cont":"142","type":"p","name":"Ouzbékistan"}
+{"_id":"862","_id_3":"VEN","_id_2":"VE","zone":"005","cont":"019","type":"p","name":"Venezuela (République bolivarienne du)"}
+{"_id":"876","_id_3":"WLF","_id_2":"WF","zone":"061","cont":"009","type":"p","name":"Iles Wallis-et-Futuna"}
+{"_id":"882","_id_3":"WSM","_id_2":"WS","zone":"061","cont":"009","type":"p","name":"Samoa"}
+{"_id":"887","_id_3":"YEM","_id_2":"YE","zone":"145","cont":"142","type":"p","name":"Yémen"}
+{"_id":"894","_id_3":"ZMB","_id_2":"ZM","zone":"014","cont":"019","type":"p","name":"Zambie"}

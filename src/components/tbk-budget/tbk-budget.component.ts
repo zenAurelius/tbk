@@ -19,7 +19,7 @@ class TbkBudgetCtrl {
 	accountReady: any = false;
 	mainDevise: any = {code:"EUR", symb:"€"};
 	changes: { [index: string]: any; };
-	selectDayIndex: number = 2;
+	selectDayIndex: number = 0;
 	$scope: ng.IScope;
 	
 	// CONSTRUCTOR *******************************************************************************
@@ -168,6 +168,15 @@ class TbkBudgetCtrl {
 	public addOperation(operation : any) {
 		this.accountReady = false;
 		return this.operationsService.addOperation(operation)
+			.then(() => this.getOperations(this.travel._id)).then(() => {
+				this.accountReady = true;
+			});
+	}
+	
+	// UPDATE OPERATION ***************************************************************************
+	public updateOperation(operation : any) {
+		this.accountReady = false;
+		return this.operationsService.updOperation(operation)
 			.then(() => this.getOperations(this.travel._id)).then(() => {
 				this.accountReady = true;
 			});

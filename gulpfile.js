@@ -25,7 +25,8 @@ gulp.task('css', function () {
 });
 
 gulp.task('set-env', function() {
-	process.env.MONGODB_URI = 'mongodb://loicbailly:dorine2845@ds147072.mlab.com:47072/tbk_database'
+	process.env.MONGODB_URI = 'mongodb://loicbailly:dorine2845@ds147072.mlab.com:47072/tbk_database';
+	process.env.DB = "DEV";
     return process.env.JWT_SECRET = 'secret';
 });
 

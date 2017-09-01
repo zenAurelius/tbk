@@ -13,8 +13,13 @@ var ObjectId = require('mongodb').ObjectId;
 function list() {
 	var deferred = Q.defer();
 	
+	console.log('appel de la base');
 	dbProvider.db.collection(COLNAME).find({}).sort({name:1}).toArray(function (err, countries) {
-		if (err) deferred.reject(err);
+		console.log('retour de la base');
+		if (err) {
+			console.log(err);
+			deferred.reject(err);
+		}
 		if (countries) {
             deferred.resolve(countries);
         } else {
