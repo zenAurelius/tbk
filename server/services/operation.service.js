@@ -6,6 +6,7 @@ var service = {};
 service.list = list;
 service.add = add;
 service.deleteOperation = deleteOperation;
+service.update = update;
 
 module.exports = service;
 
@@ -44,11 +45,26 @@ function add(operation) {
 	return deferred.promise;
 };
 
+function update(operation) {
+	var deferred = Q.defer();
+	console.log(operation);
+	dbProvider.db.collection(COLNAME).update({ _id: dbProvider.getID(operation._id) }, operation, (err, result) => {
+
+		if (err){
+			deferred.reject(err);
+		} else {
+			deferred.resolve(result);
+		}
+	})
+	
+	return deferred.promise;
+}
+
 
 function deleteOperation(id) {
 	var deferred = Q.defer();
 	
-	dbProvider.db.collection(COLNAME).remove({ _id: new ObjectId(id) }, (err, result) => {
+	dbProvider.db.collection(COLNAME).remove({ _id: dbProvider.getID(id) }, (err, result) => {
 		if (err){
 			deferred.reject(err);
 		} else {

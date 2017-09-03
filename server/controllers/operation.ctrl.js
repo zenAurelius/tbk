@@ -22,3 +22,9 @@ module.exports.deleteOperation = function(req, res){
 		.then( result => res.status(200).send(result) )
 		.catch(err => res.status(404).send(err) );
 }
+
+module.exports.update = function(req, res) {
+	operationService.update(req.body)
+		.then( result => res.status(200).send(result) )
+		.catch( err => res.status(404).send(err) )
+}

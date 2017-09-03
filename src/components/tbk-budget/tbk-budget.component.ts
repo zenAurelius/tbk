@@ -176,7 +176,7 @@ class TbkBudgetCtrl {
 	// UPDATE OPERATION ***************************************************************************
 	public updateOperation(operation : any) {
 		this.accountReady = false;
-		return this.operationsService.updOperation(operation)
+		return this.operationsService.updateOperation(operation)
 			.then(() => this.getOperations(this.travel._id)).then(() => {
 				this.accountReady = true;
 			});

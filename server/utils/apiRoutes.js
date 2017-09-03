@@ -36,6 +36,7 @@ router.delete('/accounts/:accountId', auth, ctrlAccount.deleteAccount);
 var ctrlOperation = require('../controllers/operation.ctrl');
 router.get('/account/:travelId/operations/', ctrlOperation.list);
 router.post('/operations', ctrlOperation.add);
+router.put('/operations', ctrlOperation.update);
 
 router.delete('/operations/:operationId', auth, ctrlOperation.deleteOperation);
 

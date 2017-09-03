@@ -41,7 +41,11 @@ export class OperationsService implements IOperationsService {
 	}
 	
 	public updateOperation(operation : any ) {
-		return this.$http.put(`/api/operations/${operation._id}`, operation,{
+		operation.accountDebit = operation.accountDebit._id;
+		if(operation.accountCredit) { operation.accountCredit = operation.accountCredit._id };
+		if(operation.categorie) { operation.categorie = operation.categorie.code };
+		
+		return this.$http.put(`/api/operations`, operation,{
 						  headers: { Authorization: 'Bearer '+ this.authentication.getToken() }
 						  })
 			.then( response => response.data )
