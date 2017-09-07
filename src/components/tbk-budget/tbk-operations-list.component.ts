@@ -5,18 +5,20 @@ import { TravelDay } 	from '../../domain/TravelDay';
 import { Travel } 		from '../../domain/Travel';
 import { Operation } 	from '../../domain/Operation';
 
+import {accounts} 		from '../../domain/Accounts';
+
 
 class TbkOperationsListCtrl {
 	travel: Travel;
 	days: 				TravelDay[];
-	accounts:			any[];
+	accounts:			any;
 	travelLength: 		number;
+	autresDevises:		any[];
 	selectDayIndex: 	number;
 	shownAction:		string = 'action';
 	addedOperation: 	Operation;
 	selectedDay: 		TravelDay;
 	selectedOperation:	Operation;
-	categories: any[] = Operation.categories;
 	
 	onOperationAdd:		(any) => any;
 	onOperationDelete:	(any) => any;
@@ -35,6 +37,7 @@ class TbkOperationsListCtrl {
 	
 	// ON INIT ************************************************************************************
 	$onInit = function() {
+		this.accounts = accounts;
 		this.days = this.travel.days;
 		this.travelLength = this.days.length - 1;
 		this.selectedDay = this.days[this.selectDayIndex];
@@ -48,6 +51,17 @@ class TbkOperationsListCtrl {
 	// NEXT DAY ***********************************************************************************
 	public nextDay() {
 		if(this.selectDayIndex < this.travelLength) { this.selectDayIndex++; }
+	}
+	
+	// SET AUTRE DEVISES **************************************************************************
+	public setAutresDevises(selectedDevise) {
+		this.autresDevises = [];
+		var that = this;
+		this.travel.devises.forEach(function(d) {
+			if(d != selectedDevise) {
+				that.autresDevises.push(d)
+			}
+		});
 	}
 	
 	// OPEN ADD OPERATION *************************************************************************
@@ -64,6 +78,7 @@ class TbkOperationsListCtrl {
 	
 	// OPEN MODIFICATION **************************************************************************
 	public openModification() {
+		this.setAutresDevises(this.selectedOperation.deviseDebit);
 		if(this.selectedOperation.type == 'depense') {
 			this.shownAction = 'updDepense';
 		} else {
@@ -92,6 +107,7 @@ class TbkOperationsListCtrl {
 		this.shownAction = 'action';
 	}
 	
+	// UPD OPERATION ******************************************************************************
 	public updOperation() {
 		this.onOperationUpdate({operation: this.selectedOperation});
 		this.shownAction = 'action';
@@ -106,6 +122,7 @@ class TbkOperationsListCtrl {
 		}
 		this.shownAction = 'action';
 	}
+	
 }
 
 
@@ -117,7 +134,6 @@ export const TbkOperationsList : angular.IComponentOptions = {
 	controllerAs: 'operationsListCtrl',
 	bindings : {
 		travel: '<',
-		accounts: '<',
 		selectDayIndex: '=',
 		onOperationAdd: '&',
 		onOperationDelete: '&',

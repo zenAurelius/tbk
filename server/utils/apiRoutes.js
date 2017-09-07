@@ -20,6 +20,7 @@ router.get('/user/:id/friends', auth, ctrlUser.getFriends);
 var ctrlTravel = require('../controllers/travel.ctrl');
 router.get('/users/:userid/travels', auth, ctrlTravel.list);
 router.post('/travels', auth, ctrlTravel.add);
+router.put('/travels', auth, ctrlTravel.update);
 router.delete('/travels/:travelid', auth, ctrlTravel.deleteTravel);
 
 //COUNTRY

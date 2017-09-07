@@ -13,7 +13,8 @@ export class Travel {
 		public users: any[],
 		public countries: any[],
 		public departDate: Date,
-		public returnDate: Date
+		public returnDate: Date,
+		public devises: any[]
 	) {
 		this.countries.forEach( c => {
 			if(this.countriesNames != null) { 
@@ -38,11 +39,14 @@ export class Travel {
 		}
 		
 		this.setTravelDays();
+		if(!this.devises) {
+			this.devises = [];
+		}
 	}
 	
 	static fromData(data: any){
 		
-		return new this(data._id, data.users, data.countries, new Date(data.departDate), new Date(data.returnDate));
+		return new this(data._id, data.users, data.countries, new Date(data.departDate), new Date(data.returnDate), data.devises);
 		
 	}
 	
@@ -50,7 +54,7 @@ export class Travel {
 		
 		let users = [];
 		let countries = [];
-		return new this(undefined, users, countries, null, null);
+		return new this(undefined, users, countries, null, null, []);
 		
 	}
 	

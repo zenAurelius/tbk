@@ -45,7 +45,10 @@ export class TravelsService implements ITravelsService {
 	}
 	
 	public updateTravel(travel : any ) {
-		return this.$http.put(`/api/travels/${travel._id}`, travel)
+		delete travel.days;
+		return this.$http.put(`/api/travels`, travel,{
+						  headers: { Authorization: 'Bearer '+ this.authentication.getToken() }
+						  })
 			.then( response => response.data )
 			.catch( error => console.log("Erreur updateTravels" + error.data) );
 	}

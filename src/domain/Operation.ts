@@ -1,7 +1,6 @@
+import {accounts} 		from './Accounts';
 
 export class Operation {
-
-	public static categories: any[] = [{code:"BAVI", libelle:"Billet d'avion"}, {code:"TRAS", libelle:"Transport"}, {code:"LOGT", libelle:"Logement"}, {code:"FOOD", libelle:"Nourriture"}, {code:"VIST", libelle:"Visite"}, {code:"SOVN", libelle:"Souvenirs"}, {code:"DIVS", libelle:"Divers"}];
 	
 	constructor(
 		public _id: any,
@@ -9,38 +8,45 @@ export class Operation {
 		public date: Date,
 		public type: string,
 		public accountDebit: any,
+		public deviseDebit: any,
 		public montantDebit: number,
+		public differentDevise: boolean,
+		public fraisDebit: number,
 		public accountCredit: any,
+		public deviseCredit: any,
 		public montantCredit: number,
 		public description:	string,
-		public categorie: any,
 		public order: number
 	) {}
 
-	static fromData(data: any, accounts: Array<any>) {
-		let date = new Date(data.date);
-		let accountDebit = null;
-		for(let a of accounts) {
-			if(a._id == data.accountDebit) { accountDebit = a; }
-		}
-		let accountCredit = null;
+	static fromData(data: any, travel: any) {
+	
+		var accountCredit;
+		var accountDebit;
 		if(data.accountCredit) { 
-			for(let a of accounts) {
-				if(a._id == data.accountCredit) { accountCredit = a; }
+			for(let a of accounts.bilan) {
+				if(a.code == data.accountCredit) { accountCredit = a; }
+				if(a.code == data.accountDebit) { accountDebit = a; }
+			}
+			for(let a of accounts.charge) {
+				if(a.code == data.accountCredit) { accountCredit = a; }
+				if(a.code == data.accountDebit) { accountDebit = a; }
 			} 
 		}
-		let categorie = null;
-		if(data.categorie)  { 
-			for(let c of Operation.categories) {
-				if(c.code == data.categorie) { categorie = c; }
-			}
+		
+		var deviseDebit;
+		var deviseCredit;
+		for(let d of travel.devises) {
+			if(data.deviseDebit == d.code) { deviseDebit = d}
+			if(data.deviseCredit == d.code) { deviseCredit = d}
 		}
 		
-		return new this(data._id, data.travelId, date, data.type, accountDebit, data.montantDebit, accountCredit, data.montantCredit, data.description, categorie, data.order);
+		let date = new Date(data.date);
+		return new this(data._id, data.travelId, date, data.type, accountDebit, deviseDebit, data.montantDebit, data.differentDevise, data.fraisDebit, accountCredit, deviseCredit, data.montantCredit, data.description, data.order);
 	}
 	
 	static fromScratch(travelId: any, date: Date, order: number) {
-		return new this(undefined, travelId, date, undefined, undefined, undefined, undefined, undefined, undefined, undefined, order);
+		return new this(undefined, travelId, date, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, undefined, order);
 	}
 	
 	

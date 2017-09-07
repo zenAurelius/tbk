@@ -1,5 +1,6 @@
 /// <reference path="../../../typings/index.d.ts" />
 
+import { ITravelsService } from '../../services/travels.service.interface';
 import { IAccountsService } from '../../services/accounts.service.interface';
 import { IOperationsService } from '../../services/operations.service.interface';
 
@@ -11,11 +12,10 @@ declare var require: any
 class TbkBudgetCtrl {
 	travel : Travel;
 	parent : any;
-	accountsService : IAccountsService;
+	travelsService : ITravelsService;
 	operationsService: IOperationsService;
-	accounts: Array<any>;
+	devises: Array<any>;
 	operations : Operation[];
-	typeLib: any = {BNK:"Bancaire", CSH:"Espèces", TVL: "Traveler check"};
 	accountReady: any = false;
 	mainDevise: any = {code:"EUR", symb:"€"};
 	changes: { [index: string]: any; };
@@ -24,8 +24,8 @@ class TbkBudgetCtrl {
 	
 	// CONSTRUCTOR *******************************************************************************
 	/** @ngInject */
-	constructor(accountsService: IAccountsService, operationsService: IOperationsService, $scope: ng.IScope) {
-		this.accountsService = accountsService;
+	constructor(travelsService: ITravelsService, operationsService: IOperationsService, $scope: ng.IScope) {
+		this.travelsService = travelsService;
 		this.operationsService = operationsService;
 		this.$scope = $scope;
 	}
@@ -42,59 +42,47 @@ class TbkBudgetCtrl {
 	
 	// REFRESH ACCOUNT ****************************************************************************
 	private refreshAccount() {
+		//TODO calcul le bilan.
 		this.accountReady = false;
-		this.getAccounts(this.travel._id).then(() => {
-			this.getOperations(this.travel._id).then(() => {
-				this.accountReady = true;
-			});
+		// this.getAccounts(this.travel._id).then(() => {
+		this.getOperations(this.travel._id).then(() => {
+			this.accountReady = true;
 		});
+		// });
 	}
 		
 	// ADD ACCOUNT ********************************************************************************
-	public addAccount(account : any) {
-		return this.accountsService.addAccount(account)
+	public addDevise(devise : any) {
+		this.travel.devises.push(devise);
+		return this.travelsService.updateTravel(this.travel)
 			.then(() => this.refreshAccount());
 	}
 	
 	// DELETE ACCOUNT *****************************************************************************
-	public deleteAccount(id: any) {
-		return this.accountsService.deleteAccount(id)
-			.then(() => this.refreshAccount());
+	public deleteDevise(devise: any) {
+		let index = this.travel.devises.indexOf(devise);
+		if(index > -1) {
+			this.travel.devises.splice(index, 1);
+			return this.travelsService.updateTravel(this.travel)
+				.then(() => this.refreshAccount());
+		}
 	}
-	
-	// GET ACCOUNTS *******************************************************************************
-	private getAccounts(travelId : any) {
-		var that = this;
-		return this.accountsService.getAccounts(travelId)
-			.then(function(data : any) {
-				data.forEach(element => {
-					element.deviseLibelle = element.devise.code;
-					if(element.devise.sym) {
-						element.deviseLibelle += `(${element.devise.sym})`;
-					}
-					element.typeLibelle = that.typeLib[element.type];
-					element.montant = 0;
-				});
-				that.accounts = data;
-				return that.accounts;
-			});
-	}
-	
+		
 	// GET OPERATIONS *****************************************************************************
 	private getOperations(travelId: any) {
 		var that = this;
-		this.accounts.forEach(a => a.montant = 0);
+		//this.accounts.forEach(a => a.montant = 0);
 		return this.operationsService.getOperations(travelId)
 			.then(function(data : any) {
 				let ops: Operation[] = []
 				data.forEach(element => {
-					let ope = Operation.fromData(element, that.accounts);
+					let ope = Operation.fromData(element, that.travel);
 					ops.push(ope);
-					ope.accountDebit.montant -= ope.montantDebit;
-					if(ope.accountCredit) { ope.accountCredit.montant += ope.montantCredit }
+					//ope.accountDebit.montant -= ope.montantDebit;
+					//if(ope.accountCredit) { ope.accountCredit.montant += ope.montantCredit }
 				});
 				that.operations = ops;
-				that.getChanges();
+				//that.getChanges();
 				that.setOperationPerDay();
 				return that.operations;
 			});
@@ -153,15 +141,15 @@ class TbkBudgetCtrl {
 			}
 		};
 		
-		this.accounts.forEach(a => {
-			if(a.devise.code != this.mainDevise.code) {
-				let ch = this.changes["EUR" + a.devise.code];
-				if(ch){
-					let mt = Math.round((a.montant * ch.mt1 / ch.mt2) * 100) / 100;
-					a.montantMain = "(" + mt.toString() + " " + this.mainDevise.symb + ")";
-				}
-			}
-		});		
+		//this.accounts.forEach(a => {
+		//	if(a.devise.code != this.mainDevise.code) {
+		//		let ch = this.changes["EUR" + a.devise.code];
+		//		if(ch){
+		//			let mt = Math.round((a.montant * ch.mt1 / ch.mt2) * 100) / 100;
+		//			a.montantMain = "(" + mt.toString() + " " + this.mainDevise.symb + ")";
+		//		}
+		//	}
+		//});		
 	}
 	
 	// ADD OPERATION ******************************************************************************

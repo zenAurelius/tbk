@@ -5,6 +5,7 @@ var dbProvider = require('../utils/dbProvider');
 var service = {};
 service.list = list;
 service.add = add;
+service.update = update;
 service.deleteTravel = deleteTravel;
 
 module.exports = service;
@@ -45,11 +46,28 @@ function add(travel) {
 	return deferred.promise;
 };
 
+function update(travel) {
+	
+	var deferred = Q.defer();
+
+	console.log(travel);
+	dbProvider.db.collection(COLNAME).update({ _id: dbProvider.getID(travel._id) }, travel, {}, (err, nbResult, result) => {
+		console.log(err);
+		if (err){
+			deferred.reject(err);
+		} else {
+			deferred.resolve(result);
+		}
+	})
+	
+	return deferred.promise;
+};
+
 
 function deleteTravel(id) {
 	var deferred = Q.defer();
 	
-	dbProvider.db.collection(COLNAME).remove({ _id: new ObjectId(id) }, (err, result) => {
+	dbProvider.db.collection(COLNAME).remove({ _id: dbProvider.getID(id) }, (err, result) => {
 		if (err){
 			deferred.reject(err);
 		} else {

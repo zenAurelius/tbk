@@ -20,14 +20,14 @@
 		<tbody>
 			<tr ng-repeat="x in operationsListCtrl.selectedDay.operations" ng-click="operationsListCtrl.selectOperation(x)" ng-class="{selectionnable: true, selected: x == operationsListCtrl.selectedOperation, retrait: isRetrait}" ng-init="isRetrait = (x.type == 'retrait')">
 				<td>{{ x.date | date }}</td>
-				<td ng-if="!isRetrait">{{ x.accountDebit.typeLibelle }} en {{x.accountDebit.deviseLibelle}}</td>
-				<td ng-if="!isRetrait">{{ x.categorie.libelle }}</td>
+				<td ng-if="!isRetrait">{{ x.accountDebit.libelle }} en {{x.deviseDebit.code}}</td>
+				<td ng-if="!isRetrait">{{ x.accountCredit.libelle }}</td>
 				<td ng-if="!isRetrait">{{ x.description }}</td>
-				<td ng-if="!isRetrait">{{ x.montantDebit | currency:x.accountDebit.devise.sym}}</td>
-				<td ng-if="isRetrait">{{ x.accountDebit.typeLibelle }} en {{x.accountDebit.deviseLibelle}}</td>
-				<td ng-if="isRetrait">{{ x.montantDebit | currency:x.accountDebit.devise.sym}}</td>
-				<td ng-if="isRetrait">{{ x.accountCredit.typeLibelle }} en {{x.accountCredit.deviseLibelle}}</td>
-				<td ng-if="isRetrait">{{ x.montantCredit | currency:x.accountCredit.devise.sym}}</td>
+				<td ng-if="!isRetrait">{{ x.montantDebit | currency:x.deviseDebit.sym}}</td>
+				<td ng-if="isRetrait">{{ x.accountDebit.libelle }} en {{x.deviseDebit.code}}</td>
+				<td ng-if="isRetrait">{{ x.montantDebit | currency:x.deviseDebit.sym}}</td>
+				<td ng-if="isRetrait">{{ x.accountCredit.libelle }} en {{x.deviseCredit.code}}</td>
+				<td ng-if="isRetrait">{{ x.montantCredit | currency:x.deviseCredit.sym}}</td>
 			</tr>
 		</tbody>
 	</table>
@@ -54,26 +54,51 @@
 					<md-datepicker ng-disabled="operationsListCtrl.selectedDay.isFixDate" ng-model="operationsListCtrl.addedOperation.date" ng-require></md-datepicker>
 				</md-input-container>
 				<md-input-container>
-					<label>Compte débité :</label>
-					<md-select ng-model="operationsListCtrl.addedOperation.accountDebit" ng-require>
-						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.accounts">{{ c.typeLibelle }} en {{c.deviseLibelle}}</md-option>
-					</md-select>
+					<label>Description :</label>
+					<input ng-model="operationsListCtrl.addedOperation.description" ng-require>
 				</md-input-container>
 				<md-input-container>
 					<label>Catégorie :</label>
-					<md-select ng-model="operationsListCtrl.addedOperation.categorie" ng-require>
-						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.categories">{{ c.libelle }}</md-option>
+					<md-select ng-model="operationsListCtrl.addedOperation.accountCredit" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.accounts.charge">{{ c.libelle }}</md-option>
 					</md-select>
 				</md-input-container>
 			</div>
 			<div layout='row' layout-fill layout-margin layout-align='start'>
-					<md-input-container>
-						<label>Description :</label>
-						<input ng-model="operationsListCtrl.addedOperation.description" ng-require>
+				<md-input-container>
+					<label>Compte débité :</label>
+					<md-select ng-model="operationsListCtrl.addedOperation.accountDebit" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.accounts.bilan">{{c.libelle}}</md-option>
+					</md-select>
 				</md-input-container>
 				<md-input-container>
-						<label>Montant ({{operationsListCtrl.addedOperation.accountDebit.devise.code}}) :</label>
+					<label>Devise :</label>
+					<md-select ng-model="operationsListCtrl.addedOperation.deviseDebit" ng-change="operationsListCtrl.setAutresDevises(operationsListCtrl.addedOperation.deviseDebit)" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.travel.devises">{{c.code}} ({{c.sym}})</md-option>
+					</md-select>
+				</md-input-container>
+				<md-input-container>
+						<label>Montant ({{operationsListCtrl.addedOperation.deviseDebit.code}}) :</label>
 						<input ng-model="operationsListCtrl.addedOperation.montantDebit" type="number" ng-require>
+				</md-input-container>
+				<md-input-container>
+					<md-checkbox ng-model="operationsListCtrl.addedOperation.differentDevise" aria-label="Checkbox 1">Payée dans une autre devise</md-checkbox>
+				</md-input-container>
+			</div>
+			<div ng-if="operationsListCtrl.addedOperation.differentDevise" layout='row' layout-fill layout-margin layout-align='start'>
+				<md-input-container>
+					<label>Frais ({{operationsListCtrl.addedOperation.deviseDebit.code}}) :</label>
+					<input ng-model="operationsListCtrl.addedOperation.fraisDebit" type="number" ng-require>
+				</md-input-container>
+				<md-input-container>
+					<label>Devise de la dépense :</label>
+					<md-select ng-model="operationsListCtrl.addedOperation.deviseCredit" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.autresDevises">{{c.code}}</md-option>
+					</md-select>
+				</md-input-container>
+				<md-input-container>
+					<label>Montant ({{operationsListCtrl.addedOperation.deviseCredit.code}}) :</label>
+					<input ng-model="operationsListCtrl.addedOperation.montantCredit" type="number" ng-require>
 				</md-input-container>
 			</div>
 			<div class="actions">
@@ -87,7 +112,7 @@
 	<div ng-show="operationsListCtrl.shownAction == 'updDepense'" class="modal-window">
 		
 		<div class="sheet-head">
-			<div class="sheet-title">Modifier une dépense</div>
+			<div class="sheet-title">Modifier une dépense</div>{{operationsListCtrl.selectedOperation.fraisDebit}}
 		</div>
 		
 		<form novalidate name="addForm">
@@ -97,26 +122,51 @@
 					<md-datepicker ng-disabled="true" ng-model="operationsListCtrl.selectedOperation.date" ng-require></md-datepicker>
 				</md-input-container>
 				<md-input-container>
-					<label>Compte débité :</label>
-					<md-select ng-disabled="true" ng-model="operationsListCtrl.selectedOperation.accountDebit" ng-require>
-						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.accounts">{{ c.typeLibelle }} en {{c.deviseLibelle}}</md-option>
-					</md-select>
+					<label>Description :</label>
+					<input ng-model="operationsListCtrl.selectedOperation.description" ng-require>
 				</md-input-container>
 				<md-input-container>
 					<label>Catégorie :</label>
-					<md-select ng-model="operationsListCtrl.selectedOperation.categorie" ng-require>
-						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.categories">{{ c.libelle }}</md-option>
+					<md-select ng-model="operationsListCtrl.selectedOperation.accountCredit" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.accounts.charge">{{ c.libelle }}</md-option>
 					</md-select>
 				</md-input-container>
 			</div>
 			<div layout='row' layout-fill layout-margin layout-align='start'>
-					<md-input-container>
-						<label>Description :</label>
-						<input ng-model="operationsListCtrl.selectedOperation.description" ng-require>
+				<md-input-container>
+					<label>Compte débité :</label>
+					<md-select ng-model="operationsListCtrl.selectedOperation.accountDebit" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.accounts.bilan">{{c.libelle}}</md-option>
+					</md-select>
 				</md-input-container>
 				<md-input-container>
-						<label>Montant ({{operationsListCtrl.selectedOperation.accountDebit.devise.code}}) :</label>
+					<label>Devise :</label>
+					<md-select ng-model="operationsListCtrl.selectedOperation.deviseDebit" ng-change="operationsListCtrl.setAutresDevises(operationsListCtrl.selectedOperation.deviseDebit)" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.travel.devises">{{c.code}} ({{c.sym}})</md-option>
+					</md-select>
+				</md-input-container>
+				<md-input-container>
+						<label>Montant ({{operationsListCtrl.selectedOperation.deviseDebit.code}}) :</label>
 						<input ng-model="operationsListCtrl.selectedOperation.montantDebit" type="number" ng-require>
+				</md-input-container>
+				<md-input-container>
+					<md-checkbox ng-model="operationsListCtrl.selectedOperation.differentDevise" aria-label="Checkbox 1">Payée dans une autre devise</md-checkbox>
+				</md-input-container>
+			</div>
+			<div ng-if="operationsListCtrl.selectedOperation.differentDevise" layout='row' layout-fill layout-margin layout-align='start'>
+				<md-input-container>
+					<label>Frais ({{operationsListCtrl.selectedOperation.deviseDebit.code}}) :</label>
+					<input ng-model="operationsListCtrl.selectedOperation.fraisDebit" type="number" ng-require>
+				</md-input-container>
+				<md-input-container>
+					<label>Devise de la dépense :</label>
+					<md-select ng-model="operationsListCtrl.selectedOperation.deviseCredit" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.autresDevises">{{c.code}}</md-option>
+					</md-select>
+				</md-input-container>
+				<md-input-container>
+					<label>Montant ({{operationsListCtrl.selectedOperation.deviseCredit.code}}) :</label>
+					<input ng-model="operationsListCtrl.selectedOperation.montantCredit" type="number" ng-require>
 				</md-input-container>
 			</div>
 			<div class="actions">
@@ -126,6 +176,7 @@
 		</form>
 	</div>
 	
+<!-- CREATION RETRAIT -->
 	<div ng-show="operationsListCtrl.shownAction == 'addRetrait'" class="modal-window">
 		
 		<div class="sheet-head">
@@ -141,23 +192,39 @@
 				<md-input-container>
 					<label>Compte débité :</label>
 					<md-select ng-model="operationsListCtrl.addedOperation.accountDebit" ng-require>
-						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.accounts">{{ c.typeLibelle }} en {{c.deviseLibelle}}</md-option>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.accounts.bilan">{{c.libelle}}</md-option>
 					</md-select>
 				</md-input-container>
 				<md-input-container>
-					<label>Montant Débit({{operationsListCtrl.addedOperation.accountDebit.devise.code}}) :</label>
-					<input ng-model="operationsListCtrl.addedOperation.montantDebit" type="number" ng-require>
+					<label>Devise :</label>
+					<md-select ng-model="operationsListCtrl.addedOperation.deviseDebit" ng-change="operationsListCtrl.setAutresDevises(operationsListCtrl.addedOperation.deviseDebit)" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.travel.devises">{{c.code}} ({{c.sym}})</md-option>
+					</md-select>
+				</md-input-container>
+				<md-input-container>
+						<label>Montant ({{operationsListCtrl.addedOperation.deviseDebit.code}}) :</label>
+						<input ng-model="operationsListCtrl.addedOperation.montantDebit" type="number" ng-require>
+				</md-input-container>
+				<md-input-container>
+					<label>Frais ({{operationsListCtrl.addedOperation.deviseDebit.code}}) :</label>
+					<input ng-model="operationsListCtrl.addedOperation.fraisDebit" type="number" ng-require>
 				</md-input-container>
 			</div>
 			<div layout='row' layout-fill layout-margin layout-align='start'>
 				<md-input-container>
 					<label>Compte crédité :</label>
 					<md-select ng-model="operationsListCtrl.addedOperation.accountCredit" ng-require>
-						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.accounts">{{ c.typeLibelle }} en {{c.deviseLibelle}}</md-option>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.accounts.bilan">{{c.libelle}}</md-option>
 					</md-select>
 				</md-input-container>
 				<md-input-container>
-					<label>Montant Crédit({{operationsListCtrl.addedOperation.accountCredit.devise.code}}) :</label>
+					<label>Devise :</label>
+					<md-select ng-model="operationsListCtrl.addedOperation.deviseCredit" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.autresDevises">{{c.code}}</md-option>
+					</md-select>
+				</md-input-container>
+				<md-input-container>
+					<label>Montant Crédit({{operationsListCtrl.addedOperation.deviseCredit.code}}) :</label>
 					<input ng-model="operationsListCtrl.addedOperation.montantCredit" type="number" ng-require>
 				</md-input-container>
 			</div>

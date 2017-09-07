@@ -1,12 +1,10 @@
 <div class="sheet-row">
 	<div class="col full sheet-container">
-		<tbk-accounts-list 
-			travel="budgetCtrl.travel"
-			accounts="budgetCtrl.accounts" 
-			on-account-add="budgetCtrl.addAccount(account)"
-			on-account-delete="budgetCtrl.deleteAccount(id)"
-			on-account-update="budgetCtrl.updateAccount(account)"
-		</tbk-accounts-list>
+		<tbk-devises-list 
+			devises="budgetCtrl.travel.devises" 
+			on-devise-add="budgetCtrl.addDevise(devise)"
+			on-devise-delete="budgetCtrl.deleteDevise(devise)"
+		</tbk-devises-list>
 	</div>
 </div>
 
@@ -14,7 +12,6 @@
 	<div class="col full sheet-container">
 		<tbk-operations-list 
 			travel="budgetCtrl.travel"
-			accounts="budgetCtrl.accounts"
 			select-day-index="budgetCtrl.selectDayIndex"
 			on-operation-add="budgetCtrl.addOperation(operation)"
 			on-operation-delete="budgetCtrl.deleteOperation(id)"

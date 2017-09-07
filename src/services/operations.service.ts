@@ -20,11 +20,7 @@ export class OperationsService implements IOperationsService {
 	}
 	
 	public addOperation(operation : any ) {
-	
-		operation.accountDebit = operation.accountDebit._id;
-		if(operation.accountCredit) { operation.accountCredit = operation.accountCredit._id };
-		if(operation.categorie) { operation.categorie = operation.categorie.code };
-		
+		this.cleanForDB(operation);
 		return this.$http.post(`/api/operations`, operation,{
 						  headers: { Authorization: 'Bearer '+ this.authentication.getToken() }
 						  })
@@ -41,10 +37,7 @@ export class OperationsService implements IOperationsService {
 	}
 	
 	public updateOperation(operation : any ) {
-		operation.accountDebit = operation.accountDebit._id;
-		if(operation.accountCredit) { operation.accountCredit = operation.accountCredit._id };
-		if(operation.categorie) { operation.categorie = operation.categorie.code };
-		
+		this.cleanForDB(operation);
 		return this.$http.put(`/api/operations`, operation,{
 						  headers: { Authorization: 'Bearer '+ this.authentication.getToken() }
 						  })
@@ -58,5 +51,16 @@ export class OperationsService implements IOperationsService {
 						  })
 			.then( response => response.data )
 			.catch( error => console.log("Erreur updateAccount" + error.data) );
+	}
+	
+	private cleanForDB(operation) {
+		operation.accountCredit = operation.accountCredit.code;
+		operation.accountDebit = operation.accountDebit.code;
+		operation.deviseDebit = operation.deviseDebit.code;
+		if(operation.deviseCredit) {
+			operation.deviseCredit = operation.deviseCredit.code;
+		} else {
+			operation.deviseCredit = operation.deviseDebit;
+		}
 	}
 }
