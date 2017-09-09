@@ -24,7 +24,7 @@ import { TbkAuthentication }	from './components/tbk-authentication/tbk-authentic
 import { TbkTravels } 			from './components/tbk-travels/tbk-travels.component';
 import { TbkTravelsList } 		from './components/tbk-travels/tbk-travels-list.component';
 import { TbkBudget } 			from './components/tbk-budget/tbk-budget.component';
-import { TbkDevisesList }		from './components/tbk-budget/tbk-devises-list.component';
+import { TbkBilan }				from './components/tbk-budget/tbk-bilan.component';
 import { TbkOperationsList }	from './components/tbk-budget/tbk-operations-list.component';
 import { TbkBudgetStatistics }	from './components/tbk-budget/tbk-budget-statistics.component';
 // import { TbkItineraire } 		from './components/tbk-itineraire/tbk-itineraire.component';
@@ -52,7 +52,7 @@ angular.module('tbk', ['ngMaterial', 'ngRoute', 'offClick', 'chart.js'])
 	.component('tbkTravels', TbkTravels)
 	.component('tbkTravelsList', TbkTravelsList)
 	.component('tbkBudget', TbkBudget)
-	.component('tbkDevisesList', TbkDevisesList)
+	.component('tbkBilan', TbkBilan)
 	.component('tbkOperationsList', TbkOperationsList)
 	.component('tbkBudgetStatistics', TbkBudgetStatistics)
 	// .component('tbkItineraire', TbkItineraire)

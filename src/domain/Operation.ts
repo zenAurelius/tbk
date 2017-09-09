@@ -54,30 +54,30 @@ export class Operation {
 		
 		let change: any = {};
 				
-		if(this.accountDebit.devise.code == mainDevise ){
-			change.key = this.accountDebit.devise.code + this.accountCredit.devise.code;
+		if(this.deviseDebit.code == mainDevise ){
+			change.key = this.deviseDebit.code + this.deviseCredit.code;
 			change.mt1 = this.montantDebit;
 			change.mt2 = this.montantCredit;
-			change.de1 = this.accountDebit.devise.code;
-			change.de1 = this.accountCredit.devise.code;
-		} else if( this.accountCredit.devise.code == mainDevise) {
-			change.key = this.accountCredit.devise.code + this.accountDebit.devise.code;
+			change.de1 = this.deviseDebit.code;
+			change.de1 = this.deviseCredit.code;
+		} else if( this.deviseCredit.code == mainDevise) {
+			change.key = this.deviseCredit.code + this.deviseDebit.code;
 			change.mt1 = this.montantCredit;
 			change.mt2 = this.montantDebit;
-			change.de1 = this.accountCredit.devise.code;
-			change.de1 = this.accountDebit.devise.code;
-		} else if( this.accountDebit.devise.code > this.accountCredit.devise.code) {
-			change.key = this.accountDebit.devise.code + this.accountCredit.devise.code;
+			change.de1 = this.deviseCredit.code;
+			change.de1 = this.deviseDebit.code;
+		} else if( this.deviseDebit.code > this.deviseCredit.code) {
+			change.key = this.deviseDebit.code + this.deviseCredit.code;
 			change.mt1 = this.montantDebit;
 			change.mt2 = this.montantCredit;
-			change.de1 = this.accountDebit.devise.code;
-			change.de1 = this.accountCredit.devise.code;
+			change.de1 = this.deviseDebit.code;
+			change.de1 = this.deviseCredit.code;
 		} else {
-			change.key = this.accountCredit.devise.code + this.accountDebit.devise.code;
+			change.key = this.deviseCredit.code + this.deviseDebit.code;
 			change.mt1 = this.montantCredit;
 			change.mt2 = this.montantDebit;
-			change.de1 = this.accountCredit.devise.code;
-			change.de1 = this.accountDebit.devise.code;
+			change.de1 = this.deviseCredit.code;
+			change.de1 = this.deviseDebit.code;
 		}
 		
 		return change;

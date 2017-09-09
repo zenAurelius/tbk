@@ -52,51 +52,50 @@ class TbkBudgetStatisticsCtrl {
 		this.totaux.dtLibelle = [];
 		this.totaux.dtValTotal = [];
 		this.totaux.dtValSans = [];
-		// for(let i = 0; i < this.travel.days.length; i++) {
-			// let day = this.travel.days[i];
-			// let mtDaily = 0;
-			// day.operations.filter( ope => ope.type == 'depense' ).forEach( ope => {
-				// let addingMt = 0;
-				// if(ope.accountDebit.devise.code == this.mainDevise.code) {
-					// addingMt = ope.montantDebit;
-				// } else {
-					// let c = this.changes["EUR" + ope.accountDebit.devise.code];
-					// addingMt = ope.montantDebit * c.mt1 / c.mt2;
-				// }
-				// if((this.selectedCategorie == '*' || ope.categorie.code == this.selectedCategorie.code) 
-					// && i > 0 && i < this.travel.days.length - 1)  {
-					// mtDaily += addingMt; 
-				// }
+		for(let i = 0; i < this.travel.days.length; i++) {
+			let day = this.travel.days[i];
+			let mtDaily = 0;
+			day.operations.filter( ope => ope.type == 'depense' ).forEach( ope => {
+				let addingMt = 0;
+				if(ope.deviseDebit.code == this.mainDevise.code) {
+					addingMt = ope.montantDebit;
+				} else {
+					let c = this.changes["EUR" + ope.deviseDebit.code];
+					addingMt = ope.montantDebit * c.mt1 / c.mt2;
+				}
+				if((this.selectedCategorie == '*' || ope.accountCredit.code == this.selectedCategorie.code) && i > 0 && i < this.travel.days.length - 1)  {
+					mtDaily += addingMt; 
+				}
 				
-				// this.totaux.tot += addingMt;
-				// if(ope.categorie.code != "BAVI") {
-					// this.totaux.sans += addingMt;
-				// }
-				// var d = this.totaux.dtCod.indexOf(ope.categorie.code);
-				// if(d < 0) {
-					// this.totaux.dtCod.push(ope.categorie.code);
-					// this.totaux.dtLibelle.push(ope.categorie.libelle);
-					// this.totaux.dtValTotal.push(Math.round(addingMt * 100) / 100);
-					// if(ope.categorie.code == "BAVI") {
-						// this.totaux.dtValSans.push(0.0);
-					// } else {
-						// this.totaux.dtValSans.push(Math.round(addingMt * 100) / 100);
-					// }
-				// } else {
-					// this.totaux.dtValTotal[d] += Math.round(addingMt * 100) / 100;
-					// if(ope.categorie.code != "BAVI") {
-						// this.totaux.dtValSans[d] += Math.round(addingMt * 100) / 100;
-					// }
-				// }
+				this.totaux.tot += addingMt;
+				if(ope.accountCredit.code != "BAVI") {
+					this.totaux.sans += addingMt;
+				}
+				var d = this.totaux.dtCod.indexOf(ope.accountCredit.code);
+				if(d < 0) {
+					this.totaux.dtCod.push(ope.accountCredit.code);
+					this.totaux.dtLibelle.push(ope.accountCredit.libelle);
+					this.totaux.dtValTotal.push(Math.round(addingMt * 100) / 100);
+					if(ope.accountCredit.code == "BAVI") {
+						this.totaux.dtValSans.push(0.0);
+					} else {
+						this.totaux.dtValSans.push(Math.round(addingMt * 100) / 100);
+					}
+				} else {
+					this.totaux.dtValTotal[d] += Math.round(addingMt * 100) / 100;
+					if(ope.accountCredit.code != "BAVI") {
+						this.totaux.dtValSans[d] += Math.round(addingMt * 100) / 100;
+					}
+				}
 				
-			// });
-			// if(i > 0 && i < this.travel.days.length - 1) {
-				// this.depPerDay.val[0].push(Math.round(mtDaily * 100) / 100);
-				// this.depPerDay.lib.push(d_index.toString());
-				// d_index++;
-			// }
-		// }
-		// this.totaux.tot = Math.round(this.totaux.tot * 100) / 100;
+			});
+			if(i > 0 && i < this.travel.days.length - 1) {
+				this.depPerDay.val[0].push(Math.round(mtDaily * 100) / 100);
+				this.depPerDay.lib.push(d_index.toString());
+				d_index++;
+			}
+		}
+		this.totaux.tot = Math.round(this.totaux.tot * 100) / 100;
 			
 	}
 }

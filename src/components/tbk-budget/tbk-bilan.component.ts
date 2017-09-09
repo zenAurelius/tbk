@@ -1,8 +1,10 @@
 /// <reference path="../../../typings/index.d.ts" />
 declare var require: any
 
-class TbkDevisesListCtrl {
-	devises: 		any;
+class TbkBilanCtrl {
+	travel: 		any;
+	bilans:			any;
+	changes:		any;
 	selectedDevise:	any;
 	onDeviseAdd:	(any) => any;
 	onDeviseDelete:	(any) => any;
@@ -12,6 +14,34 @@ class TbkDevisesListCtrl {
 	
 	$onInit = function() {
 
+	}
+	
+	// GET ALL DEVISES LIBELLE ********************************************************************
+	public getAllDevisesLibelle() {
+		var lib = "";
+		for(let devise of this.travel.devises) {
+			if(lib != "") {lib += ", "};
+			lib += `${devise.code} (${devise.sym})`;
+		}
+		
+		return lib;
+	}
+	
+	// GET MONTANT LIBELLE ************************************************************************
+	public getMontantLibelle(bilan) {
+		var lib = (Math.round(bilan.montant * 100) / 100).toString() + " " + bilan.devise.sym;
+		if(bilan.account.code == 'BANK' && bilan.frais) {
+			lib += ` (dont frais : ${(Math.round(bilan.frais * 100) / 100).toString()} ${bilan.devise.sym})`
+		}
+		
+		if(bilan.devise.code != "EUR") {
+			let ch = this.changes["EUR" + bilan.devise.code];
+			if(ch){
+				let mt = Math.round((bilan.montant * ch.mt1 / ch.mt2) * 100) / 100;
+				lib += ` (soit ${mt.toString()} €)`;
+			}
+		}
+		return lib;
 	}
 	
 	// SELECT DEVISE ******************************************************************************
@@ -47,12 +77,14 @@ class TbkDevisesListCtrl {
 	}
 }
 
-export const TbkDevisesList : angular.IComponentOptions = {
-	template: require('./tbk-devises-list.html'),
-	controller: TbkDevisesListCtrl,
-	controllerAs: 'devisesListCtrl',
+export const TbkBilan : angular.IComponentOptions = {
+	template: require('./tbk-bilan.html'),
+	controller: TbkBilanCtrl,
+	controllerAs: 'bilanCtrl',
 	bindings : {
-		devises: '<',
+		travel: '<',
+		bilans: '<',
+		changes: '<',
 		onDeviseAdd: '&',
 		onDeviseDelete: '&'
 	}

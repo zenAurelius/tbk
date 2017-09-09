@@ -1,7 +1,6 @@
 /// <reference path="../../../typings/index.d.ts" />
 
 import { ITravelsService } from '../../services/travels.service.interface';
-import { IAccountsService } from '../../services/accounts.service.interface';
 import { IOperationsService } from '../../services/operations.service.interface';
 
 import { Operation } from '../../domain/Operation';
@@ -16,6 +15,7 @@ class TbkBudgetCtrl {
 	operationsService: IOperationsService;
 	devises: Array<any>;
 	operations : Operation[];
+	bilans : any;
 	accountReady: any = false;
 	mainDevise: any = {code:"EUR", symb:"€"};
 	changes: { [index: string]: any; };
@@ -71,18 +71,41 @@ class TbkBudgetCtrl {
 	// GET OPERATIONS *****************************************************************************
 	private getOperations(travelId: any) {
 		var that = this;
-		//this.accounts.forEach(a => a.montant = 0);
+		this.bilans = {};
 		return this.operationsService.getOperations(travelId)
 			.then(function(data : any) {
 				let ops: Operation[] = []
 				data.forEach(element => {
 					let ope = Operation.fromData(element, that.travel);
 					ops.push(ope);
-					//ope.accountDebit.montant -= ope.montantDebit;
-					//if(ope.accountCredit) { ope.accountCredit.montant += ope.montantCredit }
+					if(ope.accountDebit && ope.accountDebit.type == "BILAN") {
+						let key = ope.accountDebit.code + ope.deviseDebit.code;
+						if(!that.bilans[key]) {
+							that.bilans[key] = {};
+							that.bilans[key].montant = 0.0;
+							that.bilans[key].frais = 0.0;
+							that.bilans[key].account = ope.accountDebit;
+							that.bilans[key].devise = ope.deviseDebit;
+						}
+						that.bilans[key].montant -= ope.montantDebit;
+						if(ope.fraisDebit) {
+							that.bilans[key].montant -= ope.fraisDebit;
+							that.bilans[key].frais += ope.fraisDebit;
+						}
+					}
+					if(ope.accountCredit && ope.accountCredit.type == "BILAN") {
+						let acc = that.bilans[ope.accountDebit.code + ope.deviseCredit.code];
+						if(!acc) {
+							that.bilans[ope.accountCredit.code + ope.deviseCredit.code] = {};
+							that.bilans[ope.accountCredit.code + ope.deviseCredit.code].montant = 0.0;
+							that.bilans[ope.accountCredit.code + ope.deviseCredit.code].account = ope.accountCredit;
+							that.bilans[ope.accountCredit.code + ope.deviseCredit.code].devise = ope.deviseCredit;
+						}
+						that.bilans[ope.accountCredit.code + ope.deviseCredit.code].montant += ope.montantCredit;
+					}
 				});
 				that.operations = ops;
-				//that.getChanges();
+				that.getChanges();
 				that.setOperationPerDay();
 				return that.operations;
 			});
@@ -139,17 +162,7 @@ class TbkBudgetCtrl {
 					}
 				}
 			}
-		};
-		
-		//this.accounts.forEach(a => {
-		//	if(a.devise.code != this.mainDevise.code) {
-		//		let ch = this.changes["EUR" + a.devise.code];
-		//		if(ch){
-		//			let mt = Math.round((a.montant * ch.mt1 / ch.mt2) * 100) / 100;
-		//			a.montantMain = "(" + mt.toString() + " " + this.mainDevise.symb + ")";
-		//		}
-		//	}
-		//});		
+		};		
 	}
 	
 	// ADD OPERATION ******************************************************************************

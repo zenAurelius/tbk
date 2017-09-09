@@ -234,6 +234,65 @@
 			</div>
 		</form>
 	</div>
+	
+<!-- MODIFICATION RETRAIT -->
+	<div ng-show="operationsListCtrl.shownAction == 'updRetrait'" class="modal-window">
+		
+		<div class="sheet-head">
+			<div class="sheet-title">Modifier un retrait ou une opération de change</div>
+		</div>
+		
+		<form novalidate name="addForm">
+			<div layout='row' layout-fill layout-margin layout-align='start'>
+				<md-input-container>
+					<label>Date :</label>
+					<md-datepicker ng-disabled="true" ng-model="operationsListCtrl.selectedOperation.date" ng-require></md-datepicker>
+				</md-input-container>
+				<md-input-container>
+					<label>Compte débité :</label>
+					<md-select ng-model="operationsListCtrl.selectedOperation.accountDebit" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.accounts.bilan">{{c.libelle}}</md-option>
+					</md-select>
+				</md-input-container>
+				<md-input-container>
+					<label>Devise :</label>
+					<md-select ng-model="operationsListCtrl.selectedOperation.deviseDebit" ng-change="operationsListCtrl.setAutresDevises(operationsListCtrl.selectedOperation.deviseDebit)" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.travel.devises">{{c.code}} ({{c.sym}})</md-option>
+					</md-select>
+				</md-input-container>
+				<md-input-container>
+						<label>Montant ({{operationsListCtrl.selectedOperation.deviseDebit.code}}) :</label>
+						<input ng-model="operationsListCtrl.selectedOperation.montantDebit" type="number" ng-require>
+				</md-input-container>
+				<md-input-container>
+					<label>Frais ({{operationsListCtrl.selectedOperation.deviseDebit.code}}) :</label>
+					<input ng-model="operationsListCtrl.selectedOperation.fraisDebit" type="number" ng-require>
+				</md-input-container>
+			</div>
+			<div layout='row' layout-fill layout-margin layout-align='start'>
+				<md-input-container>
+					<label>Compte crédité :</label>
+					<md-select ng-model="operationsListCtrl.selectedOperation.accountCredit" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.accounts.bilan">{{c.libelle}}</md-option>
+					</md-select>
+				</md-input-container>
+				<md-input-container>
+					<label>Devise :</label>
+					<md-select ng-model="operationsListCtrl.selectedOperation.deviseCredit" ng-require>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.autresDevises">{{c.code}}</md-option>
+					</md-select>
+				</md-input-container>
+				<md-input-container>
+					<label>Montant Crédit({{operationsListCtrl.selectedOperation.deviseCredit.code}}) :</label>
+					<input ng-model="operationsListCtrl.selectedOperation.montantCredit" type="number" ng-require>
+				</md-input-container>
+			</div>
+			<div class="actions">
+				<input type="button" value="Modifier" class="bouton" ng-click="operationsListCtrl.updOperation()" ng-disabled="!addForm.$valid"/>
+				<button type="button" class="bouton" ng-click="operationsListCtrl.shownAction = 'action'">Annuler</button>
+			</div>
+		</form>
+	</div>
 
 	<div ng-show="operationsListCtrl.shownAction == 'delete'" class="modal-window">
 		

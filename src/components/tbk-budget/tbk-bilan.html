@@ -1,0 +1,86 @@
+<div class="sheet">
+
+
+	<div class="sheet-head">
+		<div class="sheet-title">BILAN</div>
+	</div>
+	
+	
+	<div class="sheet-body">
+		<table class="tbk-table">
+			<thead>
+				<tr><th>Liste des devises du voyages</th></tr>
+			</thead>
+			<tbody>
+				<tr ng-class="{selectionnable: true}">
+					<td>{{ bilanCtrl.getAllDevisesLibelle() }}</td>
+				</tr>
+			</tbody>
+		</table>
+		
+		<div class="actions" ng-show="bilanCtrl.shownAction == 'action'">
+			<button type="button" class="bouton" ng-click="bilanCtrl.openAddDevise()">Ajouter</button>
+			<button type="button" class="bouton" ng-click="bilanCtrl.shownAction = 'delete'">Supprimer</button>
+		</div>
+		
+		<div ng-show="bilanCtrl.shownAction == 'add'" class="modal-window">
+			
+			<div class="sheet-head">
+				<div class="sheet-title">Ajouter une devise</div>
+			</div>
+			
+			<form novalidate name="addForm">
+				<div layout='row' layout-fill layout-margin layout-align='start'>
+					<md-input-container>
+						<label>Code :</label>
+						<input ng-model="bilanCtrl.addedDevise.code" ng-require >
+					</md-input-container>
+					<md-input-container>
+						<label>Symbole :</label>
+						<input ng-model="bilanCtrl.addedDevise.sym">
+					</md-input-container>
+				</div>	
+				<div class="actions">
+					<input type="button" value="Ajouter" class="bouton" ng-click="bilanCtrl.addDevise()" ng-disabled="!addForm.$valid"/>
+					<button type="button" class="bouton" ng-click="bilanCtrl.shownAction = 'action'">Annuler</button>
+				</div>
+			</form>
+		</div>
+
+		<div ng-show="bilanCtrl.shownAction == 'delete'" class="modal-window">
+			
+			<div class="sheet-head">
+				<div class="sheet-title">Supprimer une devise</div>
+			</div>
+			
+			<form novalidate name="addForm">
+				<div layout='row' layout-fill layout-margin layout-align='start'>
+					<md-input-container>
+							<label>Devise :</label>
+							<md-select ng-model="bilanCtrl.selectedDevise" ng-require>
+								<md-option ng-value="c" ng-repeat="c in bilanCtrl.travel.devises">{{c.code}} ({{c.sym}})</md-option>
+							</md-select>
+					</md-input-container>
+				</div>
+				<div class="actions">
+					<input type="button" value="Supprimer" class="bouton" ng-click="bilanCtrl.deleteDevise()" />
+					<button type="button" class="bouton" ng-click="devisesListCtrl.shownAction = 'action'">Annuler</button>
+				</div>
+			</form>
+			</form>
+		</div>
+		
+		<table class="tbk-table">
+			<thead>
+				<tr><th>Compte</th><th>Devise</th><th>Montant</th></tr>
+			</thead>
+			<tbody id="account_list_body">
+				<tr ng-repeat="x in bilanCtrl.bilans" ng-click="bilanCtrl.selectAccount(x)" ng-class="{selectionnable: true, selected: x == bilanCtrl.selectedAccount}">
+					<td>{{ x.account.libelle }}</td>
+					<td>{{ x.devise.code }} ({{x.devise.sym}})</td>
+					<td>{{ bilanCtrl.getMontantLibelle(x) }}</td>
+				</tr>
+			</tbody>
+		</table>
+		
+</div>
