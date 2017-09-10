@@ -17,7 +17,10 @@ module.exports = {
 			module.exports.db.collections.Travel = new Datastore({ filename: 'server/utils/dbdev/travels.nedb', autoload: true });
 			module.exports.db.collections.User = new Datastore({ filename: 'server/utils/dbdev/users.nedb', autoload: true });
 			
-			module.exports.getID= function(_id) { return _id };
+			module.exports.getID= function(_id) { 
+				console.log('oid');
+				return _id;
+			};
 			console.log("Database de dev...");
 			next();
 		} else {
@@ -28,7 +31,10 @@ module.exports = {
 
 				// Save database object from the callback for reuse.
 				module.exports.db = database;
-				module.exports.getID = function(_id) { return new ObjectId(_id); };
+				module.exports.getID = function(_id) {
+					var oid = ObjectId(_id);
+					return oid; 
+				};
 				console.log("Database connection ready");
 				next();
 			});

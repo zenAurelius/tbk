@@ -9,9 +9,9 @@ service.update = update;
 service.deleteTravel = deleteTravel;
 
 module.exports = service;
-
+var ObjectID = require('mongodb').ObjectId;
 var COLNAME = 'Travel';
-var ObjectId = require('mongodb').ObjectId;
+
 
 function list(userId) {
 	var deferred = Q.defer();
@@ -49,9 +49,9 @@ function add(travel) {
 function update(travel) {
 	
 	var deferred = Q.defer();
-
-	console.log(travel);
-	dbProvider.db.collection(COLNAME).update({ _id: dbProvider.getID(travel._id) }, travel, {}, (err, nbResult, result) => {
+	var id = travel._id;
+	delete travel._id;
+	dbProvider.db.collection(COLNAME).update({ _id:  dbProvider.getID(id) }, travel, {}, (err, nbResult, result) => {
 		console.log(err);
 		if (err){
 			deferred.reject(err);

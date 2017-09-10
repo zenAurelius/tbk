@@ -47,8 +47,9 @@ function add(operation) {
 
 function update(operation) {
 	var deferred = Q.defer();
-	console.log(operation);
-	dbProvider.db.collection(COLNAME).update({ _id: dbProvider.getID(operation._id) }, operation, {}, (err, result) => {
+	var id = operation._id;
+	delete operation._id;
+	dbProvider.db.collection(COLNAME).update({ _id: dbProvider.getID(id) }, operation, {}, (err, result) => {
 
 		if (err){
 			deferred.reject(err);
