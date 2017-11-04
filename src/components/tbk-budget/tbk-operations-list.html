@@ -220,7 +220,7 @@
 				<md-input-container>
 					<label>Devise :</label>
 					<md-select ng-model="operationsListCtrl.addedOperation.deviseCredit" ng-require>
-						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.autresDevises">{{c.code}}</md-option>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.travel.devises">{{c.code}}</md-option>
 					</md-select>
 				</md-input-container>
 				<md-input-container>
@@ -279,7 +279,7 @@
 				<md-input-container>
 					<label>Devise :</label>
 					<md-select ng-model="operationsListCtrl.selectedOperation.deviseCredit" ng-require>
-						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.autresDevises">{{c.code}}</md-option>
+						<md-option ng-value="c" ng-repeat="c in operationsListCtrl.travel.devises">{{c.code}}</md-option>
 					</md-select>
 				</md-input-container>
 				<md-input-container>

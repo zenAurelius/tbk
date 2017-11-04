@@ -94,14 +94,14 @@ class TbkBudgetCtrl {
 						}
 					}
 					if(ope.accountCredit && ope.accountCredit.type == "BILAN") {
-						let acc = that.bilans[ope.accountDebit.code + ope.deviseCredit.code];
-						if(!acc) {
-							that.bilans[ope.accountCredit.code + ope.deviseCredit.code] = {};
-							that.bilans[ope.accountCredit.code + ope.deviseCredit.code].montant = 0.0;
-							that.bilans[ope.accountCredit.code + ope.deviseCredit.code].account = ope.accountCredit;
-							that.bilans[ope.accountCredit.code + ope.deviseCredit.code].devise = ope.deviseCredit;
+						let key = ope.accountCredit.code + ope.deviseCredit.code;
+						if(!that.bilans[key]) {
+							that.bilans[key] = {};
+							that.bilans[key].montant = 0.0;
+							that.bilans[key].account = ope.accountCredit;
+							that.bilans[key].devise = ope.deviseCredit;
 						}
-						that.bilans[ope.accountCredit.code + ope.deviseCredit.code].montant += ope.montantCredit;
+						that.bilans[key].montant += ope.montantCredit;
 					}
 				});
 				that.operations = ops;
