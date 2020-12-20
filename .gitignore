@@ -57,3 +57,7 @@ jspm_packages/
 # dotenv environment variables file
 .env
 
+tbk.code-workspace
+.vscode/launch.json
+setenv.bat
+connectionString.txt

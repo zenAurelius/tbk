@@ -24,13 +24,14 @@ module.exports = {
 			console.log("Database de dev...");
 			next();
 		} else {
-			mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, database) {
+			console.log(process.env.MONGODB_URI);
+			mongodb.MongoClient.connect(process.env.MONGODB_URI, function (err, client) {
 				if (err) {
 					return next(err);
 				}
 
 				// Save database object from the callback for reuse.
-				module.exports.db = database;
+				module.exports.db = client.db('tbk_database');
 				module.exports.getID = function(_id) {
 					var oid = ObjectId(_id);
 					return oid; 
