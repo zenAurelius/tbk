@@ -24,15 +24,17 @@ gulp.task('css', function () {
 	.pipe(gulp.dest(paths.cssDist));
 });
 
-gulp.task('set-env', function() {
-	process.env.MONGODB_URI = 'mongodb://loicbailly:dorine2845@ds147072.mlab.com:47072/tbk_database';
+gulp.task('set-env', function(done) {
+	process.env.MONGODB_URI = 'toto';
 	process.env.DB = "DEV";
-    return process.env.JWT_SECRET = 'secret';
+	process.env.JWT_SECRET = 'secret';
+	done();
 });
 
-gulp.task('start:server', ['set-env'], function(){
+gulp.task('start', gulp.series('set-env', function(done){
 	plugins.nodemon({ext: 'html js', watch:['client', 'server'], ignore:'server/db'});
-});
+	done();
+}));
 
 gulp.task('webpack', function() {
 	return gulp.src('src/app.ts')
@@ -40,4 +42,4 @@ gulp.task('webpack', function() {
 		.pipe(gulp.dest('public/'));
 });
 
-gulp.task('build', ['css', 'webpack']);
+gulp.task('build', gulp.series('css', 'webpack'));
